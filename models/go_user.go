@@ -1,11 +1,13 @@
 package models
 
 import (
-	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/jinzhu/gorm"
+	"github.com/tejas-cogo/go-cogoport/config"
 )
 
-var db *gorm.DB
+var (
+	db *gorm.DB
+)
 
 type GoUser struct {
 	gorm.Model
@@ -15,12 +17,12 @@ type GoUser struct {
 
 func init() {
 	config.Connect()
-	db = config.GetDB()
+	db := config.GetDB()
 	db.AutoMigrate(&GoUser{})
 }
 
-func GetAllUsers() []GoUser{
-	var Users []GoUser
-	db.First(&go_user)
-	return Users
+func GetAllUsers() GoUser {
+	var User GoUser
+	db.First(&User)
+	return User
 }
