@@ -1,7 +1,7 @@
 package models
 
 import (
-	"go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/jinzhu/gorm"
 )
 
