@@ -21,8 +21,8 @@ func init() {
 	db.AutoMigrate(&GoUser{})
 }
 
-func GetAllUsers() GoUser {
-	var User GoUser
-	db.First(&User)
-	return User
+func GetAllUsers() []GoUser {
+	var Users []GoUser
+	db.Find(&Users)
+	return Users
 }
