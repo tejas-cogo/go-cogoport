@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/tejas-cogo/go-cogoport/routes"
 	"fmt"
 	"os"
+
 	"github.com/joho/godotenv"
+	"github.com/tejas-cogo/go-cogoport/routes"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 		fmt.Print(e)
 	}
 
-	r := route.SetupRouter()
+	r := routes.SetupRouter()
 
 	port := os.Getenv("port")
 

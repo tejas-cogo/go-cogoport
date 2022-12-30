@@ -5,10 +5,10 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var db *gorm.db
+var db *gorm.DB
 
 type GoUser struct {
-	gorm.model
+	gorm.Model
 	id   uint   `gorm:"primayKey"`
 	Name string `gorm:""json:"name"`
 }
