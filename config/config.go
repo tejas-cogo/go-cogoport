@@ -19,9 +19,9 @@ func Connect() {
 		fmt.Print(e)
 	}
 
-	username := os.Getenv("database_name")
+	username := os.Getenv("database_username")
 	password := os.Getenv("database_password")
-	dbName := os.Getenv("database_username")
+	dbName := os.Getenv("database_name")
 	dbHost := os.Getenv("database_host")
 	dbPort := os.Getenv("database_port")
 

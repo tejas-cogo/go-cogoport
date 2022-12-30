@@ -1,6 +1,8 @@
 package models
 
 import (
+	"log"
+
 	"github.com/jinzhu/gorm"
 	"github.com/tejas-cogo/go-cogoport/config"
 )
@@ -24,5 +26,6 @@ func init() {
 func GetAllUsers() []GoUser {
 	var Users []GoUser
 	db.Find(&Users)
+	log.Print(Users)
 	return Users
 }
