@@ -1,10 +1,9 @@
 package main
 
 import (
-	"GO-COGOPORT/route"
+	"github.com/tejas-cogo/go-cogoport/routes"
 	"fmt"
 	"os"
-
 	"github.com/joho/godotenv"
 )
 
