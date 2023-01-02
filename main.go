@@ -5,16 +5,18 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/routes"
 )
 
 func main() {
-
 	e := godotenv.Load()
 
 	if e != nil {
 		fmt.Print(e)
 	}
+
+	config.Connect()
 
 	r := routes.SetupRouter()
 

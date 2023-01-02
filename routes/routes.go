@@ -11,7 +11,8 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
 
-	v1.POST("user-list", controllers.UserList)
+	v1.GET("user-list", controllers.UserList)
+
 	return r
 
 }

@@ -1,7 +1,9 @@
 package users
 
 import (
-	u "github.com/tejas-cogo/go-cogoport/helpers"
+	"fmt"
+
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -9,9 +11,16 @@ type UserService struct {
 	GoUser models.GoUser
 }
 
-func UserList() map[string]interface{} {
-	userData := models.GetAllUsers
-	response := u.Message(0, "This is from version 1 api")
-	response["data"] = userData
-	return response
+func UserList() []models.GoUser {
+	db := config.GetDB()
+
+	var users []models.GoUser
+	result := map[string]interface{}{}
+	db.Find(&users).Take(&result)
+
+	for _, row := range users {
+		fmt.Println("values: ", row.ID, row.Name, "\n")
+	}
+
+	return users
 }
