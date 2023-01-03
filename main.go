@@ -7,7 +7,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/routes"
-	 "github.com/tejas-cogo/go-cogoport/tasks"
 )
 
 func main() {
@@ -18,7 +17,7 @@ func main() {
 	}
 
 	config.Connect()
-	config.workers()
+	workers.Workers()
 
 	r := routes.SetupRouter()
 

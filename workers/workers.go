@@ -1,4 +1,4 @@
-package config
+package workers
 
 import (
 	"log"
@@ -9,7 +9,7 @@ import (
 
 const redisAddr = "login-apollo.dev.cogoport.io:6379,"
 
-func workers() {
+func Workers() {
 	srv := asynq.NewServer(
 		asynq.RedisClientOpt{Addr: redisAddr, Password: "f7d8279ad6ecaea58ccffd277a79b1cc4019da22713118805a9341d15a76c178"},
 		asynq.Config{
