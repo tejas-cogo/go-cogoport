@@ -3,7 +3,6 @@ package users
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
@@ -41,15 +40,10 @@ func DeleteUser(id string) models.GoUser {
 	return user
 }
 
-func UpdateUser(c *gin.Context) models.GoUser {
+func UpdateUser(id uint, body models.GoUser) models.GoUser {
 	db := config.GetDB()
-
 	var user models.GoUser
-
-	body := models.GoUser{}
-	c.BindJSON(&body)
-
-	id := c.Request.URL.Query().Get("ID")
+	fmt.Print("Body", body)
 	db.Where("id = ?", id).First(&user)
 
 	user.Name = body.Name

@@ -22,5 +22,8 @@ func DeleteUser(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-	c.JSON(200, service.UpdateUser(c))
+	var body models.GoUser
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.UpdateUser(id, body))
 }
