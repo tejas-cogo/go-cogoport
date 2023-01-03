@@ -1,4 +1,4 @@
-package tasks
+package config
 
 import (
 	"log"
@@ -22,7 +22,7 @@ func workers() {
 		},
 	)
 	mux := asynq.NewServeMux()
-	mux.HandleFunc(tasks.TypeEmailDelivery, tasks.HandleEmailDeliveryTask)
+	mux.HandleFunc(tasks.TypeWelcomeEmail, tasks.HandleWelcomeEmailTask)
 
 	if err := srv.Run(mux); err != nil {
 		log.Fatalf("could not run server: %v", err)
