@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/migrations"
-	_ "gorm.io/driver/postgres"
 )
 
 var migrateCmd = &cobra.Command{
@@ -39,7 +38,8 @@ var migrateUpCmd = &cobra.Command{
 			fmt.Println("Unable to read flag `step`")
 			return
 		}
-		db := config.GetDB()
+		gormdb := config.GetDB()
+		db, err := gormdb.DB()
 		migrator, err := migrations.Init(db)
 		if err != nil {
 			fmt.Println("Unable to fetch migrator")
@@ -61,7 +61,8 @@ var migrateDownCmd = &cobra.Command{
 			fmt.Println("Unable to read flag `step`")
 			return
 		}
-		db := config.GetDB()
+		gormdb := config.GetDB()
+		db, err := gormdb.DB()
 		migrator, err := migrations.Init(db)
 		if err != nil {
 			fmt.Println("Unable to fetch migrator")
@@ -78,7 +79,8 @@ var migrateStatusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "display status of each migrations",
 	Run: func(cmd *cobra.Command, args []string) {
-		db := config.GetDB()
+		gormdb := config.GetDB()
+		db, err := gormdb.DB()
 		migrator, err := migrations.Init(db)
 		if err != nil {
 			fmt.Println("Unable to fetch migrator")
