@@ -17,7 +17,7 @@ func main() {
 	}
 
 	config.Connect()
-	workers.Workers()
+	// workers.Workers()
 
 	r := routes.SetupRouter()
 
