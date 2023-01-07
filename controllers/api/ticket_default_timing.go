@@ -6,9 +6,9 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_timings"
 )
 
-func ListTicketDefaultTiming(c *gin.Context) {
-	c.JSON(200, service.TicketDefaultTimingList())
-}
+// func ListTicketDefaultTiming(c *gin.Context) {
+// 	c.JSON(200, service.TicketDefaultTimingList())
+// }
 
 func CreateTicketDefaultTiming(c *gin.Context) {
 	var ticket_default_timing models.TicketDefaultTiming
@@ -16,10 +16,10 @@ func CreateTicketDefaultTiming(c *gin.Context) {
 	c.JSON(200, service.CreateTicketDefaultTiming(ticket_default_timing))
 }
 
-func DeleteTicketDefaultTiming(c *gin.Context) {
-	id := c.Request.URL.Query().Get("ID")
-	c.JSON(200, service.DeleteTicketDefaultTiming(id))
-}
+// func DeleteTicketDefaultTiming(c *gin.Context) {
+// 	id := c.Request.URL.Query().Get("ID")
+// 	c.JSON(200, service.DeleteTicketDefaultTiming(id))
+// }
 
 func UpdateTicketDefaultTiming(c *gin.Context) {
 	var body models.TicketDefaultTiming

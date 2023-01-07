@@ -6,6 +6,6 @@ import (
 type TicketDefaultGroup struct {
  	gorm.Model
  	TicketType string 
- 	GroupId Group `gorm:"json:group_id"`
+ 	GroupId uint `gorm:"json:group_id"`
  	Status string 
 }

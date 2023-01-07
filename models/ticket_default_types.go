@@ -2,7 +2,7 @@ package models
 import (
 	"gorm.io/gorm"
 )
-type TicketDefaultTypes struct {
+type TicketDefaultType struct {
  	gorm.Model
  	TicketType string `gorm:"json:ticket_type"`
  	AdditionalOptions string `gorm:"json:additional_optionals"`

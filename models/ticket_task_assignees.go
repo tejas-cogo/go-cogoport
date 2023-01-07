@@ -4,7 +4,7 @@ import (
 )
 type TicketTaskAssignee struct {
     gorm.Model
-    TicketId Ticket `gorm:"json:ticket_id"`
-    TicketUserId TicketUser `gorm:"json:ticket_user_id"`
+    TicketId uint `gorm:"json:ticket_id"`
+    TicketUserId uint `gorm:"json:ticket_user_id"`
     Status string 
 }

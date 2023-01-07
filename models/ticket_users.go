@@ -9,7 +9,7 @@ type TicketUser struct {
 	Name string `gorm:"json:name"`
 	Email string `gorm:"json:email"`
 	MobileNumber string `gorm:"json:mobile_number"`
-	RoleIds Role `gorm:"json:role_id"`
+	RoleIds uint `gorm:"json:role_id"`
 	Source string `gorm:"json:source"`
 	Type string `gorm:"json:type"`
 	Status string `gorm:"json:status"`

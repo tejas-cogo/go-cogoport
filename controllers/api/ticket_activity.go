@@ -6,9 +6,9 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 )
 
-func ListTicketActivity(c *gin.Context) {
-	c.JSON(200, service.TicketActivityList())
-}
+// func ListTicketActivity(c *gin.Context) {
+// 	c.JSON(200, service.TicketActivityList())
+// }
 
 func CreateTicketActivity(c *gin.Context) {
 	var ticket_activity models.TicketActivity
@@ -16,10 +16,10 @@ func CreateTicketActivity(c *gin.Context) {
 	c.JSON(200, service.CreateTicketActivity(ticket_activity))
 }
 
-func DeleteTicketActivity(c *gin.Context) {
-	id := c.Request.URL.Query().Get("ID")
-	c.JSON(200, service.DeleteTicketActivity(id))
-}
+// func DeleteTicketActivity(c *gin.Context) {
+// 	id := c.Request.URL.Query().Get("ID")
+// 	c.JSON(200, service.DeleteTicketActivity(id))
+// }
 
 func UpdateTicketActivity(c *gin.Context) {
 	var body models.TicketActivity

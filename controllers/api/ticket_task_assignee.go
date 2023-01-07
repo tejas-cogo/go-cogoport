@@ -7,7 +7,7 @@ import (
 )
 
 func ListTicketTaskAssignee(c *gin.Context) {
-	c.JSON(200, service.TicketTaskAssigneeList())
+	c.JSON(200, service.ListTicketTaskAssignee())
 }
 
 func CreateTicketTaskAssignee(c *gin.Context) {
@@ -16,10 +16,10 @@ func CreateTicketTaskAssignee(c *gin.Context) {
 	c.JSON(200, service.CreateTicketTaskAssignee(ticket_task_assignee))
 }
 
-func DeleteTicketTaskAssignee(c *gin.Context) {
-	id := c.Request.URL.Query().Get("ID")
-	c.JSON(200, service.DeleteTicketTaskAssignee(id))
-}
+// func DeleteTicketTaskAssignee(c *gin.Context) {
+// 	id := c.Request.URL.Query().Get("ID")
+// 	c.JSON(200, service.DeleteTicketTaskAssignee(id))
+// }
 
 func UpdateTicketTaskAssignee(c *gin.Context) {
 	var body models.TicketTaskAssignee

@@ -15,9 +15,9 @@ func UpdateGroup(id uint, body models.Group) models.Group {
 	if (body.Name != group.Name){
 		group.Name = body.Name
 	} 
-	if (body.Tags != nil){
-		group.Tags = body.Tags
-	} 
+	// if (body.Tags != nil){
+	// 	group.Tags = body.Tags
+	// } 
 	if (body.Status != group.Status){
 		group.Status = body.Status
 	} 

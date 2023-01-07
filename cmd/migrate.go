@@ -103,5 +103,5 @@ func init() {
 	// Add "create", "up" and "down" commands to the "migrate" command
 	migrateCmd.AddCommand(migrateUpCmd, migrateDownCmd, migrateCreateCmd, migrateStatusCmd)
 	// Add "migrate" command to the root command
-	rootCmd.AddCommand(migrateCmd)
+	// rootCmd.AddCommand(migrateCmd)
 }

@@ -6,9 +6,9 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_groups"
 )
 
-func ListTicketDefaultGroup(c *gin.Context) {
-	c.JSON(200, service.TicketDefaultGroupList())
-}
+// func ListTicketDefaultGroup(c *gin.Context) {
+// 	c.JSON(200, service.ListTicketDefaultGroup())
+// }
 
 func CreateTicketDefaultGroup(c *gin.Context) {
 	var ticket_default_group models.TicketDefaultGroup
@@ -16,10 +16,10 @@ func CreateTicketDefaultGroup(c *gin.Context) {
 	c.JSON(200, service.CreateTicketDefaultGroup(ticket_default_group))
 }
 
-func DeleteTicketDefaultGroup(c *gin.Context) {
-	id := c.Request.URL.Query().Get("ID")
-	c.JSON(200, service.DeleteTicketDefaultGroup(id))
-}
+// func DeleteTicketDefaultGroup(c *gin.Context) {
+// 	id := c.Request.URL.Query().Get("ID")
+// 	c.JSON(200, service.DeleteTicketDefaultGroup(id))
+// }
 
 func UpdateTicketDefaultGroup(c *gin.Context) {
 	var body models.TicketDefaultGroup

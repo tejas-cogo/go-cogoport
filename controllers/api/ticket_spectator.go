@@ -7,7 +7,7 @@ import (
 )
 
 func ListTicketSpectator(c *gin.Context) {
-	c.JSON(200, service.TicketSpectatorList())
+	c.JSON(200, service.ListTicketSpectator())
 }
 
 func CreateTicketSpectator(c *gin.Context) {
@@ -16,10 +16,10 @@ func CreateTicketSpectator(c *gin.Context) {
 	c.JSON(200, service.CreateTicketSpectator(ticket_spectator))
 }
 
-func DeleteTicketSpectator(c *gin.Context) {
-	id := c.Request.URL.Query().Get("ID")
-	c.JSON(200, service.DeleteTicketSpectator(id))
-}
+// func DeleteTicketSpectator(c *gin.Context) {
+// 	id := c.Request.URL.Query().Get("ID")
+// 	c.JSON(200, service.DeleteTicketSpectator(id))
+// }
 
 func UpdateTicketSpectator(c *gin.Context) {
 	var body models.TicketSpectator

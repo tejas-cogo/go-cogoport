@@ -4,7 +4,7 @@ import (
 )
 type Ticket struct {
  	gorm.Model
- 	TicketUserId TicketUser `gorm:"json:ticket_user_id"`
+ 	TicketUserId uint `gorm:"json:ticket_user_id"`
  	Source string `gorm:"json:source"`
  	Type string `gorm:"json:type"`
  	Category string `gorm:"json:category"`
