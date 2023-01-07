@@ -1,4 +1,4 @@
-module github.com/ChandelShikha/go-cogoport
+module github.com/tejas-cogo/go-cogoport
 
 go 1.19
 
