@@ -3,7 +3,7 @@ package routes
 import (
 	// "go-cogoport/middlewares"
 	"github.com/gin-gonic/gin"
-	controllers "github.com/ChandelShikha/go-cogoport/controllers/api"
+	controllers "github.com/tejas-cogo/go-cogoport/controllers/api"
 )
 
 func SetupRouter() *gin.Engine {

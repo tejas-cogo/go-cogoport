@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/ChandelShikha/go-cogoport/config"
-	"github.com/ChandelShikha/go-cogoport/routes"
-	"github.com/ChandelShikha/go-cogoport/models"
+	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/routes"
+	"github.com/tejas-cogo/go-cogoport/models"
 )
 
 func main() {

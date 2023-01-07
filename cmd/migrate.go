@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/ChandelShikha/go-cogoport/config"
-	"github.com/ChandelShikha/go-cogoport/migrations"
+	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/migrations"
 )
 
 var migrateCmd = &cobra.Command{
