@@ -7,7 +7,7 @@ import (
 )
 
 func ListTicket(c *gin.Context) {
-	c.JSON(200, service.TicketList())
+	c.JSON(200, service.ListTicket())
 }
 
 func CreateTicket(c *gin.Context) {
