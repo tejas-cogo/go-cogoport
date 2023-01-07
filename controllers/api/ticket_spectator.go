@@ -16,10 +16,12 @@ func CreateTicketSpectator(c *gin.Context) {
 	c.JSON(200, service.CreateTicketSpectator(ticket_spectator))
 }
 
-// func DeleteTicketSpectator(c *gin.Context) {
-// 	id := c.Request.URL.Query().Get("ID")
-// 	c.JSON(200, service.DeleteTicketSpectator(id))
-// }
+func DeleteTicketSpectator(c *gin.Context) {
+	var body models.TicketSpectator
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.DeleteTicketSpectator(id))
+}
 
 func UpdateTicketSpectator(c *gin.Context) {
 	var body models.TicketSpectator

@@ -16,10 +16,12 @@ func CreateTicketDefaultGroup(c *gin.Context) {
 	c.JSON(200, service.CreateTicketDefaultGroup(ticket_default_group))
 }
 
-// func DeleteTicketDefaultGroup(c *gin.Context) {
-// 	id := c.Request.URL.Query().Get("ID")
-// 	c.JSON(200, service.DeleteTicketDefaultGroup(id))
-// }
+func DeleteTicketDefaultGroup(c *gin.Context) {
+	var body models.TicketDefaultGroup
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.DeleteTicketDefaultGroup(id))
+}
 
 func UpdateTicketDefaultGroup(c *gin.Context) {
 	var body models.TicketDefaultGroup

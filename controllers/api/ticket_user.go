@@ -16,10 +16,12 @@ func CreateTicketUser(c *gin.Context) {
 	c.JSON(200, service.CreateTicketUser(ticket_user))
 }
 
-// func DeleteTicketUser(c *gin.Context) {
-// 	id := c.Request.URL.Query().Get("ID")
-// 	c.JSON(200, service.DeleteTicketUser(id))
-// }
+func DeleteTicketUser(c *gin.Context) {
+	var body models.TicketUser
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.DeleteTicketUser(id))
+}
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUser

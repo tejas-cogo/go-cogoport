@@ -11,4 +11,5 @@ type TicketAudit struct {
 	ObjectId uint
 	Action string 
 	Data string 
+	Status string
 }

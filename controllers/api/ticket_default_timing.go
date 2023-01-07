@@ -16,10 +16,12 @@ func CreateTicketDefaultTiming(c *gin.Context) {
 	c.JSON(200, service.CreateTicketDefaultTiming(ticket_default_timing))
 }
 
-// func DeleteTicketDefaultTiming(c *gin.Context) {
-// 	id := c.Request.URL.Query().Get("ID")
-// 	c.JSON(200, service.DeleteTicketDefaultTiming(id))
-// }
+func DeleteTicketDefaultTiming(c *gin.Context) {
+	var body models.TicketDefaultTiming
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.DeleteTicketDefaultTiming(id))
+}
 
 func UpdateTicketDefaultTiming(c *gin.Context) {
 	var body models.TicketDefaultTiming
