@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	models "github.com/tejas-cogo/go-cogoport/models"
-	service "github.com/tejas-cogo/go-cogoport/services/api/users"
+	models "github.com/ChandelShikha/go-cogoport/models"
+	service "github.com/ChandelShikha/go-cogoport/services/api/users"
 )
 
 func UserList(c *gin.Context) {

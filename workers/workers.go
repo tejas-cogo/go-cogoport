@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/hibiken/asynq"
-	"github.com/tejas-cogo/go-cogoport/tasks"
+	"github.com/ChandelShikha/go-cogoport/tasks"
 )
 
 const redisAddr = "login-apollo.dev.cogoport.io:637,"
