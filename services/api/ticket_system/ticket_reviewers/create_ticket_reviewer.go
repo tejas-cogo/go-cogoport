@@ -1,10 +1,10 @@
 package ticket_system
 
 import (
-	"github.com/ChandelShikha/go-cogoport/config"
-	"github.com/ChandelShikha/go-cogoport/models"
-	ticket_default_group "github.com/ChandelShikha/go-cogoport/services/api/ticket_system/ticket_default_groups"
-	group_member "github.com/ChandelShikha/go-cogoport/services/api/ticket_system/group_members"
+	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/models"
+	ticket_default_group "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_groups"
+	group_member "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
 )
 
 type TicketReviewerService struct {

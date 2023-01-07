@@ -2,8 +2,8 @@ package ticket_system
 
 import (
 	"fmt"
-	"github.com/ChandelShikha/go-cogoport/config"
-	"github.com/ChandelShikha/go-cogoport/models"
+	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/models"
 )
 
 func UpdateTicketDefaultGroup(id uint, body models.TicketDefaultGroup) models.TicketDefaultGroup {
