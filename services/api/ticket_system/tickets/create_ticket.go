@@ -1,10 +1,10 @@
 package ticket_system
 
 import (
-	"github.com/ChandelShikha/go-cogoport/config"
-	"github.com/ChandelShikha/go-cogoport/models"
-	timings "github.com/ChandelShikha/go-cogoport/services/api/ticket_system/ticket_default_timings"
-	reviewers "github.com/ChandelShikha/go-cogoport/services/api/ticket_system/ticket_reviewers"
+	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/models"
+	timings "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_timings"
+	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
 	"fmt"
 	// "time"
 )

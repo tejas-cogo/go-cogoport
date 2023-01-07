@@ -1,7 +1,7 @@
 package ticket_system
 
 import (
-	"github.com/ChandelShikha/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
