@@ -18,7 +18,7 @@ func SetupRouter() *gin.Engine {
 
 	ticket_system := r.Group("/api/tickets")
 
-	// ticket_system.GET("list_group", controllers.ListGroup)
+	ticket_system.GET("list_group", controllers.ListGroup)
 	ticket_system.POST("create_group", controllers.CreateGroup)
 	ticket_system.POST("delete_group", controllers.DeleteGroup)
 	ticket_system.POST("update_group", controllers.UpdateGroup)
