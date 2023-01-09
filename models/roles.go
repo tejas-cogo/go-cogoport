@@ -6,7 +6,7 @@ import (
 
 type Role struct {
 	gorm.Model
-	Name string 
-	Level string
-	Status string 
+	Name   string
+	Level  uint
+	Status string
 }

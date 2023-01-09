@@ -20,7 +20,7 @@ func UserList() []models.GoUser {
 	db.Find(&users).Take(&result)
 
 	for _, row := range users {
-		fmt.Println("values: ", row.ID, row.Name, "\n")
+		fmt.Println("values: ", row.ID, row.Name)
 	}
 
 	return users

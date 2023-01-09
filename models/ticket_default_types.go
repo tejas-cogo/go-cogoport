@@ -1,10 +1,11 @@
 package models
 import (
 	"gorm.io/gorm"
+	"github.com/lib/pq"
 )
 type TicketDefaultType struct {
  	gorm.Model
- 	TicketType string `gorm:"json:ticket_type"`
- 	AdditionalOptions string `gorm:"json:additional_optionals"`
- 	Status string `gorm:"json:status"`
+ 	TicketType string 
+ 	AdditionalOptions pq.StringArray `gorm:"type:[]string"`
+ 	Status string 
 }

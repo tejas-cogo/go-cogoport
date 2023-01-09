@@ -16,10 +16,12 @@ func CreateGroupMember(c *gin.Context) {
 	c.JSON(200, service.CreateGroupMember(group_member))
 }
 
-// func DeleteGroupMember(c *gin.Context) {
-// 	id := c.Request.URL.Query().Get("ID")
-// 	c.JSON(200, service.DeleteGroupMember(id))
-// }
+func DeleteGroupMember(c *gin.Context) {
+	var body models.GroupMember
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.DeleteGroupMember(id))
+}
 
 func UpdateGroupMember(c *gin.Context) {
 	var body models.GroupMember

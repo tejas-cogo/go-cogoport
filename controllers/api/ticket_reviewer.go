@@ -16,10 +16,12 @@ import (
 // 	c.JSON(200, service.CreateTicketReviewer(ticket_reviewer))
 // }
 
-// func DeleteTicketReviewer(c *gin.Context) {
-// 	id := c.Request.URL.Query().Get("ID")
-// 	c.JSON(200, service.DeleteTicketReviewer(id))
-// }
+func DeleteTicketReviewer(c *gin.Context) {
+	var body models.TicketReviewer
+	c.BindJSON(&body)
+	id := body.ID
+	c.JSON(200, service.DeleteTicketReviewer(id))
+}
 
 func UpdateTicketReviewer(c *gin.Context) {
 	var body models.TicketReviewer
