@@ -6,10 +6,13 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/groups"
 )
 
-// func ListGroup(c *gin.Context) {
-// 	c.JSON(200, service.ListGroup())
-//id := c.Request.URL.Query().Get("ID")
-// }
+func ListGroup(c *gin.Context) {
+	var filters models.Group
+	filters.Status = c.Request.URL.Query().Get("filters[status]")
+	tags :=  c.Request.URL.Query().Get("filters[tags]")
+	c.JSON(200, service.ListGroup(filters, tags))
+	
+}
 
 func CreateGroup(c *gin.Context) {
 	var group models.Group
