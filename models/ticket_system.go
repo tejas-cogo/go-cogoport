@@ -16,9 +16,7 @@ func init() {
 	// db.LogMode(true)
 
 	//Automatically create migration as per model
-	db.Migrator().AutoMigrate(
-		&GroupMember{},
-	)
+	// db.AutoMigrate(&GroupMember{})
 }
 
 // GetDB function return the instance of db

@@ -8,6 +8,7 @@ require (
 	github.com/hibiken/asynq v0.24.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.4.0
+	github.com/lib/pq v1.10.2
 	github.com/spf13/cobra v1.6.1
 	gorm.io/driver/postgres v1.4.5
 	gorm.io/gorm v1.24.2

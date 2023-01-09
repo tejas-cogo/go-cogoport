@@ -7,8 +7,8 @@ import (
 
 type GroupMember struct {
 	gorm.Model
-	GroupId uint `gorm:"json:ticket_id"`
-	TicketUserId uint `gorm:"json:ticket_user_id"`
+	GroupId uint 
+	TicketUserId uint
 	ActiveTicketCount uint
 	HierarchyLevel uint
 	Status string

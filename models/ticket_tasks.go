@@ -5,7 +5,7 @@ import (
 )
 type TicketTask struct {
  	gorm.Model
- 	TicketId uint `gorm:"json:ticket_id"`
+ 	TicketId uint 
  	Title string 
  	CreatedByUserId uuid.UUID
  	Status string 
