@@ -10,7 +10,7 @@ func UpdateTicketDefaultTiming(id uint, body models.TicketDefaultTiming) models.
 	db := config.GetDB()
 	var ticket_default_timing models.TicketDefaultTiming
 	fmt.Print("Body", body)
-	db.Where("id = ?", id).First(&ticket_default_timing)
+	db.Where("id = ?", id).Take(&ticket_default_timing)
 
 	// ticket_default_timing.Name = body.Name
 

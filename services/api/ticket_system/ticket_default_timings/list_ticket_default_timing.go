@@ -21,13 +21,7 @@ func ListTicketDefaultTiming(filters models.TicketDefaultTiming) []models.Ticket
 		db = db.Where("ticket_priority = ?", filters.TicketPriority)
 	}
 
-	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
-	} else {
-		db = db.Where("status = ?", "active")
-	}
-
-	db.Find(&ticket_default_timings).Take(&result)
+	db.Take(&result)
 
 	return ticket_default_timings
 }

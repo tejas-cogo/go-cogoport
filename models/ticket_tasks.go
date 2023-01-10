@@ -5,7 +5,7 @@ import (
 )
 type TicketTask struct {
  	gorm.Model
- 	TicketId uint 
+ 	TicketID uint 
  	Title string 
  	CreatedByUserId uuid.UUID
  	Status string 

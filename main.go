@@ -20,6 +20,8 @@ func main() {
 	config.Connect()
 	// workers.Workers()
 
+	// models.Init()
+
 	r := routes.SetupRouter()
 
 	port := os.Getenv("port")

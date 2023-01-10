@@ -12,6 +12,7 @@ type TicketActivityService struct {
 func CreateTicketActivity(ticket_activity models.TicketActivity) models.TicketActivity {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
+
 	db.Create(&ticket_activity)
 	return ticket_activity
 }

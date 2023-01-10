@@ -35,7 +35,8 @@ func Connect() {
 	// dsn := "host=} user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{PrepareStmt: true})
+	conn, err := gorm.Open(postgres.New(postgres.Config{DSN: dsn,
+		PreferSimpleProtocol: true}), &gorm.Config{})
 
 	// conn, err := gorm.Open("postgres", username+":"+password+"@tcp("+dbHost+":"+dbPort+")/"+dbName+"?charset=utf8&parseTime=True&loc=Asia%2FKolkata")
 	if err != nil {

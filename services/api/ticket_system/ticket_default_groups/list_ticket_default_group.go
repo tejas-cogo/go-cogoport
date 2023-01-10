@@ -17,8 +17,8 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) []models.TicketDe
 		db = db.Where("ticket_type = ?", filters.TicketType)
 	} 
 
-	if (filters.GroupId != 0){
-		db = db.Where("group_id = ?", filters.GroupId)
+	if (filters.GroupID != 0){
+		db = db.Where("group_id = ?", filters.GroupID)
 	} 
 
 	if (filters.Status != ""){
@@ -27,7 +27,7 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) []models.TicketDe
 		db = db.Where("status = ?", "active")
 	} 
 
-	db.Find(&ticket_default_groups).Take(&result)
+	db.Take(&result)
 
 	return ticket_default_groups
 }

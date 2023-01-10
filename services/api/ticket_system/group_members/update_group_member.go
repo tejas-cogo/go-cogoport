@@ -20,7 +20,7 @@ func UpdateGroupMember(id uint, body models.GroupMember) models.GroupMember {
 	if body.Status != group_member.Status {
 		group_member.Status = body.Status
 	}
-	if body.TicketUserId != group_member.TicketUserId {
+	if body.TicketUserID != group_member.TicketUserID {
 		group_member.HierarchyLevel = body.HierarchyLevel
 	}
 

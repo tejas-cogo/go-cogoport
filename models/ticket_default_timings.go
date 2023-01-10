@@ -10,8 +10,8 @@ type TicketDefaultTiming struct {
 	gorm.Model
 	TicketType     string
 	TicketPriority string
-	ExpiryDuration time.Time
-	Tat            time.Time
-	Conditions     pq.StringArray `gorm:"type:[]string"`
+	ExpiryDuration time.Duration
+	Tat            time.Duration
+	Conditions     pq.StringArray `gorm:"type:text[]"`
 	Status         string
 }

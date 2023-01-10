@@ -18,26 +18,26 @@ func CreateTicketReviewer(ticket models.Ticket) models.TicketReviewer {
 	var ticket_default_group_filters models.TicketDefaultGroup
 	var ticket_reviewer models.TicketReviewer
 
-	ticket_reviewer.TicketId = ticket.ID
+	ticket_reviewer.TicketID = ticket.ID
 	ticket_reviewer.Status = "active"
-	ticket_reviewer.TicketUserId = ticket.TicketUserId
+	ticket_reviewer.TicketUserID = ticket.TicketUserID
 
 	ticket_default_group_filters.TicketType = ticket.Type
 	ticket_default_group := ticket_default_group.ListTicketDefaultGroup(ticket_default_group_filters)
 	for _, u := range ticket_default_group {
-		ticket_reviewer.GroupId = u.GroupId
+		ticket_reviewer.GroupID = u.GroupID
 		break
 	}
 
 	var group_member_filters models.GroupMember
 
-	group_member_filters.GroupId = ticket_reviewer.GroupId
+	group_member_filters.GroupID = ticket_reviewer.GroupID
 	group_member_data := group_member.ListGroupMember(group_member_filters)
 
 	for _, u := range group_member_data {
-		ticket_reviewer.GroupMemberId = u.ID
+		ticket_reviewer.GroupMemberID = u.ID
 		group_member_filters.ActiveTicketCount += 1
-		group_member_filters.TicketUserId = ticket_reviewer.TicketUserId
+		group_member_filters.TicketUserID = ticket_reviewer.TicketUserID
 		group_member.UpdateGroupMember(u.ID, group_member_filters)
 		break
 	}
