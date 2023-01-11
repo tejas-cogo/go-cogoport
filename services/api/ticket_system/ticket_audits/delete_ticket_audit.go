@@ -5,6 +5,10 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
+type TicketAuditService struct {
+	TicketAudit models.TicketAudit
+}
+
 func DeleteTicketAudit(id uint) uint{
 	db := config.GetDB()
 

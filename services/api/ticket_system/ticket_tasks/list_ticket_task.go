@@ -10,8 +10,7 @@ func ListTicketTask() []models.TicketTask {
 
 	var ticket_task []models.TicketTask
 
-	result := map[string]interface{}{}
-	db.Find(&ticket_task).Take(&result)
+	db.Find(&ticket_task)
 
 	return ticket_task
 }

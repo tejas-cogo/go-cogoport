@@ -9,27 +9,30 @@ func ListTicket(filters models.Ticket, tags string) []models.Ticket {
 	db := config.GetDB()
 
 	var ticket []models.Ticket
-	result := map[string]interface{}{}
 
-	if (filters.Type != ""){
+	if filters.Type != "" {
 		db = db.Where("type = ?", filters.Type)
-	} 
+	}
 
-	if (filters.Priority != ""){
+	if filters.Priority != "" {
 		db = db.Where("priority = ?", filters.Priority)
-	} 
+	}
 
-	if (tags != ""){
+	if filters.Source != "" {
+		db = db.Where("source = ?", filters.Source)
+	}
+
+	if tags != "" {
 		db = db.Where("? Like ANY(tags)", tags)
-	} 
+	}
 
-	if (filters.Status != ""){
+	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
-	}else{
+	} else {
 		db = db.Where("status = ?", "active")
-	} 
+	}
 
-	db.Find(&ticket).Take(&result)
+	db.Find(&ticket)
 
 	return ticket
 }

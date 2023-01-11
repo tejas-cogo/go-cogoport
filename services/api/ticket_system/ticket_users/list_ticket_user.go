@@ -5,13 +5,24 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicketUser() []models.TicketUser {
+func ListTicketUser(filters models.TicketUser) []models.TicketUser {
 	db := config.GetDB()
 
 	var ticket_user []models.TicketUser
 
-	result := map[string]interface{}{}
-	db.Find(&ticket_user).Take(&result)
+	if (filters.ID != 0){
+		db = db.Where("id = ?", filters.ID)
+	} 
+
+	// if (filters.Priority != ""){
+	// 	db = db.Where("priority = ?", filters.Priority)
+	// } 
+
+	// if (filters.Source != ""){
+	// 	db = db.Where("source = ?", filters.Source)
+	// }
+ 
+	db.Find(&ticket_user)
 
 	return ticket_user
 }

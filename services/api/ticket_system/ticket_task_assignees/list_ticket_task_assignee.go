@@ -10,8 +10,7 @@ func ListTicketTaskAssignee() []models.TicketTaskAssignee {
 
 	var ticket_task_assignee []models.TicketTaskAssignee
 
-	result := map[string]interface{}{}
-	db.Find(&ticket_task_assignee).Take(&result)
+	db.Find(&ticket_task_assignee)
 
 	return ticket_task_assignee
 }

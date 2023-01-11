@@ -19,8 +19,6 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	t1 := time.Now()
-
 	var filters models.TicketDefaultTiming
 
 	filters.TicketType = ticket.Type
@@ -29,13 +27,22 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	ticket_default_timing := timings.ListTicketDefaultTiming(filters)
 
+	fmt.Println(ticket_default_timing)
+
 	for _, u := range ticket_default_timing {
-		fmt.Println(u.ID)
-		ticket.Tat = u.Tat
-		ticket.ExpiryDate = t1.Add(u.ExpiryDuration)
+
+		ticket.Tat = time.Hour * time.Duration(u.ExpiryDuration)
+		ticket.ExpiryDate = time.Now()
+		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(u.ExpiryDuration))
+		fmt.Println("start", ticket.ExpiryDate, "start")
+		break
 	}
 
 	db.Create(&ticket)
+
+	var ticket_audit models.TicketAudit
+
+	db.Create(&ticket_audit)
 
 	reviewers.CreateTicketReviewer(ticket)
 

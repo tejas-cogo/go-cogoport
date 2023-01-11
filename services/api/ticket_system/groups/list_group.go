@@ -10,8 +10,6 @@ func ListGroup(filters models.Group,tags string) []models.Group{
 
 	var groups []models.Group
 
-	result := map[string]interface{}{}
-
 	if (filters.Name != ""){
 		db = db.Where("name = ?", filters.Name)
 	} 
@@ -26,7 +24,7 @@ func ListGroup(filters models.Group,tags string) []models.Group{
 		db = db.Where("status = ?", "active")
 	} 
 
-	db.Find(&groups).Take(&result)
+	db.Find(&groups)
 
 	return groups
 }

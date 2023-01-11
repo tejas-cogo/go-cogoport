@@ -11,8 +11,6 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) []models.TicketDe
 
 	var ticket_default_groups []models.TicketDefaultGroup
 
-	result := map[string]interface{}{}
-
 	if (filters.TicketType != ""){
 		db = db.Where("ticket_type = ?", filters.TicketType)
 	} 
@@ -27,7 +25,7 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) []models.TicketDe
 		db = db.Where("status = ?", "active")
 	} 
 
-	db.Take(&result)
+	db.Find(&ticket_default_groups)
 
 	return ticket_default_groups
 }

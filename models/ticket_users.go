@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -10,7 +9,7 @@ type TicketUser struct {
 	Name         string
 	Email        string
 	MobileNumber string
-	RoleID       pq.StringArray `gorm:"type:text[]"`
+	RoleID       uint
 	Source       string
 	Type         string
 	Status       string
