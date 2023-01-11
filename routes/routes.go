@@ -2,6 +2,7 @@ package routes
 
 import (
 	// "go-cogoport/middlewares"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	controllers "github.com/tejas-cogo/go-cogoport/controllers/api"
 )
@@ -9,6 +10,8 @@ import (
 func SetupRouter() *gin.Engine {
 
 	r := gin.Default()
+
+	r.Use(cors.Default())
 
 	ticket_system := r.Group("/api/tickets")
 
