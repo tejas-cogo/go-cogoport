@@ -12,8 +12,6 @@ func UpdateRole(id uint, body models.Role) models.Role {
 	fmt.Print("Body", body)
 	db.Where("id = ?", id).First(&role)
 
-	// role.Name = body.Name
-
 	db.Save(&role)
 	return role
 }

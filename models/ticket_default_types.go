@@ -6,6 +6,6 @@ import (
 type TicketDefaultType struct {
  	gorm.Model
  	TicketType string 
- 	AdditionalOptions pq.StringArray `gorm:"type:[]string"`
+ 	AdditionalOptions pq.StringArray `gorm:"type:text[]"`
  	Status string 
 }

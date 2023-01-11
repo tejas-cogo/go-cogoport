@@ -4,9 +4,9 @@ import (
 )
 type TicketReviewer struct {
     gorm.Model
-    TicketId uint 
-    TicketUserId uint 
-    GroupId uint 
-    GroupMemberId uint 
+    TicketID uint 
+    TicketUserID uint 
+    GroupID uint 
+    GroupMemberID uint 
     Status string 
 }

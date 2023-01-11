@@ -6,9 +6,9 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
 )
 
-func ListTicketUser(c *gin.Context) {
-	c.JSON(200, service.ListTicketUser())
-}
+// func ListTicketUser(c *gin.Context) {
+// 	c.JSON(200, service.ListTicketUser())
+// }
 
 func CreateTicketUser(c *gin.Context) {
 	var ticket_user models.TicketUser

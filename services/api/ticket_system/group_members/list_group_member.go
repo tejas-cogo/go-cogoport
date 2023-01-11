@@ -10,10 +10,8 @@ func ListGroupMember(filters models.GroupMember) []models.GroupMember {
 
 	var group_members []models.GroupMember
 
-	result := map[string]interface{}{}
-
-	if filters.GroupId != 0 {
-		db = db.Where("group_id = ?", filters.GroupId)
+	if filters.GroupID != 0 {
+		db = db.Where("group_id = ?", filters.GroupID)
 	}
 
 	if filters.Status != "" {
@@ -24,7 +22,7 @@ func ListGroupMember(filters models.GroupMember) []models.GroupMember {
 
 	db.Order("hierarchy_level desc").Order("active_ticket_count asc")
 
-	db.Find(&group_members).Take(&result)
+	db.Find(&group_members)
 
 	return group_members
 }

@@ -10,8 +10,6 @@ func DeleteTicketActivity(id uint) uint{
 
 	var ticket_activity models.TicketActivity
 
-	db.Model(&ticket_activity).Where("id = ?", id).Update("status","inactive")
-
 	db.Where("id = ?", id).Delete(&ticket_activity)
 
 	return id

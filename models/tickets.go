@@ -2,23 +2,24 @@ package models
 
 import (
 	"time"
+
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type Ticket struct {
 	gorm.Model
-	TicketUserId            uint   
-	Source                  string 
-	Type                    string 
-	Category                string 
-	Subcategory             string 
+	TicketUserID            uint
+	Source                  string
+	Type                    string
+	Category                string
+	Subcategory             string
 	Description             string
-	Priority                string         
-	Tags                    pq.StringArray `gorm:"type:[]string"`
-	Data                    pq.StringArray `gorm:"json:[]string"`
-	NotificationPreferences pq.StringArray `gorm:"json:[]string"`
-	Tat                     time.Time
+	Priority                string
+	Tags                    pq.StringArray `gorm:"type:text[]"`
+	Data                    string
+	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
+	Tat                     time.Duration
 	ExpiryDate              time.Time
 	Status                  string
 }

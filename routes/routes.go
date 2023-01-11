@@ -9,12 +9,6 @@ import (
 func SetupRouter() *gin.Engine {
 
 	r := gin.Default()
-	// user := r.Group("/api/user")
-
-	// user.GET("user_list", controllers.UserList)
-	// user.POST("create_user", controllers.CreateUser)
-	// user.POST("delete_user", controllers.DeleteUser)
-	// user.POST("update_user", controllers.UpdateUser)
 
 	ticket_system := r.Group("/api/tickets")
 
@@ -36,7 +30,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("delete_ticket_user", controllers.DeleteTicketUser)
 	ticket_system.POST("update_ticket_user", controllers.UpdateTicketUser)
 
-	// ticket_system.GET("list_ticket", controllers.ListTicket)
+	ticket_system.GET("list_ticket", controllers.ListTicket)
 	ticket_system.POST("create_ticket", controllers.CreateTicket)
 	ticket_system.POST("delete_ticket", controllers.DeleteTicket)
 	ticket_system.POST("update_ticket", controllers.UpdateTicket)
@@ -61,8 +55,6 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("delete_ticket_spectator", controllers.DeleteTicketSpectator)
 	ticket_system.POST("update_ticket_spectator", controllers.UpdateTicketSpectator)
 
-	// ticket_system.GET("list_ticket_audit", controllers.ListTicketAudit)
-	ticket_system.POST("create_ticket_audit", controllers.CreateTicketAudit)
 	ticket_system.POST("delete_ticket_audit", controllers.DeleteTicketAudit)
 	ticket_system.POST("update_ticket_audit", controllers.UpdateTicketAudit)
 

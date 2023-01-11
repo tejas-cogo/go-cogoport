@@ -10,8 +10,7 @@ func ListRole() []models.Role {
 
 	var role []models.Role
 
-	result := map[string]interface{}{}
-	db.Find(&role).Take(&result)
+	db.Find(&role)
 
 	return role
 }

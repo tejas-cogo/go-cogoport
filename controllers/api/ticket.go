@@ -6,9 +6,17 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
-// func ListTicket(c *gin.Context) {
-// 	c.JSON(200, service.ListTicket())
-// }
+func ListTicket(c *gin.Context) {
+	var filters models.Ticket
+
+	filters.Source = c.Request.URL.Query().Get("filters[source]")
+	filters.Type = c.Request.URL.Query().Get("filters[type]")
+	filters.Priority = c.Request.URL.Query().Get("filters[priority]")
+	filters.Status = c.Request.URL.Query().Get("filters[status]")
+	tags := c.Request.URL.Query().Get("filters[tags]")
+
+	c.JSON(200, service.ListTicket(filters, tags))
+}
 
 func CreateTicket(c *gin.Context) {
 	var ticket models.Ticket

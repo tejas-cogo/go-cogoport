@@ -10,8 +10,7 @@ func ListTicketSpectator() []models.TicketSpectator {
 
 	var ticket_spectator []models.TicketSpectator
 
-	result := map[string]interface{}{}
-	db.Find(&ticket_spectator).Take(&result)
+	db.Find(&ticket_spectator)
 
 	return ticket_spectator
 }

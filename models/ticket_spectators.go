@@ -5,7 +5,7 @@ import (
 )
 type TicketSpectator struct {
     gorm.Model
-    TicketId uint 
-    TicketUserId uint 
+    TicketID uint 
+    TicketUserID uint 
     Status string 
 }
