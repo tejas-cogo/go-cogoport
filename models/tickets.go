@@ -11,16 +11,17 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID uint
-	Source       string
-	Type         string
-	Category     string
-	Subcategory  string
-	Description  string
-	Priority     string
-	Tags         pq.StringArray  `gorm:"type:text[]"`
-	Data         gormjsonb.JSONB `gorm:"type:json"`
-	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
+	TicketUserID            uint
+	TicketUser              TicketUser
+	Source                  string
+	Type                    string
+	Category                string
+	Subcategory             string
+	Description             string
+	Priority                string
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Tat                     int
 	ExpiryDate              time.Time
 	Status                  string

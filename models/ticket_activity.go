@@ -6,8 +6,10 @@ import (
 
 type TicketActivity struct {
 	gorm.Model
-	TicketID    uint
+	TicketID   uint
+	Ticket Ticket
 	TicketUserID uint
+	TicketUser TicketUser
 	UserType     string
 	Description  string
 	Data         string
