@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/dariubs/gorm-jsonb"
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -21,11 +21,11 @@ type Ticket struct {
 	Subcategory  string
 	Description  string
 	Priority     string
-	Tags         pq.StringArray `gorm:"type:text[]"`
-	Data         gormjsonb.JSONB
+	Tags         pq.StringArray  `gorm:"type:text[]"`
+	Data         gormjsonb.JSONB `gorm:"type:json"`
 	//pgtype.JSONB    `gorm:"type:json;default:'[];not null'`
 	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
-	Tat                     time.Duration  `gorm:"type:string"`
+	Tat                     int
 	ExpiryDate              time.Time
 	Status                  string
 }

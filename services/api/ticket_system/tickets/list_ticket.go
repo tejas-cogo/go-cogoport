@@ -5,12 +5,10 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicket(filters models.Ticket, tags string) map[string]interface{} {
+func ListTicket(filters models.Ticket, tags string) []models.Ticket {
 	db := config.GetDB()
 
 	var ticket []models.Ticket
-
-	result := map[string]interface{}{}
 
 	if filters.Type != "" {
 		db = db.Where("type = ?", filters.Type)
@@ -34,7 +32,7 @@ func ListTicket(filters models.Ticket, tags string) map[string]interface{} {
 		db = db.Where("status = ?", "active")
 	}
 
-	db.Find(&ticket).Take(&result)
+	db.Find(&ticket)
 
-	return result
+	return ticket
 }

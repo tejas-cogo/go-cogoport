@@ -33,7 +33,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	for _, u := range ticket_default_timing {
 
-		ticket.Tat = time.Hour * time.Duration(u.ExpiryDuration)
+		ticket.Tat = u.Tat
 		ticket.ExpiryDate = time.Now()
 		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(u.ExpiryDuration))
 		fmt.Println("start", ticket.ExpiryDate, "start")
