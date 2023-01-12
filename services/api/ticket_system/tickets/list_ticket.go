@@ -32,7 +32,7 @@ func ListTicket(filters models.Ticket, tags string) []models.Ticket {
 		db = db.Where("status = ?", "active")
 	}
 
-	db.Find(&ticket)
+	db.Preload("TicketUser").Find(&ticket)
 
 	return ticket
 }

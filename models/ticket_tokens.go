@@ -1,15 +1,18 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type TicketToken struct {
 	gorm.Model
-	TicketToken        string
-	TicketID     uint
+	TicketToken  string
+	TicketID    uint 
+	Ticket     Ticket
 	TicketUserID uint
+	TicketUser TicketUser
 	ExpiryDate   time.Time
 	Status       string
 }

@@ -10,6 +10,7 @@ type TicketUser struct {
 	Email        string
 	MobileNumber string
 	RoleID       uint
+	Role         Role 
 	Source       string
 	Type         string
 	Status       string
