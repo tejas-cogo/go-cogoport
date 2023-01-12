@@ -17,9 +17,19 @@ type Ticket struct {
 	Description             string
 	Priority                string
 	Tags                    pq.StringArray `gorm:"type:text[]"`
-	Data                    string
+	Data                    Data
 	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
 	Tat                     time.Duration
 	ExpiryDate              time.Time
 	Status                  string
+}
+
+type Invoice struct {
+	InvoiceNumber string
+	InvoiceUrl string
+}
+
+type Data struct {
+	Invoice pq.StringArray `gorm:"type:text[]"`
+	Payment pq.StringArray `gorm:"type:text[]"`
 }
