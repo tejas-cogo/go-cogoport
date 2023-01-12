@@ -11,7 +11,7 @@ type GroupService struct {
 
 func CreateGroup(group models.Group) models.Group {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
+	//  result := map[string]interface{}{}
 	db.Create(&group)
 	return group
 }

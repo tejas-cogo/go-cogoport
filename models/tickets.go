@@ -3,23 +3,25 @@ package models
 import (
 	"time"
 
+	gormjsonb "github.com/dariubs/gorm-jsonb"
+
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint
-	Source                  string
-	Type                    string
-	Category                string
-	Subcategory             string
-	Description             string
-	Priority                string
-	Tags                    pq.StringArray `gorm:"type:text[]"`
-	Data                    string
+	TicketUserID uint
+	Source       string
+	Type         string
+	Category     string
+	Subcategory  string
+	Description  string
+	Priority     string
+	Tags         pq.StringArray  `gorm:"type:text[]"`
+	Data         gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
-	Tat                     time.Duration  `gorm:"type:string"`
+	Tat                     int
 	ExpiryDate              time.Time
 	Status                  string
 }

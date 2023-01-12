@@ -3,7 +3,7 @@ module github.com/tejas-cogo/go-cogoport
 go 1.19
 
 require (
-	github.com/gin-contrib/cors v1.4.0
+	// github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.2
 	github.com/google/uuid v1.2.0
 	github.com/hibiken/asynq v0.24.0
@@ -13,6 +13,11 @@ require (
 	github.com/spf13/cobra v1.6.1
 	gorm.io/driver/postgres v1.4.5
 	gorm.io/gorm v1.24.2
+)
+
+require (
+	github.com/dariubs/gorm-jsonb v0.1.5
+	github.com/jackc/pgtype v1.12.0 // indirect
 )
 
 require (
@@ -32,7 +37,6 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
-	github.com/jackc/pgtype v1.12.0 // indirect
 	github.com/jackc/pgx/v4 v4.17.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect

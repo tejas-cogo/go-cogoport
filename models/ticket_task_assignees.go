@@ -1,10 +1,12 @@
 package models
+
 import (
-    "gorm.io/gorm"
+	"gorm.io/gorm"
 )
+
 type TicketTaskAssignee struct {
-    gorm.Model
-    TicketID uint 
-    TicketUserID uint
-    Status string 
+	gorm.Model
+	TicketID     uint
+	TicketUserID uint
+	Status       string
 }

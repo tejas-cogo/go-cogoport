@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
+	_"github.com/jinzhu/gorm/dialects/postgres"
 	"gorm.io/gorm"
 )
 
