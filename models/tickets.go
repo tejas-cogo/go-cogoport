@@ -19,7 +19,7 @@ type Ticket struct {
 	Tags                    pq.StringArray `gorm:"type:text[]"`
 	Data                    string
 	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
-	Tat                     time.Duration
+	Tat                     time.Duration  `gorm:"type:string"`
 	ExpiryDate              time.Time
 	Status                  string
 }
