@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
@@ -14,8 +15,10 @@ func ListTicket(c *gin.Context) {
 	filters.Priority = c.Request.URL.Query().Get("filters[priority]")
 	filters.Status = c.Request.URL.Query().Get("filters[status]")
 	tags := c.Request.URL.Query().Get("filters[tags]")
-
-	c.JSON(200, service.ListTicket(filters, tags))
+	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
+	ser, db := service.ListTicket(filters, tags)
+	pg := paginate.New()
+	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
 func CreateTicket(c *gin.Context) {

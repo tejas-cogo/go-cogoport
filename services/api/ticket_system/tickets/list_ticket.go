@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListTicket(filters models.Ticket, tags string) []models.Ticket {
+func ListTicket(filters models.Ticket, tags string) ([]models.Ticket, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket []models.Ticket
@@ -34,5 +35,5 @@ func ListTicket(filters models.Ticket, tags string) []models.Ticket {
 
 	db.Preload("TicketUser").Find(&ticket)
 
-	return ticket
+	return ticket, db
 }
