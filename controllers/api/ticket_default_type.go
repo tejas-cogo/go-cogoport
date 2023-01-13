@@ -2,13 +2,20 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_types"
 )
 
-// func ListTicketDefaultType(c *gin.Context) {
-// 	c.JSON(200, service.TicketDefaultTypeList())
-// }
+func ListTicketDefaultType(c *gin.Context) {
+	var filters models.TicketDefaultType
+
+	filters.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
+
+	ser, db := service.ListTicketDefaultType(filters)
+	pg := paginate.New()
+	c.JSON(200, pg.Response(db, c.Request, &ser))
+}
 
 func CreateTicketDefaultType(c *gin.Context) {
 	var ticket_default_type models.TicketDefaultType

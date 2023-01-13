@@ -22,7 +22,7 @@ type Ticket struct {
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
-	Tat                     int
+	Tat                     string
 	ExpiryDate              time.Time
 	Status                  string
 }

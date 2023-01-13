@@ -7,6 +7,6 @@ type TicketDefaultGroup struct {
  	gorm.Model
  	TicketType string 
  	GroupID uint
-	Group Group
+	//Group Group
  	Status string  
 }
