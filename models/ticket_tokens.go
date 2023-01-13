@@ -10,9 +10,9 @@ type TicketToken struct {
 	gorm.Model
 	TicketToken  string
 	TicketID    uint 
-	Ticket     Ticket
+	//Ticket     Ticket
 	TicketUserID uint
-	TicketUser TicketUser
+	//TicketUser TicketUser
 	ExpiryDate   time.Time
 	Status       string
 }

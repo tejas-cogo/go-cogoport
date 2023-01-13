@@ -7,12 +7,12 @@ import (
 type TicketReviewer struct {
 	gorm.Model
 	TicketID      uint
-	Ticket        Ticket
+	//Ticket        Ticket
 	TicketUserID  uint
 	TicketUser    TicketUser
 	GroupID       uint
-	Group         Group
+	//Group         Group
 	GroupMemberID uint
-	GroupMember   GroupMember
+	//GroupMember   GroupMember
 	Status        string
 }
