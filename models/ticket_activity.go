@@ -8,12 +8,10 @@ import (
 type TicketActivity struct {
 	gorm.Model
 	TicketID     uint `gorm:"not null"`
-	Ticket       Ticket 
 	TicketUserID uint `gorm:"not null"`
-	TicketUser   TicketUser
 	UserType     string `gorm:"not null"`
 	Description  string
-	Type         string `gorm:"not null"`
+	Type         string          `gorm:"not null"`
 	Data         gormjsonb.JSONB `gorm:"type:json"`
-	IsRead       bool `gorm:"not null"`
+	IsRead       bool            `gorm:"not null"`
 }

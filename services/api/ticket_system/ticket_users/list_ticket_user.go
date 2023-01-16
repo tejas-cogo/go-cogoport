@@ -1,11 +1,13 @@
 package ticket_system
 
 import (
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListTicketUser(filters models.TicketUser) []models.TicketUser {
+func ListTicketUser(filters models.TicketUser) ([]models.TicketUser, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_user []models.TicketUser
@@ -14,15 +16,15 @@ func ListTicketUser(filters models.TicketUser) []models.TicketUser {
 		db = db.Where("id = ?", filters.ID)
 	}
 
-	// if (filters.Priority != ""){
-	// 	db = db.Where("priority = ?", filters.Priority)
-	// }
+	if filters.SystemUserID != uuid.Nil {
+		db = db.Where("system_user_id = ?", filters.SystemUserID)
+	}
 
-	// if (filters.Source != ""){
-	// 	db = db.Where("source = ?", filters.Source)
-	// }
+	if filters.Name != "" {
+		db = db.Where("name LIKE ?", filters.Name)
+	}
 
-	db.Preload("Role").Find(&ticket_user)
+	db.Find(&ticket_user)
 
-	return ticket_user
+	return ticket_user, db
 }

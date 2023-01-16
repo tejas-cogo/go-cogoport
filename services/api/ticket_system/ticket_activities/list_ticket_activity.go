@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,*gorm.DB) {
+func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_activity []models.TicketActivity
@@ -24,11 +24,10 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	}
 
 	if filters.UserType != "" {
-		db = db.Where("user_type = ?", filters.UserType)
+		db = db.Where("user_type Like ?", filters.UserType)
 	}
 
+	db.Preload("Ticket").Preload("TicketUser").Find(&ticket_activity)
 
-	db.Find(&ticket_activity)
-
-	return ticket_activity,db
+	return ticket_activity, db
 }

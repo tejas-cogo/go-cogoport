@@ -12,9 +12,9 @@ type Ticket struct {
 	gorm.Model
 	TicketUserID            uint `gorm:"not null"`
 	TicketUser              TicketUser
-	Source                  string      `gorm:"not null"`
-	Type                    string      `gorm:"not null"`
-	Category                string      `gorm:"not null"`
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
+	Category                string `gorm:"not null"`
 	Subcategory             string
 	Description             string
 	Priority                string          `gorm:"not null:default:'low'"`
@@ -24,4 +24,17 @@ type Ticket struct {
 	Tat                     string          `gorm:"not null"`
 	ExpiryDate              time.Time       `gorm:"not null"`
 	Status                  string          `gorm:"default:'active'"`
+}
+
+type TicketDetail struct {
+	TicketUserID      uint `gorm:"not null"`
+	TicketUser        []TicketUser
+	TicketReviewerID  uint
+	TicketReviewer    []TicketReviewer
+	TicketSpectatorID uint
+	TicketSpectator   []TicketSpectator
+	TicketActivityID  uint
+	TicketActivity    []TicketActivity
+	TicketID          uint
+	Ticket            []Ticket
 }

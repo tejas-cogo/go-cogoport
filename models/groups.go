@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/lib/pq"
-	_ "github.com/lib/pq"
 	"gorm.io/gorm"
 )
 

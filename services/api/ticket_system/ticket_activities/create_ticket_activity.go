@@ -10,18 +10,19 @@ type TicketActivityService struct {
 	TicketActivity models.TicketActivity
 }
 
-func CreateTicketActivity(ticket_activity models.TicketActivity) models.TicketActivity {
+func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	if ticket_activity.UserType == ""{
-		var filters models.TicketUser
-		filters.ID = ticket_activity.TicketUserID
+	var ticket_activity models.TicketActivity
 
-		ticket_user := users.ListTicketUser(filters)
+	if body.TicketActivity.TicketUserID == 0{
+		var filters models.TicketUser
+		filters = body.TicketUser
+		ticket_user,_ := users.ListTicketUser(filters)
 
 		for _, u := range ticket_user {
-			ticket_activity.UserType = u.Type
+			body.TicketActivity.UserType = u.Type
 			break
 		}
 	}

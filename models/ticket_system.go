@@ -19,11 +19,11 @@ func Init() {
 
 	// db.Migrator().DropTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().CreateTable(&TicketToken{})
+	// db.Migrator().CreateTable(&TicketToken{})
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	// db.Migrator().AutoMigrate(&TicketToken{})
+	db.Migrator().AutoMigrate(&TicketUser{})
 
 	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
 }
