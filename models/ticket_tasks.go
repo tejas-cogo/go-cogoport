@@ -7,9 +7,9 @@ import (
 
 type TicketTask struct {
 	gorm.Model
-	TicketID        uint
-	//Ticket Ticket
-	Title           string
-	CreatedByUserId uuid.UUID
-	Status          string
+	TicketID        uint `gorm:"not null"`
+	Ticket Ticket
+	Title           string `gorm:"not null"`
+	CreatedByUserId uuid.UUID `gorm:"not null"`
+	Status          string `gorm:"default:'active'"`
 }

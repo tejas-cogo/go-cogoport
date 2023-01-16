@@ -8,11 +8,10 @@ import (
 
 type TicketToken struct {
 	gorm.Model
-	TicketToken  string
-	TicketID    uint 
-	//Ticket     Ticket
-	TicketUserID uint
-	//TicketUser TicketUser
-	ExpiryDate   time.Time
-	Status       string
+	TicketToken  string `gorm:"not null:unique"`
+	TicketID     uint   `gorm:"default:null"`
+	TicketUserID uint   `gorm:"not null"`
+	TicketUser   TicketUser
+	ExpiryDate   time.Time `gorm:"not null"`
+	Status       string    `gorm:"default:'active'"`
 }

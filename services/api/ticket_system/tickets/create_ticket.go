@@ -1,9 +1,9 @@
 package ticket_system
 
 import (
-	// "encoding/json"
-
-	"fmt"
+	"encoding/json"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -11,10 +11,44 @@ import (
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 	timings "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_timings"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
+
+	"gorm.io/gorm"
 )
 
 type TicketService struct {
 	Ticket models.Ticket
+}
+
+func GetDuration(ExpiryDuration string) int {
+	duration := strings.Split(ExpiryDuration, ":")
+
+	durationd := strings.Split(duration[0], "d")
+	durationh := strings.Split(duration[1], "h")
+	durationm := strings.Split(duration[2], "m")
+
+	d, _ := strconv.Atoi(durationd[0])
+	h, _ := strconv.Atoi(durationh[0])
+	m, _ := strconv.Atoi(durationm[0])
+
+	h += m / 60
+	h += d * 24
+
+	return h
+
+}
+
+func CreateAuditTicket(ticket models.Ticket, db *gorm.DB) int {
+	var ticket_audit models.TicketAudit
+
+	ticket_audit.ObjectId = ticket.ID
+	ticket_audit.Action = "create"
+	ticket_audit.Object = "ticket"
+	data, _ := json.Marshal(ticket)
+	ticket_audit.Data = string(data)
+
+	db.Create(&ticket_audit)
+
+	return 0
 }
 
 func CreateTicket(ticket models.Ticket) models.Ticket {
@@ -29,28 +63,29 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	ticket_default_timing := timings.ListTicketDefaultTiming(filters)
 
-	fmt.Println(ticket_default_timing)
-
 	for _, u := range ticket_default_timing {
 
 		ticket.Tat = u.Tat
 		ticket.ExpiryDate = time.Now()
-		// ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(u.ExpiryDuration))
-		fmt.Println("start", ticket.ExpiryDate, "start")
+
+		Duration := GetDuration(u.ExpiryDuration)
+
+		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 		break
 	}
 
 	db.Create(&ticket)
 
-	var ticket_audit models.TicketAudit
-
-	db.Create(&ticket_audit)
+	CreateAuditTicket(ticket, db)
 
 	reviewers.CreateTicketReviewer(ticket)
 
 	var ticket_activity models.TicketActivity
+
 	ticket_activity.TicketID = ticket.ID
 	ticket_activity.TicketUserID = ticket.TicketUserID
+	ticket_activity.Type = "Ticket Creation"
+
 	activities.CreateTicketActivity(ticket_activity)
 
 	return ticket

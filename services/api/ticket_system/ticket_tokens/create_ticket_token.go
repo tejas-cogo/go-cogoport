@@ -1,33 +1,40 @@
 package ticket_system
 
 import (
-	"crypto/sha256"
+	"encoding/hex"
 	"strconv"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	ticketuser "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
 )
 
 type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(ticket_token models.TicketToken) models.TicketToken {
+func CreateTicketToken(ticket_token models.TicketToken) uint {
 	db := config.GetDB()
 
-	result := strconv.FormatUint(uint64(ticket_token.TicketUserID), 10)
+	ticket_user := ticketuser.CreateTicketUser(ticket_token.TicketUser)
 
-	result += time.Now().String()
+	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
+
+	result = result + time.Now().String() + "dunningtoken"
 
 	message := []byte(result)
-	sha256.Sum256(message)
 
-	ticket_token.TicketToken = "dunning_token" + string(message)
+	encoded_string := hex.EncodeToString(message)
+
+	ticket_token.TicketToken = encoded_string
 
 	ticket_token.ExpiryDate = time.Now().Add(time.Hour)
 
+	ticket_token.TicketUserID = ticket_user.ID
+	ticket_token.TicketUser = ticket_user
+
 	db.Create(&ticket_token)
 
-	return ticket_token
+	return ticket_token.ID
 }

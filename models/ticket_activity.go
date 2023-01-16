@@ -1,17 +1,19 @@
 package models
 
 import (
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"gorm.io/gorm"
 )
 
 type TicketActivity struct {
 	gorm.Model
-	TicketID   uint
-	Ticket Ticket
-	TicketUserID uint
-	TicketUser TicketUser
-	UserType     string
+	TicketID     uint `gorm:"not null"`
+	Ticket       Ticket 
+	TicketUserID uint `gorm:"not null"`
+	TicketUser   TicketUser
+	UserType     string `gorm:"not null"`
 	Description  string
-	Data         string
-	IsRead       bool
+	Type         string `gorm:"not null"`
+	Data         gormjsonb.JSONB `gorm:"type:json"`
+	IsRead       bool `gorm:"not null"`
 }

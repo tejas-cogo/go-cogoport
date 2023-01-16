@@ -6,9 +6,9 @@ import (
 
 type TicketAudit struct {
 	gorm.Model
-	Object   string
-	ObjectId uint
-	Action   string
-	Data     string
-	Status   string
+	Object   string `gorm:"not null"`
+	ObjectId uint `gorm:"not null"`
+	Action   string `gorm:"not null"`
+	Data     string `gorm:"type:json"`
+	Status   string `gorm:"default:'active'"`
 }

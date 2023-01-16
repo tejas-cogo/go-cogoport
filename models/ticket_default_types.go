@@ -1,11 +1,13 @@
 package models
+
 import (
-	"gorm.io/gorm"
 	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
+
 type TicketDefaultType struct {
- 	gorm.Model
- 	TicketType string 
- 	AdditionalOptions pq.StringArray `gorm:"type:text[]"`
- 	Status string 
+	gorm.Model
+	TicketType        string         `gorm:"not null"`
+	AdditionalOptions pq.StringArray `gorm:"type:text[]"`
+	Status            string         `gorm:"default:'active'"`
 }
