@@ -6,13 +6,13 @@ import (
 
 type TicketReviewer struct {
 	gorm.Model
-	TicketID      uint
-	//Ticket        Ticket
-	TicketUserID  uint
+	TicketID      uint `gorm:"not null"`
+	Ticket        Ticket
+	TicketUserID  uint `gorm:"not null"`
 	TicketUser    TicketUser
-	GroupID       uint
-	//Group         Group
-	GroupMemberID uint
-	//GroupMember   GroupMember
-	Status        string
+	GroupID       uint `gorm:"not null"`
+	Group         Group
+	GroupMemberID uint `gorm:"not null"`
+	GroupMember   GroupMember
+	Status        string `gorm:"default:'active'"`
 }

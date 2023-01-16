@@ -7,11 +7,11 @@ import (
 
 type GroupMember struct {
 	gorm.Model
-	GroupID           uint
+	GroupID           uint `gorm:"not null"`
 	Group             Group
-	TicketUserID      uint
+	TicketUserID      uint `gorm:"not null"`
 	TicketUser        TicketUser
-	ActiveTicketCount uint
+	ActiveTicketCount uint `gorm:"default:0"`
 	HierarchyLevel    uint
-	Status            string
+	Status            string `gorm:"default:'active'"`
 }

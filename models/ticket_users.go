@@ -6,12 +6,12 @@ import (
 
 type TicketUser struct {
 	gorm.Model
-	Name         string
-	Email        string
-	MobileNumber string
-	RoleID       uint
+	Name         string `gorm:"not null:json:email"`
+	Email        string `gorm:"not null:json:email"`
+	MobileNumber string `gorm:"type:varchar(10)"`
+	RoleID       uint 
 	Role         Role 
-	Source       string
-	Type         string
-	Status       string
+	Source       string `gorm:"not null"`
+	Type         string `gorm:"not null"`
+	Status       string `gorm:"default:'active'"`
 }

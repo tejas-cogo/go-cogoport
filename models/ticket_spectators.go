@@ -6,9 +6,9 @@ import (
 
 type TicketSpectator struct {
 	gorm.Model
-	TicketID     uint
-	//Ticket Ticket
-	TicketUserID uint
-	//TicketUser TicketUser
-	Status       string
+	TicketID     uint `gorm:"not null"`
+	Ticket Ticket 
+	TicketUserID uint `gorm:"not null"`
+	TicketUser TicketUser 
+	Status       string `gorm:"default:'active'"`
 }

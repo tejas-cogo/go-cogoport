@@ -14,7 +14,7 @@ func CreateTicketActivity(ticket_activity models.TicketActivity) models.TicketAc
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	if ticket_activity.UserType == " "{
+	if ticket_activity.UserType == ""{
 		var filters models.TicketUser
 		filters.ID = ticket_activity.TicketUserID
 

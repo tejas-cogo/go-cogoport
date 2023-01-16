@@ -22,11 +22,11 @@ func ListTicketReviewer(c *gin.Context) {
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
-// func CreateTicketReviewer(c *gin.Context) {
-// 	var ticket_reviewer models.TicketReviewer
-// 	c.BindJSON(&ticket_reviewer)
-// 	c.JSON(200, service.CreateTicketReviewer(ticket_reviewer))
-// }
+func CreateTicketReviewer(c *gin.Context) {
+	var ticket models.Ticket
+	c.BindJSON(&ticket)
+	c.JSON(200, service.CreateTicketReviewer(ticket))
+}
 
 func DeleteTicketReviewer(c *gin.Context) {
 	var body models.TicketReviewer

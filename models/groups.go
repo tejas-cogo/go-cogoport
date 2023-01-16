@@ -8,7 +8,7 @@ import (
 
 type Group struct {
 	gorm.Model
-	Name   string
+	Name   string `gorm:"not null"`
 	Tags   pq.StringArray `gorm:"type:text[]"`
-	Status string
+	Status string `gorm:"default:'active'"`
 }
