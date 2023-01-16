@@ -5,6 +5,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	controllers "github.com/tejas-cogo/go-cogoport/controllers/api"
+	"github.com/tejas-cogo/go-cogoport/middleware"
 )
 
 func SetupRouter() *gin.Engine {
@@ -14,6 +15,8 @@ func SetupRouter() *gin.Engine {
 	r.Use(cors.Default())
 
 	ticket_system := r.Group("/api/tickets")
+
+	ticket_system.POST("/get_token", controllers.CreateToken)
 
 	ticket_system.GET("list_group", controllers.ListGroup)
 	ticket_system.POST("create_group", controllers.CreateGroup)
@@ -34,7 +37,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("delete_ticket_user", controllers.DeleteTicketUser)
 	ticket_system.POST("update_ticket_user", controllers.UpdateTicketUser)
 
-	ticket_system.GET("list_ticket", controllers.ListTicket)
+	ticket_system.GET("list_ticket", middleware.RequireAuth, controllers.ListTicket)
 	ticket_system.POST("create_ticket", controllers.CreateTicket)
 	ticket_system.POST("delete_ticket", controllers.DeleteTicket)
 	ticket_system.POST("update_ticket", controllers.UpdateTicket)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -47,13 +48,13 @@ func main() {
 	type Job interface {
 		Run()
 	}
-
-	r.Run(":" + port)
-
 	logger := helpers.Logger()
+	log.Print("in main", logger)
 	logger.Info("INFO log Inside main")
 	logger.Warn("Warn log level message")
 	logger.Error("Error log level message")
 	// workers.Workers()
+
+	r.Run(":" + port)
 
 }
