@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/hibiken/asynq"
 )
@@ -21,11 +20,11 @@ type EmailPayload struct {
 	sent_id string
 }
 
-func NewWelcomeEmailTask(id int) *asynq.Task {
+func NewWelcomeEmailTask(id int) (*asynq.Task, error) {
 	payload, err := json.Marshal(EmailTaskPayloads{user_id: id})
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return asynq.NewTask(TypeWelcomeEmail, payload)
+	return asynq.NewTask(TypeWelcomeEmail, payload), nil
 }
