@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 
@@ -25,14 +26,12 @@ func Respond(w http.ResponseWriter, data map[string]interface{}) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func Logger() {
+func Logger() *zap.Logger {
 	filename := "logs.log"
+	log.Print("in helper loging")
 	logger := FileLogger(filename)
-
-	logger.Info("INFO log level message")
 	logger.Warn("Warn log level message")
-	logger.Error("Error log level message")
-
+	return logger
 }
 
 func FileLogger(filename string) *zap.Logger {

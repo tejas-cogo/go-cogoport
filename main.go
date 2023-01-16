@@ -50,8 +50,10 @@ func main() {
 
 	r.Run(":" + port)
 
-	helpers.Logger()
-
+	logger := helpers.Logger()
+	logger.Info("INFO log Inside main")
+	logger.Warn("Warn log level message")
+	logger.Error("Error log level message")
 	// workers.Workers()
 
 }
