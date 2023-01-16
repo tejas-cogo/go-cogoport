@@ -23,7 +23,7 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 		} else {
 			filters.ID = body.TicketActivity.TicketUserID
 		}
-		ticket_user,_ := user.ListTicketUser(filters)
+		ticket_user, _ := user.ListTicketUser(filters)
 		for _, u := range ticket_user {
 			body.TicketActivity.UserType = u.Type
 			break
