@@ -19,7 +19,7 @@ func ListTicket(c *gin.Context) {
 	filters.Type = c.Request.URL.Query().Get("filters[type]")
 	filters.Priority = c.Request.URL.Query().Get("filters[priority]")
 	filters.Status = c.Request.URL.Query().Get("filters[status]")
-	filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
+	// filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
 	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
 	ser, db := service.ListTicket(filters)
 	pg := paginate.New()

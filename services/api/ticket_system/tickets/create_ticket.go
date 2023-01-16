@@ -61,7 +61,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	filters.TicketDefaultTiming.TicketPriority = ticket.Priority
 	filters.TicketDefaultTiming.Status = "active"
 
-	ticket_default_timing := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
+	ticket_default_timing, _ := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
 
 	for _, u := range ticket_default_timing {
 
@@ -80,7 +80,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	filters.TicketActivity.TicketID = ticket.ID
 	filters.TicketActivity.TicketUserID = ticket.TicketUserID
-	filters.TicketActivity.Type = "Ticket Creation"
+	filters.TicketActivity.Type = "Ticket Created"
 
 	activities.CreateTicketActivity(filters)
 

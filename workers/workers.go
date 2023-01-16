@@ -13,7 +13,7 @@ func Workers() {
 	log.Print("Start of Worker")
 	client := asynq.NewClient(asynq.RedisClientOpt{
 					Addr: redisAddr,
-					Password: "f7d8279ad6ecaea58ccffd277a79b1cc4019da22713118805a9341d15a76c178"
+					Password: "f7d8279ad6ecaea58ccffd277a79b1cc4019da22713118805a9341d15a76c178",
 
 				})
 	defer client.Close()

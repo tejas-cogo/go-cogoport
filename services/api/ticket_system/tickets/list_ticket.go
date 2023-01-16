@@ -27,9 +27,9 @@ func ListTicket(filters models.Ticket) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("source = ?", filters.Source)
 	}
 
-	if filters.Tags[0] != "" {
-		db = db.Where("? Like ANY(tags)", filters.Tags)
-	}
+	// if filters.Tags[0] != "" {
+	// 	db = db.Where("? Like ANY(tags)", filters.Tags)
+	// }
 
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)

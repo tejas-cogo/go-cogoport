@@ -3,7 +3,7 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	users "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
+	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
 )
 
 type TicketActivityService struct {
@@ -15,18 +15,20 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	// result := map[string]interface{}{}
 
 	var ticket_activity models.TicketActivity
+	var filters models.TicketUser
 
-	if body.TicketActivity.TicketUserID == 0{
-		var filters models.TicketUser
-		filters = body.TicketUser
-		ticket_user,_ := users.ListTicketUser(filters)
-
+	if body.TicketActivity.UserType != "" {
+		if body.TicketActivity.TicketUserID == 0 {
+			filters.SystemUserID = body.TicketUser.SystemUserID
+		} else {
+			filters.ID = body.TicketActivity.TicketUserID
+		}
+		ticket_user,_ := user.ListTicketUser(filters)
 		for _, u := range ticket_user {
 			body.TicketActivity.UserType = u.Type
 			break
 		}
 	}
-
 	db.Create(&ticket_activity)
 	return ticket_activity
 }

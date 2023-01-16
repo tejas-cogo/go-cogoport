@@ -11,6 +11,7 @@ func ListTicketUser(c *gin.Context) {
 	var filters models.TicketUser
 
 	filters.Name = c.Request.URL.Query().Get("filters[name]")
+
 	ser, db := service.ListTicketUser(filters)
 	pg := paginate.New()
 	c.JSON(200, pg.Response(db, c.Request, &ser))
