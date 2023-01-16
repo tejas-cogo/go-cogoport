@@ -1,6 +1,0 @@
-{"level":"info","ts":"2023-01-16T15:42:31.887+0530","caller":"helpers/helpers.go:32","msg":"INFO log level message"}
-{"level":"warn","ts":"2023-01-16T15:42:31.887+0530","caller":"helpers/helpers.go:33","msg":"Warn log level message"}
-{"level":"error","ts":"2023-01-16T15:42:31.887+0530","caller":"helpers/helpers.go:34","msg":"Error log level message","stacktrace":"github.com/tejas-cogo/go-cogoport/helpers.Logger\n\t/Users/tejasshelatkar/go-cogoport/helpers/helpers.go:34\nmain.main\n\t/Users/tejasshelatkar/go-cogoport/main.go:53\nruntime.main\n\t/usr/local/go/src/runtime/proc.go:250"}
-{"level":"info","ts":"2023-01-16T15:45:12.741+0530","caller":"helpers/helpers.go:32","msg":"INFO log level message"}
-{"level":"warn","ts":"2023-01-16T15:45:12.743+0530","caller":"helpers/helpers.go:33","msg":"Warn log level message"}
-{"level":"error","ts":"2023-01-16T15:45:12.743+0530","caller":"helpers/helpers.go:34","msg":"Error log level message","stacktrace":"github.com/tejas-cogo/go-cogoport/helpers.Logger\n\t/Users/tejasshelatkar/go-cogoport/helpers/helpers.go:34\nmain.main\n\t/Users/tejasshelatkar/go-cogoport/main.go:53\nruntime.main\n\t/usr/local/go/src/runtime/proc.go:250"}
