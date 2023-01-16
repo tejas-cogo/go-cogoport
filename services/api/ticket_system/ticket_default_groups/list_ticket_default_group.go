@@ -12,7 +12,7 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) []models.TicketDe
 	var ticket_default_groups []models.TicketDefaultGroup
 
 	if (filters.TicketType != ""){
-		db = db.Where("ticket_type = ?", filters.TicketType)
+		db = db.Where("ticket_type Like ?", filters.TicketType)
 	} 
 
 	if (filters.GroupID != 0){

@@ -6,10 +6,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicket(filters models.Ticket, tags string) ([]models.Ticket, *gorm.DB) {
+func ListTicket(filters models.Ticket) ([]models.Ticket, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket []models.Ticket
+
+	if filters.ID != 0 {
+		db = db.Where("id = ?", filters.ID)
+	}
 
 	if filters.Type != "" {
 		db = db.Where("type = ?", filters.Type)
@@ -23,8 +27,8 @@ func ListTicket(filters models.Ticket, tags string) ([]models.Ticket, *gorm.DB) 
 		db = db.Where("source = ?", filters.Source)
 	}
 
-	if tags != "" {
-		db = db.Where("? Like ANY(tags)", tags)
+	if filters.Tags[0] != "" {
+		db = db.Where("? Like ANY(tags)", filters.Tags)
 	}
 
 	if filters.Status != "" {

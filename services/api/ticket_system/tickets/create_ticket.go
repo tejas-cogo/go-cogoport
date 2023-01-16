@@ -55,13 +55,13 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	var filters models.TicketDefaultTiming
+	var filters models.Filter
 
-	filters.TicketType = ticket.Type
-	filters.TicketPriority = ticket.Priority
-	filters.Status = "active"
+	filters.TicketDefaultTiming.TicketType = ticket.Type
+	filters.TicketDefaultTiming.TicketPriority = ticket.Priority
+	filters.TicketDefaultTiming.Status = "active"
 
-	ticket_default_timing := timings.ListTicketDefaultTiming(filters)
+	ticket_default_timing := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
 
 	for _, u := range ticket_default_timing {
 
@@ -78,15 +78,13 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	CreateAuditTicket(ticket, db)
 
+	filters.TicketActivity.TicketID = ticket.ID
+	filters.TicketActivity.TicketUserID = ticket.TicketUserID
+	filters.TicketActivity.Type = "Ticket Creation"
+
+	activities.CreateTicketActivity(filters)
+
 	reviewers.CreateTicketReviewer(ticket)
-
-	var ticket_activity models.TicketActivity
-
-	ticket_activity.TicketID = ticket.ID
-	ticket_activity.TicketUserID = ticket.TicketUserID
-	ticket_activity.Type = "Ticket Creation"
-
-	activities.CreateTicketActivity(ticket_activity)
 
 	return ticket
 

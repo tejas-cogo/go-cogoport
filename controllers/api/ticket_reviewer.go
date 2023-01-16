@@ -38,6 +38,5 @@ func DeleteTicketReviewer(c *gin.Context) {
 func UpdateTicketReviewer(c *gin.Context) {
 	var body models.TicketReviewer
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketReviewer(id, body))
+	c.JSON(200, service.UpdateTicketReviewer(body))
 }

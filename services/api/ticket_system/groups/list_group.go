@@ -11,7 +11,7 @@ func ListGroup(filters models.Group,tags string) []models.Group{
 	var groups []models.Group
 
 	if (filters.Name != ""){
-		db = db.Where("name = ?", filters.Name)
+		db = db.Where("name Like", filters.Name)
 	} 
 
 	if (tags != ""){

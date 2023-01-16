@@ -14,10 +14,12 @@ type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(ticket_token models.TicketToken) uint {
+func CreateTicketToken(body models.Filter) models.TicketToken {
 	db := config.GetDB()
 
-	ticket_user := ticketuser.CreateTicketUser(ticket_token.TicketUser)
+	var ticket_token models.TicketToken
+
+	ticket_user := ticketuser.CreateTicketUser(body.TicketUser)
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
 
@@ -32,9 +34,8 @@ func CreateTicketToken(ticket_token models.TicketToken) uint {
 	ticket_token.ExpiryDate = time.Now().Add(time.Hour)
 
 	ticket_token.TicketUserID = ticket_user.ID
-	ticket_token.TicketUser = ticket_user
 
 	db.Create(&ticket_token)
 
-	return ticket_token.ID
+	return ticket_token
 }
