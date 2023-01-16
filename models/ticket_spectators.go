@@ -8,6 +8,7 @@ type TicketSpectator struct {
 	gorm.Model
 	TicketID     uint `gorm:"not null"`
 	TicketUserID uint `gorm:"not null"`
+	TicketUser   TicketUser
 	Status       string `gorm:"default:'active'"`
 }
 

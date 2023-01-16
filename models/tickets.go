@@ -27,7 +27,7 @@ type Ticket struct {
 }
 
 type TicketDetail struct {
-	TicketUserID      uint `gorm:"not null"`
+	TicketUserID      uint
 	TicketUser        []TicketUser
 	TicketReviewerID  uint
 	TicketReviewer    []TicketReviewer

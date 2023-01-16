@@ -24,7 +24,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("delete_group_member", controllers.DeleteGroupMember)
 	ticket_system.POST("update_group_member", controllers.UpdateGroupMember)
 
-	// ticket_system.GET("list_role", controllers.ListRole)
+	ticket_system.GET("list_role", controllers.ListRole)
 	ticket_system.POST("create_role", controllers.CreateRole)
 	ticket_system.POST("delete_role", controllers.DeleteRole)
 	ticket_system.POST("update_role", controllers.UpdateRole)
@@ -74,7 +74,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("update_ticket_default_group", controllers.UpdateTicketDefaultGroup)
 
 	ticket_system.POST("create_ticket_default_timing", controllers.CreateTicketDefaultTiming)
-	//ticket_system.GET("list_ticket_default_timing", controllers.ListTicketDefaultTiming)
+	ticket_system.GET("list_ticket_default_timing", controllers.ListTicketDefaultTiming)
 	ticket_system.POST("delete_ticket_default_timing", controllers.DeleteTicketDefaultTiming)
 	ticket_system.POST("update_ticket_default_timing", controllers.UpdateTicketDefaultTiming)
 
