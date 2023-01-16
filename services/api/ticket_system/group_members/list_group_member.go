@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListGroupMember(filters models.GroupMember) []models.GroupMember {
+func ListGroupMember(filters models.GroupMember) ([]models.GroupMember, *gorm.DB) {
 	db := config.GetDB()
 
 	var group_members []models.GroupMember
@@ -24,5 +25,5 @@ func ListGroupMember(filters models.GroupMember) []models.GroupMember {
 
 	db.Find(&group_members)
 
-	return group_members
+	return group_members, db
 }
