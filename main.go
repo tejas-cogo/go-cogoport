@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"github.com/tejas-cogo/go-cogoport/helpers"
 
 	"github.com/joho/godotenv"
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -50,7 +49,7 @@ func main() {
 
 	r.Run(":" + port)
 
-	helpers.logger()
+	helpers.loggers()
 
 	// workers.Workers()
 
