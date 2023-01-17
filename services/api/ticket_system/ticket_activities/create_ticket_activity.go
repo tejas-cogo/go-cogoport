@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
@@ -14,21 +16,23 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	var ticket_activity models.TicketActivity
-	var filters models.TicketUser
+	var ticket_user models.TicketUser
 
-	if body.TicketActivity.UserType != "" {
+	if body.TicketActivity.UserType == "" {
 		if body.TicketActivity.TicketUserID == 0 {
-			filters.SystemUserID = body.TicketUser.SystemUserID
+			ticket_user.SystemUserID = body.TicketUser.SystemUserID
 		} else {
-			filters.ID = body.TicketActivity.TicketUserID
+			ticket_user.ID = body.TicketActivity.TicketUserID
 		}
-		ticket_user, _ := user.ListTicketUser(filters)
+		ticket_user, _ := user.ListTicketUser(ticket_user)
 		for _, u := range ticket_user {
 			body.TicketActivity.UserType = u.Type
+			fmt.Println("ticket_user", body.TicketActivity, "ticket_user")
 			break
 		}
 	}
+	ticket_activity := body.TicketActivity
+
 	db.Create(&ticket_activity)
 	return ticket_activity
 }

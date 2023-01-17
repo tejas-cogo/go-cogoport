@@ -23,9 +23,9 @@ func ListTicketReviewer(c *gin.Context) {
 }
 
 func CreateTicketReviewer(c *gin.Context) {
-	var ticket models.Ticket
-	c.BindJSON(&ticket)
-	c.JSON(200, service.CreateTicketReviewer(ticket))
+	var body models.Filter
+	c.BindJSON(&body)
+	c.JSON(200, service.CreateTicketReviewer(body))
 }
 
 func DeleteTicketReviewer(c *gin.Context) {

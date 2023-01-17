@@ -84,7 +84,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	activities.CreateTicketActivity(filters)
 
-	reviewers.CreateTicketReviewer(ticket)
+	reviewers.CreateTicketReviewer(filters)
 
 	return ticket
 

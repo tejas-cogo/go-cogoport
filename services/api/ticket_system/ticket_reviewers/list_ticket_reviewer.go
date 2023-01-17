@@ -19,7 +19,7 @@ func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,
 		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
-	db.Find(&ticket_reviewer)
+	db.Preload("TicketUser").Find(&ticket_reviewer)
 
 	return ticket_reviewer,db
 }

@@ -1,13 +1,26 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
+	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_spectators"
 )
 
 func ListTicketSpectator(c *gin.Context) {
-	c.JSON(200, service.ListTicketSpectator())
+	var filters models.TicketSpectator
+
+	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
+	filters.TicketID = uint(TicketID)
+
+	TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
+	filters.TicketUserID = uint(TicketUserID)
+
+	ser, db := service.ListTicketSpectator(filters)
+	pg := paginate.New()
+	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
 func CreateTicketSpectator(c *gin.Context) {

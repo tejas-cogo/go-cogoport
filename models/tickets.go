@@ -27,8 +27,6 @@ type Ticket struct {
 }
 
 type TicketDetail struct {
-	TicketUserID      uint
-	TicketUser        []TicketUser
 	TicketReviewerID  uint
 	TicketReviewer    []TicketReviewer
 	TicketSpectatorID uint

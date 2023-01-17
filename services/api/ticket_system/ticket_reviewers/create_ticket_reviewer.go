@@ -1,8 +1,6 @@
 package ticket_system
 
 import (
-	"fmt"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
@@ -14,16 +12,16 @@ type TicketReviewerService struct {
 	TicketReviewer models.TicketReviewer
 }
 
-func CreateTicketReviewer(ticket models.Ticket) models.TicketReviewer {
+func CreateTicketReviewer(body models.Filter) models.TicketReviewer {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
 	var filters models.Filter
 	var ticket_reviewer models.TicketReviewer
 
-	ticket_reviewer.TicketID = ticket.ID
+	ticket_reviewer.TicketID = body.Ticket.ID
 
-	filters.TicketDefaultGroup.TicketType = ticket.Type
+	filters.TicketDefaultGroup.TicketType = body.Ticket.Type
 	filters.TicketDefaultGroup.Status = "active"
 	default_group, _ := defaultgroup.ListTicketDefaultGroup(filters.TicketDefaultGroup)
 	for _, u := range default_group {
@@ -38,13 +36,13 @@ func CreateTicketReviewer(ticket models.Ticket) models.TicketReviewer {
 			db.Create(&ticket_reviewer)
 			filters.GroupMember.ActiveTicketCount = v.ActiveTicketCount + 1
 			groupmember.UpdateGroupMember(filters)
-			fmt.Print("old", v.ActiveTicketCount, "new", filters.GroupMember.ActiveTicketCount)
 			break
 		}
 		break
 	}
 
-	filters.TicketActivity.TicketID = ticket.ID
+	filters.TicketActivity.TicketID = ticket_reviewer.TicketID
+	filters.TicketActivity.TicketUserID = ticket_reviewer.TicketUserID
 	filters.TicketActivity.UserType = "system"
 	filters.TicketActivity.Type = "Reviewer Assigned"
 

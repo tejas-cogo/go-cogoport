@@ -3,14 +3,23 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListTicketSpectator() []models.TicketSpectator {
+func ListTicketSpectator(filters models.TicketSpectator) ([]models.TicketSpectator, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_spectator []models.TicketSpectator
 
-	db.Find(&ticket_spectator)
+	if filters.TicketID != 0 {
+		db = db.Where("ticket_id = ?", filters.TicketID)
+	}
 
-	return ticket_spectator
+	if filters.TicketUserID != 0 {
+		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	}
+
+	db.Preload("TicketUser").Find(&ticket_spectator)
+
+	return ticket_spectator, db
 }
