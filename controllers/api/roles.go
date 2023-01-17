@@ -33,6 +33,5 @@ func DeleteRole(c *gin.Context) {
 func UpdateRole(c *gin.Context) {
 	var body models.Role
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateRole(id, body))
+	c.JSON(200, service.UpdateRole( body))
 }

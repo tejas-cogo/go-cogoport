@@ -35,7 +35,7 @@ func CreateTicketReviewer(body models.Filter) models.TicketReviewer {
 			filters.GroupMember.ID = v.ID
 			db.Create(&ticket_reviewer)
 			filters.GroupMember.ActiveTicketCount = v.ActiveTicketCount + 1
-			groupmember.UpdateGroupMember(filters)
+			groupmember.UpdateGroupMember(filters.GroupMember)
 			break
 		}
 		break

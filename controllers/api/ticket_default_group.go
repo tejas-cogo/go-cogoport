@@ -31,6 +31,5 @@ func DeleteTicketDefaultGroup(c *gin.Context) {
 func UpdateTicketDefaultGroup(c *gin.Context) {
 	var body models.TicketDefaultGroup
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketDefaultGroup(id, body))
+	c.JSON(200, service.UpdateTicketDefaultGroup(body))
 }

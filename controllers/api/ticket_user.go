@@ -33,6 +33,5 @@ func DeleteTicketUser(c *gin.Context) {
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUser
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketUser(id, body))
+	c.JSON(200, service.UpdateTicketUser(body))
 }

@@ -29,7 +29,7 @@ func DeleteGroupMember(c *gin.Context) {
 }
 
 func UpdateGroupMember(c *gin.Context) {
-	var body models.Filter
+	var body models.GroupMember
 	c.BindJSON(&body)
 	c.JSON(200, service.UpdateGroupMember(body))
 }

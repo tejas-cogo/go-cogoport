@@ -1,18 +1,24 @@
 package ticket_system
 
 import (
-	"fmt"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateTicketDefaultGroup(id uint, body models.TicketDefaultGroup) models.TicketDefaultGroup {
+func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) models.TicketDefaultGroup {
 	db := config.GetDB()
 	var ticket_default_group models.TicketDefaultGroup
-	fmt.Print("Body", body)
-	db.Where("id = ?", id).First(&ticket_default_group)
+	db.Where("id = ?", body.ID).Find(&ticket_default_group)
 
-	// ticket_default_group.Name = body.Name
+	if body.TicketType != "" {
+		ticket_default_group.TicketType = body.TicketType
+	}
+	if body.GroupID != 0 {
+		ticket_default_group.GroupID = body.GroupID
+	}
+	if body.Status != "" {
+		ticket_default_group.Status = body.Status
+	}
 
 	db.Save(&ticket_default_group)
 	return ticket_default_group

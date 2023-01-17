@@ -12,15 +12,15 @@ import (
 func ListTicketActivity(c *gin.Context) {
 	var filters models.TicketActivity
 
-	TicketID, _ :=strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
+	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
 	filters.TicketID = uint(TicketID)
 
 	filters.UserType = c.Request.URL.Query().Get("filters[user_type]")
 
 	TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
 	filters.TicketUserID = uint(TicketUserID)
-	
-	filters.IsRead,_ = strconv.ParseBool(c.Request.URL.Query().Get("filters[is_read]"))
+
+	filters.IsRead, _ = strconv.ParseBool(c.Request.URL.Query().Get("filters[is_read]"))
 
 	ser, db := service.ListTicketActivity(filters)
 	pg := paginate.New()
@@ -43,6 +43,5 @@ func DeleteTicketActivity(c *gin.Context) {
 func UpdateTicketActivity(c *gin.Context) {
 	var body models.TicketActivity
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketActivity(id, body))
+	c.JSON(200, service.UpdateTicketActivity(body))
 }

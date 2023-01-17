@@ -33,6 +33,5 @@ func DeleteTicketDefaultType(c *gin.Context) {
 func UpdateTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketDefaultType(id, body))
+	c.JSON(200, service.UpdateTicketDefaultType(body))
 }

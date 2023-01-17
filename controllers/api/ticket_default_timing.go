@@ -31,6 +31,5 @@ func DeleteTicketDefaultTiming(c *gin.Context) {
 func UpdateTicketDefaultTiming(c *gin.Context) {
 	var body models.TicketDefaultTiming
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketDefaultTiming(id, body))
+	c.JSON(200, service.UpdateTicketDefaultTiming(body))
 }

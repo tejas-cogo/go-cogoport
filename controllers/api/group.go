@@ -30,6 +30,5 @@ func DeleteGroup(c *gin.Context) {
 func UpdateGroup(c *gin.Context) {
 	var body models.Group
 	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateGroup(id, body))
+	c.JSON(200, service.UpdateGroup(body))
 }
