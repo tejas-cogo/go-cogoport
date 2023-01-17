@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -11,7 +12,7 @@ import (
 func ListTicketReviewer(c *gin.Context) {
 	var filters models.TicketReviewer
 
-	TicketID, _ :=strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
+	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
 	filters.TicketID = uint(TicketID)
 
 	TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
@@ -26,6 +27,12 @@ func CreateTicketReviewer(c *gin.Context) {
 	var body models.Filter
 	c.BindJSON(&body)
 	c.JSON(200, service.CreateTicketReviewer(body))
+}
+
+func ReassignTicketReviewer(c *gin.Context) {
+	var body models.ReviewerActivity
+	c.BindJSON(&body)
+	c.JSON(200, service.ReassignTicketReviewer(body.Activity, body.TicketReviewer))
 }
 
 func DeleteTicketReviewer(c *gin.Context) {

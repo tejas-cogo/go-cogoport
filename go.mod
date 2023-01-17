@@ -22,6 +22,7 @@ require (
 
 require (
 	github.com/gin-contrib/cors v1.4.0
+	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/morkid/paginate v1.1.6
 	go.uber.org/zap v1.13.0
 )

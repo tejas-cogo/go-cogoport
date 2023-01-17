@@ -7,6 +7,24 @@ import (
 
 var db *gorm.DB
 
+type Filter struct {
+	gorm.Model
+	Ticket              Ticket
+	TicketUser          TicketUser
+	Group               Group
+	GroupMember         GroupMember
+	Role                Role
+	TicketActivity      TicketActivity
+	TicketAudit         TicketAudit
+	TicketDefaultGroup  TicketDefaultGroup
+	TicketDefaultTiming TicketDefaultTiming
+	TicketDefaultType   TicketDefaultType
+	TicketReviewer      TicketReviewer
+	TicketSpectator     TicketSpectator
+	TicketTask          TicketTask
+	TicketToken         TicketToken
+}
+
 //Model is sample of common table structure
 
 func Init() {

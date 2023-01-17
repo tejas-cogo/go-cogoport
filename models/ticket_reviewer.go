@@ -13,3 +13,8 @@ type TicketReviewer struct {
 	GroupMemberID uint   `gorm:"not null"`
 	Status        string `gorm:"not null:default:'active'"`
 }
+
+type ReviewerActivity struct {
+	Activity       Activity
+	TicketReviewer TicketReviewer
+}
