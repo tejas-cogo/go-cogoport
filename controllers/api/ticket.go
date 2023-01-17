@@ -32,17 +32,14 @@ func ListTicketDetail(c *gin.Context) {
 	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
 	filters.TicketID = uint(TicketID)
 
-	TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
-	filters.TicketUserID = uint(TicketUserID)
+	// TicketSpectatorID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_spectator_id]"))
+	// filters.TicketSpectatorID = uint(TicketSpectatorID)
 
-	TicketSpectatorID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_spectator_id]"))
-	filters.TicketSpectatorID = uint(TicketSpectatorID)
+	// TicketReviewerID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_reviewer_id]"))
+	// filters.TicketReviewerID = uint(TicketReviewerID)
 
-	TicketReviewerID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_reviewer_id]"))
-	filters.TicketReviewerID = uint(TicketReviewerID)
-
-	TicketActivityID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_activity_id]"))
-	filters.TicketActivityID = uint(TicketActivityID)
+	// TicketActivityID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_activity_id]"))
+	// filters.TicketActivityID = uint(TicketActivityID)
 	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
 	ser, db := service.ListTicketDetail(filters)
 	pg := paginate.New()
