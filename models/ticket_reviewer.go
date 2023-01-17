@@ -11,5 +11,5 @@ type TicketReviewer struct {
 	TicketUser    TicketUser
 	GroupID       uint   `gorm:"not null"`
 	GroupMemberID uint   `gorm:"not null"`
-	Status        string `gorm:"default:'active'"`
+	Status        string `gorm:"not null:default:'active'"`
 }

@@ -8,5 +8,5 @@ type Role struct {
 	gorm.Model
 	Name   string `gorm:"not null"`
 	Level  uint   `gorm:"not null"`
-	Status string `gorm:"default:'active'"`
+	Status string `gorm:"not null:default:'active'"`
 }

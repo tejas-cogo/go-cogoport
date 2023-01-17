@@ -16,7 +16,7 @@ func ListGroupMember(c *gin.Context) {
 }
 
 func CreateGroupMember(c *gin.Context) {
-	var group_member models.GroupMember
+	var group_member models.CreateGroupMember
 	c.BindJSON(&group_member)
 	c.JSON(200, service.CreateGroupMember(group_member))
 }

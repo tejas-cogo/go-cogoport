@@ -10,5 +10,5 @@ type TicketTask struct {
 	TicketID        uint `gorm:"not null"`
 	Title           string    `gorm:"not null"`
 	CreatedByUserId uuid.UUID `gorm:"not null"`
-	Status          string    `gorm:"default:'active'"`
+	Status          string    `gorm:"not null:default:'active'"`
 }

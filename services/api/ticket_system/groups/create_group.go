@@ -9,9 +9,9 @@ type GroupService struct {
 	Group models.Group
 }
 
-func CreateGroup(group models.Group) models.Group {
+func CreateGroup(group models.Group) string {
 	db := config.GetDB()
 	//  result := map[string]interface{}{}
 	db.Create(&group)
-	return group
+	return "Successfully created"
 }

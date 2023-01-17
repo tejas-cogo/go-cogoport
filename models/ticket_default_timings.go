@@ -12,5 +12,5 @@ type TicketDefaultTiming struct {
 	ExpiryDuration string         `gorm:"not null"`
 	Tat            string         `gorm:"not null"`
 	Conditions     pq.StringArray `gorm:"type:text[]"`
-	Status         string         `gorm:"default:'active'"`
+	Status         string         `gorm:"not null:default:'active'"`
 }

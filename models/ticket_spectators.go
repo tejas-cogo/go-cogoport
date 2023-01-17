@@ -9,7 +9,7 @@ type TicketSpectator struct {
 	TicketID     uint `gorm:"not null"`
 	TicketUserID uint `gorm:"not null"`
 	TicketUser   TicketUser
-	Status       string `gorm:"default:'active'"`
+	Status       string `gorm:"not null:default:'active'"`
 }
 
 type Filter struct {

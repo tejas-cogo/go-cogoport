@@ -10,5 +10,5 @@ type TicketAudit struct {
 	ObjectId uint `gorm:"not null"`
 	Action   string `gorm:"not null"`
 	Data     string `gorm:"type:json"`
-	Status   string `gorm:"default:'active'"`
+	Status   string `gorm:"not null:default:'active'"`
 }

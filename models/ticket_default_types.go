@@ -9,5 +9,5 @@ type TicketDefaultType struct {
 	gorm.Model
 	TicketType        string         `gorm:"not null"`
 	AdditionalOptions pq.StringArray `gorm:"type:text[]"`
-	Status            string         `gorm:"default:'active'"`
+	Status            string         `gorm:"not null:default:'active'"`
 }

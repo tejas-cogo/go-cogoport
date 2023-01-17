@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,*gorm.DB) {
+func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_reviewer []models.TicketReviewer
@@ -21,5 +21,5 @@ func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,
 
 	db.Preload("TicketUser").Find(&ticket_reviewer)
 
-	return ticket_reviewer,db
+	return ticket_reviewer, db
 }

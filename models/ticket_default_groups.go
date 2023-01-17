@@ -9,5 +9,5 @@ type TicketDefaultGroup struct {
 	TicketType string `gorm:"not null"`
 	GroupID    uint   `gorm:"not null"`
 	Group      Group
-	Status     string `gorm:"default:'active'"`
+	Status     string `gorm:"not null:default:'active'"`
 }

@@ -23,7 +23,7 @@ type Ticket struct {
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Tat                     string          `gorm:"not null"`
 	ExpiryDate              time.Time       `gorm:"not null"`
-	Status                  string          `gorm:"default:'active'"`
+	Status                  string          `gorm:"not null:default:'active'"`
 }
 
 type TicketDetail struct {

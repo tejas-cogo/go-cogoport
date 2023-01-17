@@ -8,5 +8,5 @@ type TicketTaskAssignee struct {
 	gorm.Model
 	TicketID     uint `gorm:"not null"`
 	TicketUserID uint `gorm:"not null"`
-	Status       string `gorm:"default:'active'"`
+	Status       string `gorm:"not null:default:'active'"`
 }

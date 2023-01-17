@@ -12,5 +12,5 @@ type TicketToken struct {
 	TicketID     uint   `gorm:"default:null"`
 	TicketUserID uint   `gorm:"not null"`
 	ExpiryDate   time.Time `gorm:"not null"`
-	Status       string    `gorm:"default:'active'"`
+	Status       string    `gorm:"not null:default:'active'"`
 }
