@@ -27,7 +27,7 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 		db = db.Where("user_type Like ?", filters.UserType)
 	}
 
-	db.Preload("Ticket").Preload("TicketUser").Find(&ticket_activity)
+	db.Preload("TicketUser").Find(&ticket_activity)
 
 	return ticket_activity, db
 }
