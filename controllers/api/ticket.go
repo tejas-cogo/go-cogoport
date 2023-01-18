@@ -27,10 +27,10 @@ func ListTicket(c *gin.Context) {
 }
 
 func ListTicketDetail(c *gin.Context) {
-	var filters models.Ticket
+	var filters models.TicketDetail
 
 	ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[id]"))
-	filters.ID = uint(ID)
+	filters.TicketID = uint(ID)
 
 	// TicketSpectatorID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_spectator_id]"))
 	// filters.TicketSpectatorID = uint(TicketSpectatorID)
@@ -41,10 +41,10 @@ func ListTicketDetail(c *gin.Context) {
 	// TicketActivityID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_activity_id]"))
 	// filters.TicketActivityID = uint(TicketActivityID)
 
-	ser, db := service.ListTicketDetail(filters)
-	pg := paginate.New()
-	c.JSON(200, pg.Response(db, c.Request, &ser))
-	// c.JSON(200, service.ListTicketDetail(filters))
+	// ser, db := service.ListTicketDetail(filters)
+	// pg := paginate.New()
+	// c.JSON(200, pg.Response(db, c.Request, &ser))
+	c.JSON(200, service.ListTicketDetail(filters))
 }
 
 func CreateTicket(c *gin.Context) {
