@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
@@ -29,8 +30,7 @@ func ListTicket(c *gin.Context) {
 func GetTicketStats(c *gin.Context) {
 	var stats models.TicketStat
 
-	ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[performed_by_id]"))
-	stats.PerformedByID = uint(ID)
+	stats.PerformedByID, _ = uuid.Parse(c.Request.URL.Query().Get("filters[performed_by_id]"))
 
 	// filters.Source = c.Request.URL.Query().Get("filters[source]")
 	// filters.Type = c.Request.URL.Query().Get("filters[type]")

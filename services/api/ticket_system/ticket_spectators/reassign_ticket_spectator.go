@@ -39,6 +39,7 @@ func ReassignTicketSpectator(activity models.Activity, body models.TicketSpectat
 	filters.TicketActivity.TicketID = body.TicketID
 	filters.TicketUser.SystemUserID = activity.SystemUserID
 	filters.TicketActivity.Type = "Spectator Reassigned"
+	filters.TicketActivity.Status = "reassigned"
 
 	activities.CreateTicketActivity(filters)
 

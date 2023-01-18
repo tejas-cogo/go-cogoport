@@ -4,6 +4,7 @@ import (
 	"time"
 
 	gormjsonb "github.com/dariubs/gorm-jsonb"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
@@ -38,12 +39,12 @@ type TicketDetail struct {
 }
 
 type TicketStat struct {
-	PerformedByID uint
-	Overdue       uint
-	DueToday      uint
-	Open          uint
-	Escalated     uint
-	Rejected      uint
-	Closed        uint
-	Reassigned    uint
+	PerformedByID uuid.UUID
+	Overdue       int64
+	DueToday      int64
+	Open          int64
+	Escalated     int64
+	Rejected      int64
+	Closed        int64
+	Reassigned    int64
 }

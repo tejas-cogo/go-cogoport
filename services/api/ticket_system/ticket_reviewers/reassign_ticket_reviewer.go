@@ -16,6 +16,7 @@ func ReassignTicketReviewer(activity models.Activity, body models.TicketReviewer
 
 	ticket_reviewer_new.TicketID = body.TicketID
 	ticket_reviewer_new.GroupID = body.GroupID
+	ticket_reviewer_new.TicketUserID = body.TicketUserID
 	ticket_reviewer_new.GroupMemberID = body.GroupMemberID
 
 	db.Where("ticket_id = ?", body.TicketID)
@@ -42,7 +43,7 @@ func ReassignTicketReviewer(activity models.Activity, body models.TicketReviewer
 	filters.TicketUser.SystemUserID = activity.SystemUserID
 	filters.TicketActivity.Type = "Reviewer Reassigned"
 	filters.TicketActivity.Data = activity.Data
-
+	filters.TicketActivity.Status = "reassigned"
 	activities.CreateTicketActivity(filters)
 
 	return ticket_reviewer_new
