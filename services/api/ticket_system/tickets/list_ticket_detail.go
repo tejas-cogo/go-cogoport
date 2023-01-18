@@ -13,11 +13,17 @@ func ListTicketDetail(filters models.TicketDetail) models.TicketDetail {
 
 	var ticket_reviewer models.TicketReviewer
 	ticket_reviewer.TicketID = filters.TicketID
-	ticket_detail.TicketReviewer, _ = reviewers.ListTicketReviewer(ticket_reviewer)
+	ticket_reviewer_data, _ := reviewers.ListTicketReviewer(ticket_reviewer)
+	for _,u := range ticket_reviewer_data{
+		ticket_detail.TicketReviewer = u
+	}
 
 	var ticket_spectator models.TicketSpectator
 	ticket_spectator.TicketID = filters.TicketID
-	ticket_detail.TicketSpectator, _ = spectators.ListTicketSpectator(ticket_spectator)
+	ticket_spectator_data, _ := spectators.ListTicketSpectator(ticket_spectator)
+	for _,u := range ticket_spectator_data{
+		ticket_detail.TicketSpectator = u
+	}
 
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = filters.TicketID
@@ -25,7 +31,10 @@ func ListTicketDetail(filters models.TicketDetail) models.TicketDetail {
 
 	var ticket models.Ticket
 	ticket.ID = filters.TicketID
-	ticket_detail.Ticket, _ = ListTicket(ticket)
+	ticket_data, _ := ListTicket(ticket)
+	for _,u := range ticket_data{
+		ticket_detail.Ticket = u
+	}
 
 	return ticket_detail
 }

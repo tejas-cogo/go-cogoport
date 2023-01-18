@@ -16,13 +16,3 @@ func CreateRole(role models.Role) models.Role {
 	db.Create(&role)
 	return role
 }
-
-type ViewService struct {
-	View models.View
-}
-
-func CheckView()bool{
-	var permission bool
-	
-	return permission
-}

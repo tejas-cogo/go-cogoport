@@ -28,11 +28,11 @@ type Ticket struct {
 
 type TicketDetail struct {
 	TicketReviewerID  uint
-	TicketReviewer    []TicketReviewer
+	TicketReviewer    TicketReviewer
 	TicketSpectatorID uint
-	TicketSpectator   []TicketSpectator
+	TicketSpectator   TicketSpectator
 	TicketActivityID  uint
 	TicketActivity    []TicketActivity
 	TicketID          uint
-	Ticket            []Ticket
+	Ticket            Ticket
 }
