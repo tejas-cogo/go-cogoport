@@ -12,8 +12,15 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB) {
 	var role []models.Role
 
 	if filters.Name != "" {
-		db.Where("name Like ?", filters.Name)
+		filters.Name = "%" + filters.Name + "%"
+		db = db.Where("name Like ?", filters.Name)
 	}
+
+	if filters.Status != "" {
+		db = db.Where("status = ?", filters.Status)
+	}
+
+	db.Order("created_at desc")
 
 	db = db.Find(&role)
 

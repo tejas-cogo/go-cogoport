@@ -12,13 +12,11 @@ func ListGroupMember(filters models.GroupMember) ([]models.GroupMember, *gorm.DB
 	var group_members []models.GroupMember
 
 	if filters.GroupID != 0 {
-		db.Where("group_id = ?", filters.GroupID)
+		db = db.Where("group_id = ?", filters.GroupID)
 	}
 
 	if filters.Status != "" {
-		db.Where("status = ?", filters.Status)
-	} else {
-		db.Where("status = ?", "active")
+		db = db.Where("status = ?", filters.Status)
 	}
 
 	db.Order("hierarchy_level desc").Order("active_ticket_count asc")

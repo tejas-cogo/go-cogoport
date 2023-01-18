@@ -12,11 +12,15 @@ func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,
 	var ticket_reviewer []models.TicketReviewer
 
 	if filters.TicketID != 0 {
-		db.Where("ticket_id = ?", filters.TicketID)
+		db = db.Where("ticket_id = ?", filters.TicketID)
 	}
 
 	if filters.TicketUserID != 0 {
-		db.Where("ticket_user_id = ?", filters.TicketUserID)
+		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	}
+
+	if filters.Status != "" {
+		db = db.Where("status = ?", filters.Status)
 	}
 
 	db = db.Preload("TicketUser").Find(&ticket_reviewer)

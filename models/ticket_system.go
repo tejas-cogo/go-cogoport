@@ -1,6 +1,7 @@
 package models
 
 import (
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
@@ -23,6 +24,11 @@ type Filter struct {
 	TicketSpectator     TicketSpectator
 	TicketTask          TicketTask
 	TicketToken         TicketToken
+}
+
+type View struct {
+	Type            string
+	ThroughCriteria gormjsonb.JSONB `gorm:"type:[]json"`
 }
 
 //Model is sample of common table structure

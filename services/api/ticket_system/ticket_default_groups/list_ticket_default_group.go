@@ -13,18 +13,18 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) ([]models.TicketD
 	var ticket_default_groups []models.TicketDefaultGroup
 
 	if filters.TicketType != "" {
-		db.Where("ticket_type Like ?", filters.TicketType)
+		filters.TicketType = "%" + filters.TicketType + "%"
+		db = db.Where("ticket_type Like ?", filters.TicketType)
 	}
 
 	if filters.GroupID != 0 {
-		db.Where("group_id = ?", filters.GroupID)
+		db = db.Where("group_id = ?", filters.GroupID)
 	}
 
 	if filters.Status != "" {
-		db.Where("status = ?", filters.Status)
-	} else {
-		db.Where("status = ?", "active")
+		db = db.Where("status = ?", filters.Status)
 	}
+	db.Order("created_at desc")
 
 	db = db.Find(&ticket_default_groups)
 

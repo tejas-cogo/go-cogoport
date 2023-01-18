@@ -12,19 +12,18 @@ func ListGroup(filters models.Group, tags string) ([]models.Group, *gorm.DB) {
 	var groups []models.Group
 
 	if filters.Name != "" {
-		db.Where("name Like", filters.Name)
+		filters.Name = "%" + filters.Name + "%"
+		db = db.Where("name Like ?", filters.Name)
 	}
 
 	if tags != "" {
-		db.Where("? Like ANY(tags)", tags)
+		db = db.Where("? Like ANY(tags)", tags)
 	}
 
 	if filters.Status != "" {
 		db.Where("status = ?", filters.Status)
-	} else {
-		db.Where("status = ?", "active")
 	}
-
+	db.Order("created_at desc")
 	db = db.Find(&groups)
 
 	return groups, db

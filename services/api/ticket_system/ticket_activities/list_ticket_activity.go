@@ -12,20 +12,23 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	var ticket_activity []models.TicketActivity
 
 	if filters.TicketID != 0 {
-		db.Where("ticket_id = ?", filters.TicketID)
+		db = db.Where("ticket_id = ?", filters.TicketID)
 	}
 
 	if filters.TicketUserID != 0 {
-		db.Where("ticket_user_id = ?", filters.TicketUserID)
+		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.IsRead != false {
-		db.Where("is_read = ?", filters.IsRead)
+		db = db.Where("is_read = ?", filters.IsRead)
 	}
 
 	if filters.UserType != "" {
-		db.Where("user_type Like ?", filters.UserType)
+		filters.UserType = "%" + filters.UserType + "%"
+		db = db.Where("user_type Like ?", filters.UserType)
 	}
+
+	db.Order("created_at desc")
 
 	db = db.Preload("TicketUser").Find(&ticket_activity)
 
