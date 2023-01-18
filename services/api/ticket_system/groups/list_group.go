@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -21,10 +23,12 @@ func ListGroup(filters models.Group, tags string) ([]models.Group, *gorm.DB) {
 	}
 
 	if filters.Status != "" {
-		db.Where("status = ?", filters.Status)
+		db = db.Where("status = ?", filters.Status)
 	}
-	db.Order("created_at desc")
-	db = db.Find(&groups)
+
+	db = db.Order("name desc").Find(&groups)
+
+	fmt.Println(db.Statement)
 
 	return groups, db
 }

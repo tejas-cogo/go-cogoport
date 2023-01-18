@@ -20,9 +20,7 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB) {
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db.Order("created_at desc")
-
-	db = db.Find(&role)
+	db = db.Order("created_at desc").Find(&role)
 
 	return role, db
 }

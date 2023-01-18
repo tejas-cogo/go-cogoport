@@ -25,8 +25,7 @@ func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.Ticke
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db.Order("created_at desc")
-	db = db.Find(&ticket_default_timings)
+	db = db.Order("created_at desc").Find(&ticket_default_timings)
 
 	return ticket_default_timings, db
 }

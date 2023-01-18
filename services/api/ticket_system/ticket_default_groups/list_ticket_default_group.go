@@ -24,9 +24,7 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) ([]models.TicketD
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
 	}
-	db.Order("created_at desc")
-
-	db = db.Find(&ticket_default_groups)
+	db = db.Order("created_at desc").Find(&ticket_default_groups)
 
 	return ticket_default_groups, db
 }
