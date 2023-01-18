@@ -12,14 +12,14 @@ func ListTicketSpectator(filters models.TicketSpectator) ([]models.TicketSpectat
 	var ticket_spectator []models.TicketSpectator
 
 	if filters.TicketID != 0 {
-		db = db.Where("ticket_id = ?", filters.TicketID)
+		db.Where("ticket_id = ?", filters.TicketID)
 	}
 
 	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+		db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
-	db.Preload("TicketUser").Find(&ticket_spectator)
+	db = db.Preload("TicketUser").Find(&ticket_spectator)
 
 	return ticket_spectator, db
 }

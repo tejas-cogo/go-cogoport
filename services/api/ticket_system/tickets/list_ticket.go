@@ -12,19 +12,19 @@ func ListTicket(filters models.Ticket) ([]models.Ticket, *gorm.DB) {
 	var ticket []models.Ticket
 
 	if filters.ID != 0 {
-		db = db.Where("id = ?", filters.ID)
+		db.Where("id = ?", filters.ID)
 	}
 
 	if filters.Type != "" {
-		db = db.Where("type = ?", filters.Type)
+		db.Where("type = ?", filters.Type)
 	}
 
 	if filters.Priority != "" {
-		db = db.Where("priority = ?", filters.Priority)
+		db.Where("priority = ?", filters.Priority)
 	}
 
 	if filters.Source != "" {
-		db = db.Where("source = ?", filters.Source)
+		db.Where("source = ?", filters.Source)
 	}
 
 	// if filters.Tags[0] != "" {
@@ -32,12 +32,12 @@ func ListTicket(filters models.Ticket) ([]models.Ticket, *gorm.DB) {
 	// }
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		db.Where("status = ?", filters.Status)
 	} else {
-		db = db.Where("status = ?", "active")
+		db.Where("status = ?", "active")
 	}
 
-	db.Preload("TicketUser").Find(&ticket)
+	db = db.Preload("TicketUser").Find(&ticket)
 
 	return ticket, db
 }

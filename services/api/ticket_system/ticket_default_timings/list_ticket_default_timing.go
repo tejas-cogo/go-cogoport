@@ -13,14 +13,14 @@ func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.Ticke
 	var ticket_default_timings []models.TicketDefaultTiming
 
 	if filters.TicketType != "" {
-		db = db.Where("ticket_type = ?", filters.TicketType)
+		db.Where("ticket_type = ?", filters.TicketType)
 	}
 
 	if filters.TicketPriority != "" {
-		db = db.Where("ticket_priority = ?", filters.TicketPriority)
+		db.Where("ticket_priority = ?", filters.TicketPriority)
 	}
 
-	db.Find(&ticket_default_timings)
+	db = db.Find(&ticket_default_timings)
 
 	return ticket_default_timings, db
 }

@@ -3,28 +3,29 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListGroup(filters models.Group,tags string) []models.Group{
+func ListGroup(filters models.Group, tags string) ([]models.Group, *gorm.DB) {
 	db := config.GetDB()
 
 	var groups []models.Group
 
-	if (filters.Name != ""){
-		db = db.Where("name Like", filters.Name)
-	} 
+	if filters.Name != "" {
+		db.Where("name Like", filters.Name)
+	}
 
-	if (tags != ""){
-		db = db.Where("? Like ANY(tags)", tags)
-	} 
+	if tags != "" {
+		db.Where("? Like ANY(tags)", tags)
+	}
 
-	if (filters.Status != ""){
-		db = db.Where("status = ?", filters.Status)
-	}else{
-		db = db.Where("status = ?", "active")
-	} 
+	if filters.Status != "" {
+		db.Where("status = ?", filters.Status)
+	} else {
+		db.Where("status = ?", "active")
+	}
 
-	db.Find(&groups)
+	db = db.Find(&groups)
 
-	return groups
+	return groups, db
 }

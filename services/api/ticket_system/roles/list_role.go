@@ -12,10 +12,10 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB) {
 	var role []models.Role
 
 	if filters.Name != "" {
-		db = db.Where("name Like ?", filters.Name)
+		db.Where("name Like ?", filters.Name)
 	}
 
-	db.Find(&role)
+	db = db.Find(&role)
 
 	return role, db
 }

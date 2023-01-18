@@ -12,10 +12,10 @@ func ListTicketDefaultType(filters models.TicketDefaultType) ([]models.TicketDef
 	var ticket_default_type []models.TicketDefaultType
 
 	if filters.TicketType != "" {
-		db = db.Where("ticket_type LIKE ?", filters.TicketType)
+		db.Where("ticket_type LIKE ?", filters.TicketType)
 	}
 
-	db.Find(&ticket_default_type)
+	db = db.Find(&ticket_default_type)
 
 	return ticket_default_type, db
 }

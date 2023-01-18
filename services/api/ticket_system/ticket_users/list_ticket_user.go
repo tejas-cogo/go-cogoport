@@ -13,18 +13,18 @@ func ListTicketUser(filters models.TicketUser) ([]models.TicketUser, *gorm.DB) {
 	var ticket_user []models.TicketUser
 
 	if filters.ID != 0 {
-		db = db.Where("id = ?", filters.ID)
+		db.Where("id = ?", filters.ID)
 	}
 
 	if filters.SystemUserID != uuid.Nil {
-		db = db.Where("system_user_id = ?", filters.SystemUserID)
+		db.Where("system_user_id = ?", filters.SystemUserID)
 	}
 
 	if filters.Name != "" {
-		db = db.Where("name LIKE ?", filters.Name)
+		db.Where("name LIKE ?", filters.Name)
 	}
 
-	db.Find(&ticket_user)
+	db = db.Find(&ticket_user)
 
 	return ticket_user, db
 }
