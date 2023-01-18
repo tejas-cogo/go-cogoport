@@ -10,6 +10,7 @@ import (
 )
 
 func ListTicketActivity(c *gin.Context) {
+
 	var filters models.TicketActivity
 
 	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
@@ -26,6 +27,8 @@ func ListTicketActivity(c *gin.Context) {
 	pg := paginate.New()
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
+
+
 
 func CreateTicketActivity(c *gin.Context) {
 	var body models.Filter

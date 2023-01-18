@@ -26,24 +26,26 @@ func ListTicket(c *gin.Context) {
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
+func GetTicketStats(c *gin.Context) {
+	var stats models.TicketStat
+
+	ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[performed_by_id]"))
+	stats.PerformedByID = uint(ID)
+
+	// filters.Source = c.Request.URL.Query().Get("filters[source]")
+	// filters.Type = c.Request.URL.Query().Get("filters[type]")
+	// filters.Priority = c.Request.URL.Query().Get("filters[priority]")
+	// filters.Status = c.Request.URL.Query().Get("filters[status]")
+	// filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
+	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
+	c.JSON(200, service.GetTicketStats(stats))
+}
+
 func ListTicketDetail(c *gin.Context) {
 	var filters models.TicketDetail
 
 	ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[id]"))
 	filters.TicketID = uint(ID)
-
-	// TicketSpectatorID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_spectator_id]"))
-	// filters.TicketSpectatorID = uint(TicketSpectatorID)
-
-	// TicketReviewerID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_reviewer_id]"))
-	// filters.TicketReviewerID = uint(TicketReviewerID)
-
-	// TicketActivityID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_activity_id]"))
-	// filters.TicketActivityID = uint(TicketActivityID)
-
-	// ser, db := service.ListTicketDetail(filters)
-	// pg := paginate.New()
-	// c.JSON(200, pg.Response(db, c.Request, &ser))
 	c.JSON(200, service.ListTicketDetail(filters))
 }
 

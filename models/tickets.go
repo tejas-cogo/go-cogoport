@@ -21,9 +21,9 @@ type Ticket struct {
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
-	Tat                     string    `gorm:"not null"`
-	ExpiryDate              time.Time `gorm:"not null"`
-	Status                  string    `gorm:"not null:default:'active'"`
+	Tat                     string          `gorm:"not null"`
+	ExpiryDate              time.Time       `gorm:"not null"`
+	Status                  string          `gorm:"not null:default:'active'"`
 }
 
 type TicketDetail struct {
@@ -35,4 +35,15 @@ type TicketDetail struct {
 	TicketActivity    []TicketActivity
 	TicketID          uint
 	Ticket            Ticket
+}
+
+type TicketStat struct {
+	PerformedByID uint
+	Overdue       uint
+	DueToday      uint
+	Open          uint
+	Escalated     uint
+	Rejected      uint
+	Closed        uint
+	Reassigned    uint
 }

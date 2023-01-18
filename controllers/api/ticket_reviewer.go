@@ -23,11 +23,11 @@ func ListTicketReviewer(c *gin.Context) {
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
-func CreateTicketReviewer(c *gin.Context) {
-	var body models.Filter
-	c.BindJSON(&body)
-	c.JSON(200, service.CreateTicketReviewer(body))
-}
+// func CreateTicketReviewer(c *gin.Context) {
+// 	var body models.Filter
+// 	c.BindJSON(&body)
+// 	c.JSON(200, service.CreateTicketReviewer(body))
+// }
 
 func ReassignTicketReviewer(c *gin.Context) {
 	var body models.ReviewerActivity

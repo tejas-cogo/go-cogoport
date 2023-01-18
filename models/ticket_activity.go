@@ -16,11 +16,12 @@ type TicketActivity struct {
 	Type         string          `gorm:"not null"`
 	Data         gormjsonb.JSONB `gorm:"type:json"`
 	IsRead       bool
+	Status       string
 }
 
 type Activity struct {
 	SystemUserID uuid.UUID
 	TicketUserID uint
-	Description string
+	Description  string
 	Data         gormjsonb.JSONB `gorm:"type:json"`
 }

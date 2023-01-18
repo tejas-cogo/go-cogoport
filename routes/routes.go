@@ -65,7 +65,8 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("delete_ticket_audit", controllers.DeleteTicketAudit)
 	ticket_system.POST("update_ticket_audit", controllers.UpdateTicketAudit)
 
-	ticket_system.POST("create_ticket_reviewer", controllers.CreateTicketReviewer)
+	// ticket_system.POST("create_ticket_reviewer", controllers.CreateTicketReviewer)
+	ticket_system.POST("reassign_ticket_reviewer", controllers.ReassignTicketReviewer)
 	ticket_system.GET("list_ticket_reviewer", controllers.ListTicketReviewer)
 	ticket_system.POST("delete_ticket_reviewer", controllers.DeleteTicketReviewer)
 	ticket_system.POST("update_ticket_reviewer", controllers.UpdateTicketReviewer)

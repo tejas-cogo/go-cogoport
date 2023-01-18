@@ -1,7 +1,6 @@
 package models
 
 import (
-	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
@@ -26,11 +25,6 @@ type Filter struct {
 	TicketToken         TicketToken
 }
 
-type View struct {
-	Type            string
-	ThroughCriteria gormjsonb.JSONB `gorm:"type:[]json"`
-}
-
 //Model is sample of common table structure
 
 func Init() {
@@ -47,7 +41,7 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&TicketDefaultType{})
+	db.Migrator().AutoMigrate(&TicketActivity{})
 
 	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
 }
