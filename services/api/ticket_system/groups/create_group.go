@@ -12,6 +12,7 @@ type GroupService struct {
 func CreateGroup(group models.Group) string {
 	db := config.GetDB()
 	//  result := map[string]interface{}{}
+	group.Status = "active"
 	db.Create(&group)
 	return "Successfully created"
 }

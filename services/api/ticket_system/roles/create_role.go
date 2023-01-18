@@ -12,6 +12,7 @@ type RoleService struct {
 func CreateRole(role models.Role) models.Role {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
+	role.Status = "active"
 	db.Create(&role)
 	return role
 }

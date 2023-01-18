@@ -34,6 +34,7 @@ func CreateTicketToken(body models.Filter) models.TicketToken {
 	ticket_token.ExpiryDate = time.Now().Add(time.Hour)
 
 	ticket_token.TicketUserID = ticket_user.ID
+	ticket_token.Status = "active"
 
 	db.Create(&ticket_token)
 

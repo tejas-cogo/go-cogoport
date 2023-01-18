@@ -12,6 +12,7 @@ type TicketSpectatorService struct {
 func CreateTicketSpectator(ticket_spectator models.TicketSpectator) models.TicketSpectator {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
+	ticket_spectator.Status = "active"
 	db.Create(&ticket_spectator)
 	return ticket_spectator
 }

@@ -73,6 +73,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 		break
 	}
+	ticket.Status = "active"
 
 	db.Create(&ticket)
 

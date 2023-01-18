@@ -12,6 +12,7 @@ type TicketDefaultGroupService struct {
 func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) models.TicketDefaultGroup {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
+	ticket_default_group.Status = "active"
 	db.Create(&ticket_default_group)
 	return ticket_default_group
 }

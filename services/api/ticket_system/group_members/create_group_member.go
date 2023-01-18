@@ -1,8 +1,6 @@
 package ticket_system
 
 import (
-	"fmt"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
@@ -19,9 +17,7 @@ func CreateGroupMember(group_members models.CreateGroupMember) string {
 		group_member.HierarchyLevel = group_members.HierarchyLevel
 		group_member.GroupID = group_members.GroupID
 		group_member.Status = "active"
-		fmt.Println("group", u, "group")
 		group_member.TicketUserID = u
-		fmt.Println("group", group_member, "group")
 		db.Create(&group_member)
 	}
 
