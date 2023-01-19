@@ -66,6 +66,27 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 			CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
 		}
+	} else if ticket_activity.Status == "escalated" {
+		for _, u := range body.Activity.TicketID {
+			var group_member models.GroupMember
+			var ticket_reviewer models.TicketReviewer
+			var ticket models.Ticket
+
+			db.Model(&ticket_reviewer).Where("ticket_id = ? and status = active", u).Update("status", "inactive")
+
+			db.Where("ticket_user_id = ? and status = active", ticket_reviewer.TicketUserID).Find(&group_member)
+
+			ticket_reviewer.TicketID = u
+			ticket_reviewer.TicketUserID = group_member.GroupHeadID
+			ticket_reviewer.GroupID = group_member.GroupID
+			ticket_reviewer.GroupMemberID = group_member.GroupHeadID
+			ticket_reviewer.Status = "active"
+			db.Create(&ticket_reviewer)
+			ticket.Status = "escalated"
+
+			CreateAuditTicket(ticket, db)
+			db.Create(&ticket_activity)
+		}
 	} else {
 		db.Create(&ticket_activity)
 	}

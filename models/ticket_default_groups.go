@@ -7,9 +7,10 @@ import (
 
 type TicketDefaultGroup struct {
 	gorm.Model
-	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	TicketType    string `gorm:"not null"`
-	GroupID       uint   `gorm:"not null"`
-	Group         Group
-	Status        string `gorm:"not null:default:'active'"`
+	PerformedByID     uuid.UUID         `gorm:"type:uuid"`
+	TicketType        string            `gorm:"not null"`
+	// TicketDefaultType TicketDefaultType `gorm:"foreignKey:TicketType"`
+	GroupID           uint              `gorm:"not null"`
+	Group             Group
+	Status            string `gorm:"not null:default:'active'"`
 }

@@ -11,6 +11,7 @@ type GroupMember struct {
 	PerformedByID     uuid.UUID `gorm:"type:uuid"`
 	GroupID           uint      `gorm:"not null"`
 	Group             Group
+	GroupHeadID       uint
 	TicketUserID      uint `gorm:"not null"`
 	TicketUser        TicketUser
 	ActiveTicketCount uint `gorm:"default:0"`
@@ -22,6 +23,7 @@ type CreateGroupMember struct {
 	gorm.Model
 	PerformedByID  uuid.UUID `gorm:"type:uuid"`
 	GroupID        uint
+	GroupHeadID    uint
 	TicketUserID   []uint `gorm:"type:uint[]"`
 	HierarchyLevel uint
 }

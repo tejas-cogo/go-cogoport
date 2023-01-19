@@ -7,6 +7,7 @@ import (
 )
 
 func ListTicketDefaultType(filters models.TicketDefaultType) ([]models.TicketDefaultType, *gorm.DB) {
+
 	db := config.GetDB()
 
 	var ticket_default_type []models.TicketDefaultType

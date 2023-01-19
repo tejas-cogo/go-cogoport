@@ -1,11 +1,27 @@
 package models
 
 import (
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
 
 var db *gorm.DB
+
+type PartnerUserRmMapping struct {
+	ID                 uuid.UUID
+	PartnerID          uuid.UUID
+	UserID             uuid.UUID
+	ReportingManagerID uuid.UUID
+	Status             string
+}
+
+type PartnerUser struct {
+	ID        uuid.UUID
+	PartnerID uuid.UUID
+	UserID    uuid.UUID
+	Status    string
+}
 
 type Filter struct {
 	gorm.Model
@@ -15,6 +31,7 @@ type Filter struct {
 	GroupMember         GroupMember
 	Role                Role
 	TicketActivity      TicketActivity
+	Activity            Activity
 	TicketAudit         TicketAudit
 	TicketDefaultGroup  TicketDefaultGroup
 	TicketDefaultTiming TicketDefaultTiming
@@ -41,7 +58,7 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&TicketDefaultGroup{}, &TicketDefaultType{}, &TicketDefaultTiming{})
+	db.Migrator().AutoMigrate(&TicketDefaultGroup{})
 
 	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/helpers"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"github.com/tejas-cogo/go-cogoport/routes"
+	// "github.com/tejas-cogo/go-cogoport/workers"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 	}
 
 	config.Connect()
+	// config.ConnectCogoport()
 	// workers.Workers()
 
 	models.Init()
@@ -54,6 +56,7 @@ func main() {
 	logger.Error("Error log level message")
 	r.Run(":" + port)
 
-	// workers.Workers()
+	// workers.StartClient()
+	// workers.StartHandler()
 
 }
