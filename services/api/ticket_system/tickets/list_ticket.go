@@ -35,9 +35,9 @@ func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	if sort.SortBy == "Expiring soon" && sort.SortType == "asc" {
+	if sort.SortBy == "expiry_duration" && sort.SortType == "asc" {
 		db = db.Order("expiry_duration asc").Order("created_at desc")
-	} else if sort.SortBy == "Expiring soon" && sort.SortType == "desc" {
+	} else if sort.SortBy == "expiry_duration" && sort.SortType == "desc" {
 		db = db.Order("expiry_duration desc").Order("created_at desc")
 	} else {
 		db = db.Order("created_at desc").Order("expiry_duration desc")
