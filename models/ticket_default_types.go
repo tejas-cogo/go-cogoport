@@ -9,7 +9,7 @@ import (
 type TicketDefaultType struct {
 	gorm.Model
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	TicketType        string          `gorm:"not null"`
+	TicketType        string          `gorm:"not null:unique"`
 	AdditionalOptions gormjsonb.JSONB `gorm:"type:json"`
 	Status            string          `gorm:"not null:default:'active'"`
 }

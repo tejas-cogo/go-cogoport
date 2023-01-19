@@ -42,6 +42,11 @@ type Filter struct {
 	TicketToken         TicketToken
 }
 
+type Sort struct {
+	SortBy   string
+	SortType string
+}
+
 //Model is sample of common table structure
 
 func Init() {
@@ -58,7 +63,7 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&TicketDefaultGroup{})
+	db.Migrator().AutoMigrate(&TicketDefaultType{}, &Role{}, &GroupMember{}, &Group{}, &TicketUser{}, &Ticket{})
 
 	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
 }

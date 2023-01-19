@@ -8,7 +8,7 @@ import (
 type Role struct {
 	gorm.Model
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	Name          string `gorm:"not null"`
+	Name          string `gorm:"not null:unique"`
 	Level         uint   `gorm:"not null"`
 	Status        string `gorm:"not null:default:'active'"`
 }

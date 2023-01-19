@@ -30,8 +30,9 @@ func ListTicketDetail(filters models.TicketDetail) models.TicketDetail {
 	ticket_detail.TicketActivity, _ = activities.ListTicketActivity(ticket_activity)
 
 	var ticket models.Ticket
+	var sort models.Sort
 	ticket.ID = filters.TicketID
-	ticket_data, _ := ListTicket(ticket)
+	ticket_data, _ := ListTicket(ticket,sort)
 	for _,u := range ticket_data{
 		ticket_detail.Ticket = u
 	}

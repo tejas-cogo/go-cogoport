@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,7 @@ import (
 
 func ListTicket(c *gin.Context) {
 	var filters models.Ticket
+	var sort models.Sort
 
 	ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[id]"))
 	filters.ID = uint(ID)
@@ -20,9 +22,11 @@ func ListTicket(c *gin.Context) {
 	filters.Type = c.Request.URL.Query().Get("filters[type]")
 	filters.Priority = c.Request.URL.Query().Get("filters[priority]")
 	filters.Status = c.Request.URL.Query().Get("filters[status]")
+	sort.SortBy = c.Request.URL.Query().Get("sort_by")
+	sort.SortType = c.Request.URL.Query().Get("sort_type")
 	// filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
 	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
-	ser, db := service.ListTicket(filters)
+	ser, db := service.ListTicket(filters, sort)
 	pg := paginate.New()
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
@@ -30,7 +34,17 @@ func ListTicket(c *gin.Context) {
 func GetTicketStats(c *gin.Context) {
 	var stats models.TicketStat
 
-	stats.PerformedByID, _ = uuid.Parse(c.Request.URL.Query().Get("filters[performed_by_id]"))
+	id := c.Request.URL.Query().Get("filters[agent_id]")
+	rm_id := c.Request.URL.Query().Get("filters[agent_rm_id]")
+
+	if id != "" {
+		stats.AgentID, _ = uuid.Parse(id)
+	}
+	if rm_id != "" {
+		stats.AgentRmID, _ = uuid.Parse(rm_id)
+	}
+
+	fmt.Println("rm", stats.AgentRmID, "rm")
 
 	c.JSON(200, service.GetTicketStats(stats))
 }

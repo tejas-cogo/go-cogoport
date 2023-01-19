@@ -7,10 +7,10 @@ import (
 
 type TicketUser struct {
 	gorm.Model
-	Name         string    `gorm:"not null:json:email"`
-	SystemUserID uuid.UUID `gorm:"type:uuid"`
-	Email        string    `gorm:"not null:json:email"`
-	MobileNumber string    `gorm:"type:varchar(10)"`
+	Name         string    `gorm:"not null:json:name:unique"`
+	SystemUserID uuid.UUID `gorm:"type:uuid:unique"`
+	Email        string    `gorm:"not null:json:email:unique"`
+	MobileNumber string    `gorm:"type:varchar(10):unique"`
 	RoleID       uint
 	Source       string `gorm:"not null"`
 	Type         string `gorm:"not null"`
