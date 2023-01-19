@@ -32,7 +32,8 @@ func CreateTicketActivity(c *gin.Context) {
 	var body models.Activity
 	c.BindJSON(&body)
 	var filters models.Filter
-	filters.TicketActivity.TicketID = body.TicketID
+	filters.Activity.TicketID = body.TicketID
+	filters.Activity.PerformedByID = body.PerformedByID
 	filters.TicketUser.SystemUserID = body.PerformedByID
 	filters.TicketActivity.Type = body.Type
 	filters.TicketActivity.Description = body.Description

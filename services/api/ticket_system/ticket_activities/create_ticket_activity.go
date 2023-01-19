@@ -55,19 +55,21 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	if ticket_activity.Status == "resolved" {
 		var ticket models.Ticket
 
-		db.Model(&ticket).Where("id = ?", body.TicketActivity.TicketID).Update("status", "closed")
-
-		CreateAuditTicket(ticket, db)
-
+		for _, u := range body.Activity.TicketID {
+			db.Model(&ticket).Where("id = ?", u).Update("status", "closed")
+			CreateAuditTicket(ticket, db)
+			db.Create(&ticket_activity)
+		}
 	} else if ticket_activity.Status == "rejected" {
 		var ticket models.Ticket
 
-		db.Model(&ticket).Where("id = ?", body.TicketActivity.TicketID).Update("status", "rejected")
-
-		CreateAuditTicket(ticket, db)
+		for _, u := range body.Activity.TicketID {
+			db.Model(&ticket).Where("id = ?", u).Update("status", "rejected")
+			CreateAuditTicket(ticket, db)
+			db.Create(&ticket_activity)
+		}
+	} else {
+		db.Create(&ticket_activity)
 	}
-
-	db.Create(&ticket_activity)
-
 	return ticket_activity
 }

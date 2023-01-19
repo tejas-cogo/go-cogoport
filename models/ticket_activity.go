@@ -21,7 +21,7 @@ type TicketActivity struct {
 
 type Activity struct {
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	TicketID      uint
+	TicketID      []uint
 	TicketUserID  uint
 	Description   string
 	Data          gormjsonb.JSONB `gorm:"type:json"`
