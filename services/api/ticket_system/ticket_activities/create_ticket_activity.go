@@ -6,6 +6,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
+	// tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
 type TicketActivityService struct {
@@ -35,6 +36,14 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	}
 	ticket_activity := body.TicketActivity
 
+	if ticket_activity.Status == "resolved" {
+		var ticket models.Ticket
+
+		db.Model(&ticket).Where("id = ?", body.TicketActivity.TicketID).Update("status", "closed")
+		
+	}
+
 	db.Create(&ticket_activity)
+
 	return ticket_activity
 }

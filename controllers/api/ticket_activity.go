@@ -28,12 +28,18 @@ func ListTicketActivity(c *gin.Context) {
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
-
-
 func CreateTicketActivity(c *gin.Context) {
-	var body models.Filter
+	var body models.Activity
 	c.BindJSON(&body)
-	c.JSON(200, service.CreateTicketActivity(body))
+	var filters models.Filter
+	filters.TicketActivity.TicketID = body.TicketID
+	filters.TicketUser.SystemUserID = body.PerformedByID
+	filters.TicketActivity.Type = body.Type
+	filters.TicketActivity.Description = body.Description
+	filters.TicketActivity.Data = body.Data
+	filters.TicketActivity.Status = body.Status
+
+	c.JSON(200, service.CreateTicketActivity(filters))
 }
 
 func DeleteTicketActivity(c *gin.Context) {

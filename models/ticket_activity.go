@@ -25,4 +25,6 @@ type Activity struct {
 	TicketUserID  uint
 	Description   string
 	Data          gormjsonb.JSONB `gorm:"type:json"`
+	Type          string
+	Status        string
 }

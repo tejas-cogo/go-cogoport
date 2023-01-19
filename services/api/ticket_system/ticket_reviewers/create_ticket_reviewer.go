@@ -9,7 +9,7 @@ import (
 )
 
 type TicketReviewerService struct {
-	TicketReviewer models.TicketReviewer
+	TicketReviewer   models.TicketReviewer
 	ReviewerActivity models.ReviewerActivity
 }
 
