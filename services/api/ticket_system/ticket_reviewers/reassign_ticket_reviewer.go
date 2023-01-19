@@ -1,50 +1,50 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
+	// activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 )
 
-func ReassignTicketReviewer(activity models.Activity, body models.TicketReviewer) models.TicketReviewer {
+func ReassignTicketReviewer(body models.ReviewerActivity) string {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	var ticket_reviewer_old []models.TicketReviewer
+	var ticket_reviewer_old models.TicketReviewer
 	var ticket_reviewer_active models.TicketReviewer
-	var ticket_reviewer_new models.TicketReviewer
 
-	ticket_reviewer_new.TicketID = body.TicketID
-	ticket_reviewer_new.GroupID = body.GroupID
-	ticket_reviewer_new.TicketUserID = body.TicketUserID
-	ticket_reviewer_new.GroupMemberID = body.GroupMemberID
-
-	db.Where("ticket_id = ?", body.TicketID)
-	db.Find(&ticket_reviewer_old)
-
-	for _, u := range ticket_reviewer_old {
-		if u == ticket_reviewer_new {
-			u.Status = "active"
-			db.Save(&u)
-		}
-	}
-
-	db.Where("id = ?", body.ID)
-	db.Find(&ticket_reviewer_active)
+	db.Where("ticket_id = ? AND status = 'active'", body.TicketID).Find(&ticket_reviewer_active)
 
 	ticket_reviewer_active.Status = "inactive"
 	db.Save(&ticket_reviewer_active)
 
-	db.Create(&ticket_reviewer_new)
+	fmt.Println("edcs", body, "rfd")
+
+	db.Where("ticket_id = ? AND ticket_user_id = ?", body.TicketID, body.ReviewerUserID).Find(&ticket_reviewer_old)
+
+	if ticket_reviewer_old.ID != 0 {
+		ticket_reviewer_old.Status = "active"
+		db.Save(&ticket_reviewer_old)
+	} else {
+		var ticket_reviewer models.TicketReviewer
+		ticket_reviewer.TicketID = body.TicketID
+		ticket_reviewer.TicketUserID = body.ReviewerUserID
+		ticket_reviewer.GroupID = body.GroupID
+		ticket_reviewer.GroupMemberID = body.GroupMemberID
+		db.Create(&ticket_reviewer)
+	}
 
 	var filters models.Filter
 
 	filters.TicketActivity.TicketID = body.TicketID
-	filters.TicketUser.SystemUserID = activity.SystemUserID
+	filters.TicketUser.SystemUserID = body.PerformedByID
 	filters.TicketActivity.Type = "Reviewer Reassigned"
-	filters.TicketActivity.Data = activity.Data
+	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Status = "reassigned"
 	activities.CreateTicketActivity(filters)
 
-	return ticket_reviewer_new
+	return "Reassigned Successfully"
 }

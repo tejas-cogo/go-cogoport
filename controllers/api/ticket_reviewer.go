@@ -32,7 +32,7 @@ func ListTicketReviewer(c *gin.Context) {
 func ReassignTicketReviewer(c *gin.Context) {
 	var body models.ReviewerActivity
 	c.BindJSON(&body)
-	c.JSON(200, service.ReassignTicketReviewer(body.Activity, body.TicketReviewer))
+	c.JSON(200, service.ReassignTicketReviewer(body))
 }
 
 func DeleteTicketReviewer(c *gin.Context) {

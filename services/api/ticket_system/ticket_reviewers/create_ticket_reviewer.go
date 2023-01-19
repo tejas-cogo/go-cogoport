@@ -1,8 +1,6 @@
 package ticket_system
 
 import (
-	"fmt"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
@@ -12,6 +10,7 @@ import (
 
 type TicketReviewerService struct {
 	TicketReviewer models.TicketReviewer
+	ReviewerActivity models.ReviewerActivity
 }
 
 func CreateTicketReviewer(body models.Ticket) models.TicketReviewer {
@@ -48,8 +47,7 @@ func CreateTicketReviewer(body models.Ticket) models.TicketReviewer {
 	filters.TicketActivity.TicketUserID = ticket_reviewer.TicketUserID
 	filters.TicketActivity.UserType = "system"
 	filters.TicketActivity.Type = "Reviewer Assigned"
-
-	fmt.Println("id", body.ID)
+	filters.TicketActivity.Status = "assigned"
 
 	activities.CreateTicketActivity(filters)
 

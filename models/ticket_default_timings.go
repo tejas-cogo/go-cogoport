@@ -1,12 +1,14 @@
 package models
 
 import (
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type TicketDefaultTiming struct {
 	gorm.Model
+	PerformedByID uuid.UUID `gorm:"type:uuid"`
 	TicketType     string         `gorm:"not null"`
 	TicketPriority string         `gorm:"not null"`
 	ExpiryDuration string         `gorm:"not null"`

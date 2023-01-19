@@ -6,6 +6,7 @@ import (
 
 type TicketAudit struct {
 	gorm.Model
+	
 	Object   string `gorm:"not null"`
 	ObjectId uint `gorm:"not null"`
 	Action   string `gorm:"not null"`

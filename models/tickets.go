@@ -39,7 +39,7 @@ type TicketDetail struct {
 }
 
 type TicketStat struct {
-	PerformedByID uuid.UUID
+	PerformedByID uuid.UUID `gorm:"type:uuid"`
 	Overdue       int64
 	DueToday      int64
 	Open          int64
@@ -47,4 +47,5 @@ type TicketStat struct {
 	Rejected      int64
 	Closed        int64
 	Reassigned    int64
+	Unresolved    int64
 }

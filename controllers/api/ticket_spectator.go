@@ -32,7 +32,7 @@ func CreateTicketSpectator(c *gin.Context) {
 func ReassignTicketSpectator(c *gin.Context) {
 	var body models.SpectatorActivity
 	c.BindJSON(&body)
-	c.JSON(200, service.ReassignTicketSpectator(body.Activity, body.TicketSpectator))
+	c.JSON(200, service.ReassignTicketSpectator(body))
 }
 
 func DeleteTicketSpectator(c *gin.Context) {

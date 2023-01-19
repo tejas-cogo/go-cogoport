@@ -1,13 +1,15 @@
 package models
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type TicketDefaultGroup struct {
 	gorm.Model
-	TicketType string `gorm:"not null"`
-	GroupID    uint   `gorm:"not null"`
-	Group      Group
-	Status     string `gorm:"not null:default:'active'"`
+	PerformedByID uuid.UUID `gorm:"type:uuid"`
+	TicketType    string `gorm:"not null"`
+	GroupID       uint   `gorm:"not null"`
+	Group         Group
+	Status        string `gorm:"not null:default:'active'"`
 }

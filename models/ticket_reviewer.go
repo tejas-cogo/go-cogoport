@@ -1,13 +1,15 @@
 package models
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type TicketReviewer struct {
 	gorm.Model
-	TicketID      uint `gorm:"not null"`
-	TicketUserID  uint `gorm:"not null"`
+	PerformedByID uuid.UUID `gorm:"type:uuid"`
+	TicketID      uint      `gorm:"not null"`
+	TicketUserID  uint      `gorm:"not null"`
 	TicketUser    TicketUser
 	GroupID       uint   `gorm:"not null"`
 	GroupMemberID uint   `gorm:"not null"`
@@ -15,6 +17,10 @@ type TicketReviewer struct {
 }
 
 type ReviewerActivity struct {
-	Activity       Activity
-	TicketReviewer TicketReviewer
+	TicketID       uint
+	ReviewerUserID uint
+	GroupID        uint
+	GroupMemberID  uint
+	PerformedByID  uuid.UUID `gorm:"type:uuid"`
+	Description    string
 }

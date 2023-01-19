@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
@@ -22,9 +24,12 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 		} else {
 			ticket_user.ID = body.TicketActivity.TicketUserID
 		}
+
 		ticket_user, _ := user.ListTicketUser(ticket_user)
 		for _, u := range ticket_user {
+			fmt.Println("Fdv", u.ID, "vs")
 			body.TicketActivity.UserType = u.Type
+			body.TicketActivity.TicketUserID = u.ID
 			break
 		}
 	}

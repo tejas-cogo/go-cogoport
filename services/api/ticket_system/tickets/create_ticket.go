@@ -73,7 +73,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 		break
 	}
-	ticket.Status = "open"
+	ticket.Status = "unresolved"
 
 	db.Create(&ticket)
 
@@ -82,6 +82,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	filters.TicketActivity.TicketID = ticket.ID
 	filters.TicketActivity.TicketUserID = ticket.TicketUserID
 	filters.TicketActivity.Type = "Ticket Created"
+	filters.TicketActivity.Status = "open"
 
 	activities.CreateTicketActivity(filters)
 
