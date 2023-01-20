@@ -29,12 +29,6 @@ func CreateTicketSpectator(c *gin.Context) {
 	c.JSON(200, service.CreateTicketSpectator(ticket_spectator))
 }
 
-func ReassignTicketSpectator(c *gin.Context) {
-	var body models.SpectatorActivity
-	c.BindJSON(&body)
-	c.JSON(200, service.ReassignTicketSpectator(body))
-}
-
 func DeleteTicketSpectator(c *gin.Context) {
 	var body models.TicketSpectator
 	c.BindJSON(&body)
@@ -42,9 +36,9 @@ func DeleteTicketSpectator(c *gin.Context) {
 	c.JSON(200, service.DeleteTicketSpectator(id))
 }
 
-func UpdateTicketSpectator(c *gin.Context) {
-	var body models.TicketSpectator
-	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.UpdateTicketSpectator(id, body))
-}
+// func UpdateTicketSpectator(c *gin.Context) {
+// 	var body models.TicketSpectator
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	c.JSON(200, service.UpdateTicketSpectator(id, body))
+// }

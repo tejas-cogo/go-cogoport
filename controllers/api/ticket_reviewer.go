@@ -35,15 +35,15 @@ func ReassignTicketReviewer(c *gin.Context) {
 	c.JSON(200, service.ReassignTicketReviewer(body))
 }
 
-func DeleteTicketReviewer(c *gin.Context) {
-	var body models.TicketReviewer
-	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.DeleteTicketReviewer(id))
-}
+// func DeleteTicketReviewer(c *gin.Context) {
+// 	var body models.TicketReviewer
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	c.JSON(200, service.DeleteTicketReviewer(id))
+// }
 
-func UpdateTicketReviewer(c *gin.Context) {
-	var body models.TicketReviewer
-	c.BindJSON(&body)
-	c.JSON(200, service.UpdateTicketReviewer(body))
-}
+// func UpdateTicketReviewer(c *gin.Context) {
+// 	var body models.TicketReviewer
+// 	c.BindJSON(&body)
+// 	c.JSON(200, service.UpdateTicketReviewer(body))
+// }

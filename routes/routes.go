@@ -32,20 +32,20 @@ func SetupRouter() *gin.Engine {
 
 	ticket_system.GET("list_ticket_user", controllers.ListTicketUser)
 	ticket_system.POST("create_ticket_user", controllers.CreateTicketUser)
-	ticket_system.POST("delete_ticket_user", controllers.DeleteTicketUser)
+	// ticket_system.POST("delete_ticket_user", controllers.DeleteTicketUser)
 	ticket_system.POST("update_ticket_user", controllers.UpdateTicketUser)
 
 	ticket_system.GET("list_ticket_detail", controllers.ListTicketDetail)
 	ticket_system.GET("list_ticket", controllers.ListTicket)
 	ticket_system.GET("get_ticket_stats", controllers.GetTicketStats)
 	ticket_system.POST("create_ticket", controllers.CreateTicket)
-	ticket_system.POST("delete_ticket", controllers.DeleteTicket)
+	// ticket_system.POST("delete_ticket", controllers.DeleteTicket)
 	ticket_system.POST("update_ticket", controllers.UpdateTicket)
 
 	ticket_system.GET("list_ticket_activity", controllers.ListTicketActivity)
 	ticket_system.POST("create_ticket_activity", controllers.CreateTicketActivity)
-	ticket_system.POST("delete_ticket_activity", controllers.DeleteTicketActivity)
-	ticket_system.POST("update_ticket_activity", controllers.UpdateTicketActivity)
+	// ticket_system.POST("delete_ticket_activity", controllers.DeleteTicketActivity)
+	// ticket_system.POST("update_ticket_activity", controllers.UpdateTicketActivity)
 
 	ticket_system.GET("list_ticket_task", controllers.ListTicketTask)
 	ticket_system.POST("create_ticket_task", controllers.CreateTicketTask)
@@ -57,11 +57,10 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("delete_ticket_task_assignee", controllers.DeleteTicketTaskAssignee)
 	ticket_system.POST("update_ticket_task_assignee", controllers.UpdateTicketTaskAssignee)
 
-	ticket_system.POST("reassign_ticket_spectator", controllers.ReassignTicketSpectator)
 	ticket_system.GET("list_ticket_spectator", controllers.ListTicketSpectator)
 	ticket_system.POST("create_ticket_spectator", controllers.CreateTicketSpectator)
 	ticket_system.POST("delete_ticket_spectator", controllers.DeleteTicketSpectator)
-	ticket_system.POST("update_ticket_spectator", controllers.UpdateTicketSpectator)
+	// ticket_system.POST("update_ticket_spectator", controllers.UpdateTicketSpectator)
 
 	// ticket_system.POST("create_ticket_audit", controllers.CreateTicketAudit)
 	ticket_system.POST("delete_ticket_audit", controllers.DeleteTicketAudit)
@@ -70,8 +69,8 @@ func SetupRouter() *gin.Engine {
 	// ticket_system.POST("create_ticket_reviewer", controllers.CreateTicketReviewer)
 	ticket_system.POST("reassign_ticket_reviewer", controllers.ReassignTicketReviewer)
 	ticket_system.GET("list_ticket_reviewer", controllers.ListTicketReviewer)
-	ticket_system.POST("delete_ticket_reviewer", controllers.DeleteTicketReviewer)
-	ticket_system.POST("update_ticket_reviewer", controllers.UpdateTicketReviewer)
+	// ticket_system.POST("delete_ticket_reviewer", controllers.DeleteTicketReviewer)
+	// ticket_system.POST("update_ticket_reviewer", controllers.UpdateTicketReviewer)
 
 	ticket_system.POST("create_ticket_default_group", controllers.CreateTicketDefaultGroup)
 	ticket_system.POST("delete_ticket_default_group", controllers.DeleteTicketDefaultGroup)

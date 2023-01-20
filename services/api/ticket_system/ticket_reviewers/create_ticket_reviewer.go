@@ -4,7 +4,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
-	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 	defaultgroup "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_groups"
 )
 
@@ -43,13 +42,14 @@ func CreateTicketReviewer(body models.Ticket) models.TicketReviewer {
 		break
 	}
 
-	filters.TicketActivity.TicketID = ticket_reviewer.TicketID
-	filters.TicketActivity.TicketUserID = ticket_reviewer.TicketUserID
-	filters.TicketActivity.UserType = "system"
-	filters.TicketActivity.Type = "Reviewer Assigned"
-	filters.TicketActivity.Status = "assigned"
+	var ticket_activity models.TicketActivity
+	ticket_activity.TicketID = ticket_reviewer.TicketID
+	ticket_activity.TicketUserID = ticket_reviewer.TicketUserID
+	ticket_activity.UserType = "system"
+	ticket_activity.Type = "Reviewer Assigned"
+	ticket_activity.Status = "assigned"
 
-	activities.CreateTicketActivity(filters)
+	db.Create(&ticket_activity)
 
 	return ticket_reviewer
 }

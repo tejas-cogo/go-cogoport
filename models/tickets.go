@@ -39,13 +39,15 @@ type TicketDetail struct {
 }
 
 type TicketStat struct {
-	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	Overdue       int64
-	DueToday      int64
-	Open          int64
-	Escalated     int64
-	Rejected      int64
-	Closed        int64
-	Reassigned    int64
-	Unresolved    int64
+	AgentID     uuid.UUID `gorm:"type:uuid"`
+	AgentRmID   uuid.UUID `gorm:"type:uuid"`
+	TicketUsers []uint
+	Overdue     int64
+	DueToday    int64
+	Open        int64
+	Escalated   int64
+	Rejected    int64
+	Closed      int64
+	Reassigned  int64
+	Unresolved  int64
 }

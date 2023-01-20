@@ -1,18 +1,15 @@
 package ticket_system
 
 import (
-	"encoding/json"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
+	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	timings "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_timings"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
-
-	"gorm.io/gorm"
 )
 
 type TicketService struct {
@@ -35,20 +32,6 @@ func GetDuration(ExpiryDuration string) int {
 
 	return h
 
-}
-
-func CreateAuditTicket(ticket models.Ticket, db *gorm.DB) int {
-	var ticket_audit models.TicketAudit
-
-	ticket_audit.ObjectId = ticket.ID
-	ticket_audit.Action = "create"
-	ticket_audit.Object = "ticket"
-	data, _ := json.Marshal(ticket)
-	ticket_audit.Data = string(data)
-
-	db.Create(&ticket_audit)
-
-	return 0
 }
 
 func CreateTicket(ticket models.Ticket) models.Ticket {
@@ -77,14 +60,15 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	db.Create(&ticket)
 
-	CreateAuditTicket(ticket, db)
+	audits.CreateAuditTicket(ticket, db)
 
-	filters.TicketActivity.TicketID = ticket.ID
-	filters.TicketActivity.TicketUserID = ticket.TicketUserID
-	filters.TicketActivity.Type = "Ticket Created"
-	filters.TicketActivity.Status = "open"
+	var ticket_activity models.TicketActivity
+	ticket_activity.TicketID = ticket.ID
+	ticket_activity.TicketUserID = ticket.TicketUserID
+	ticket_activity.Type = "Ticket Created"
+	ticket_activity.Status = "unresolved"
 
-	activities.CreateTicketActivity(filters)
+	db.Create(&ticket_activity)
 
 	reviewers.CreateTicketReviewer(ticket)
 

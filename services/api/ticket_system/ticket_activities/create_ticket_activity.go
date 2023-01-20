@@ -1,32 +1,17 @@
 package ticket_system
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
-	"gorm.io/gorm"
 	// tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
 type TicketActivityService struct {
 	TicketActivity models.TicketActivity
-}
-
-func CreateAuditTicket(ticket models.Ticket, db *gorm.DB) int {
-	var ticket_audit models.TicketAudit
-
-	ticket_audit.ObjectId = ticket.ID
-	ticket_audit.Action = ticket.Status
-	ticket_audit.Object = "ticket"
-	data, _ := json.Marshal(ticket)
-	ticket_audit.Data = string(data)
-
-	db.Create(&ticket_audit)
-
-	return 0
 }
 
 func CreateTicketActivity(body models.Filter) models.TicketActivity {
@@ -56,14 +41,14 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 		for _, u := range body.Activity.TicketID {
 			var ticket models.Ticket
 			db.Model(&ticket).Where("id = ?", u).Update("status", "closed")
-			CreateAuditTicket(ticket, db)
+			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
 		}
 	} else if ticket_activity.Status == "rejected" {
 		for _, u := range body.Activity.TicketID {
 			var ticket models.Ticket
 			db.Model(&ticket).Where("id = ?", u).Update("status", "rejected")
-			CreateAuditTicket(ticket, db)
+			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
 		}
 	} else if ticket_activity.Status == "escalated" {
@@ -84,10 +69,12 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 			db.Create(&ticket_reviewer)
 			ticket.Status = "escalated"
 
-			CreateAuditTicket(ticket, db)
+			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
 		}
 	} else {
+		var ticket models.Ticket
+		audits.CreateAuditTicket(ticket, db)
 		db.Create(&ticket_activity)
 	}
 	return ticket_activity

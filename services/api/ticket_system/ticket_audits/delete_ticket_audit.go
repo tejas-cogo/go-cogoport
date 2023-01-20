@@ -1,15 +1,10 @@
 package ticket_system
 
 import (
-	_"github.com/tejas-cogo/go-cogoport/config"
-	"github.com/tejas-cogo/go-cogoport/models"
+	_ "github.com/tejas-cogo/go-cogoport/config"
 )
 
-type TicketAuditService struct {
-	TicketAudit models.TicketAudit
-}
-
-func DeleteTicketAudit(id uint) uint{
+func DeleteTicketAudit(id uint) uint {
 	// db := config.GetDB()
 
 	// var ticket_audit models.TicketAudit

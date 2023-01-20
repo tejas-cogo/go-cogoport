@@ -42,15 +42,15 @@ func CreateTicketActivity(c *gin.Context) {
 	c.JSON(200, service.CreateTicketActivity(filters))
 }
 
-func DeleteTicketActivity(c *gin.Context) {
-	var body models.TicketActivity
-	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.DeleteTicketActivity(id))
-}
+// func DeleteTicketActivity(c *gin.Context) {
+// 	var body models.TicketActivity
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	c.JSON(200, service.DeleteTicketActivity(id))
+// }
 
-func UpdateTicketActivity(c *gin.Context) {
-	var body models.TicketActivity
-	c.BindJSON(&body)
-	c.JSON(200, service.UpdateTicketActivity(body))
-}
+// func UpdateTicketActivity(c *gin.Context) {
+// 	var body models.TicketActivity
+// 	c.BindJSON(&body)
+// 	c.JSON(200, service.UpdateTicketActivity(body))
+// }
