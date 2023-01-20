@@ -63,7 +63,7 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&TicketDefaultType{}, &Role{}, &GroupMember{}, &Group{}, &TicketUser{}, &Ticket{})
+	db.Migrator().AutoMigrate(&TicketDefaultGroup{}, &TicketDefaultTiming{})
 
 	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
 }

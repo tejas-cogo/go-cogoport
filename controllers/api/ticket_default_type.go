@@ -17,6 +17,16 @@ func ListTicketDefaultType(c *gin.Context) {
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
+func ListTicketDefault(c *gin.Context) {
+	var filters models.Filter
+
+	filters.TicketDefaultType.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
+
+	ser, db := service.ListTicketDefault(filters)
+	pg := paginate.New()
+	c.JSON(200, pg.Response(db, c.Request, &ser))
+}
+
 func CreateTicketDefaultType(c *gin.Context) {
 	var ticket_default_type models.TicketDefaultType
 	c.BindJSON(&ticket_default_type)

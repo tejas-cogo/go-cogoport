@@ -41,7 +41,7 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	var filters models.Filter
 
 	filters.TicketDefaultTiming.TicketType = ticket.Type
-	filters.TicketDefaultTiming.TicketPriority = ticket.Priority
+	// filters.TicketDefaultTiming.TicketPriority = ticket.Priority
 	filters.TicketDefaultTiming.Status = "active"
 
 	ticket_default_timing, _ := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
