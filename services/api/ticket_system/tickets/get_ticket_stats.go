@@ -20,12 +20,32 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 		YYYYMMDD = "2006-01-02"
 	)
 
-	if stats.PerformedByID != uuid.Nil {
-		db.Where("system_user_id = ?", stats.PerformedByID).First(&ticket_user)
-		db = db.Where("ticket_user_id = ?", ticket_user.ID)
+	if stats.AgentRmID != uuid.Nil {
+		var ticket_users []uint
+		var group_member models.GroupMember
+		// db2 := config.GetCDB()
+		// var partner_user_rm []models.PartnerUserRmMapping
+		// var partner_user []models.PartnerUser
+
+		// db2.Where("reporting_manager_id = ? and status = 'active'", stats.AgentRmID).Distinct("user_id").Find(&partner_user_rm)
+
+		// db2.
+		db.Where("system_user_id = ?", stats.AgentRmID).First(&ticket_user)
+
+		db.Where("group_head_id = ?", ticket_user.ID).Distinct("ticket_user_id").Order("ticket_user_id").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
+
+		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
+	} else if stats.AgentID != uuid.Nil {
+		db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
+
+		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	} else {
+
+		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	}
 
-	db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	fmt.Println("ticket", ticket_id, "ticket")
 
 	db = config.GetDB()
 
@@ -36,9 +56,6 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Count(&stats.Rejected)
 
 	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? AND tat BETWEEN ? AND ?", "unresolved", t.Format(YYYYMMDD), time.Now()).Count(&stats.DueToday)
-
-	fmt.Println("FVDC", ticket_user.ID, "DCS")
-	fmt.Println("FVDC", ticket_id, "DCS")
 
 	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Count(&stats.Overdue)
 
