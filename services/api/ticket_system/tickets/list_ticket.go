@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"time"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -8,6 +10,10 @@ import (
 
 func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm.DB) {
 	db := config.GetDB()
+
+	const (
+		YYYYMMDD = "2006-01-02"
+	)
 
 	var ticket []models.Ticket
 
@@ -23,11 +29,23 @@ func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm
 		db = db.Where("priority = ?", filters.Priority)
 	}
 
-	if filters.Source != "" {
-		db = db.Where("source = ?", filters.Source)
+	if filters.TicketUserID != 0 {
+		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
-	// if filters.Tags[0] != "" {
+	if filters.TicketUserID != 0 {
+		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	}
+
+	if time.Time.IsZero(filters.CreatedAt) {
+		db = db.Where("created_at BETWEEN ? AND ?", filters.CreatedAt.Format(YYYYMMDD))
+	}
+
+	if time.Time.IsZero(filters.ExpiryDate) {
+		db = db.Where("expiry_date BETWEEN ? AND ?", filters.ExpiryDate.Format(YYYYMMDD))
+	}
+
+	// if filters.Tags != "" {
 	// 	db = db.Where("? Like ANY(tags)", filters.Tags)
 	// }
 
