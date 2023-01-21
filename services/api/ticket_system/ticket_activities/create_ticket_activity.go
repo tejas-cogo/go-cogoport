@@ -72,6 +72,8 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
 		}
+	}else if ticket_activity.Status == "activity"{
+		db.Create(&ticket_activity)
 	} else {
 		var ticket models.Ticket
 		audits.CreateAuditTicket(ticket, db)
