@@ -1,6 +1,7 @@
 package ticket_system
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -12,7 +13,7 @@ func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm
 	db := config.GetDB()
 
 	const (
-		YYYYMMDD = "2006-01-02"
+		YYYYMMDD = "2006-01-24"
 	)
 
 	var ticket []models.Ticket
@@ -37,12 +38,18 @@ func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm
 		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
-	if time.Time.IsZero(filters.CreatedAt) {
-		db = db.Where("created_at BETWEEN ? AND ?", filters.CreatedAt.Format(YYYYMMDD))
+	if !time.Time.IsZero(filters.CreatedAt) {
+
+		x := filters.CreatedAt
+		y := x.AddDate(0, 0, 1)
+		fmt.Println(x, ", ", y)
+		db = db.Where("created_at BETWEEN ? AND ?", x, y)
 	}
 
-	if time.Time.IsZero(filters.ExpiryDate) {
-		db = db.Where("expiry_date BETWEEN ? AND ?", filters.ExpiryDate.Format(YYYYMMDD))
+	if !time.Time.IsZero(filters.ExpiryDate) {
+		x := filters.ExpiryDate
+		y := x.AddDate(0, 0, 1)
+		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
 	// if filters.Tags != "" {

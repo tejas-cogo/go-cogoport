@@ -36,6 +36,7 @@ type TicketDetail struct {
 	TicketActivity    []TicketActivity
 	TicketID          uint
 	Ticket            Ticket
+	Priority          string
 }
 
 type TicketStat struct {

@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -19,15 +20,25 @@ func ListTicket(c *gin.Context) {
 	filters.ID = uint(ID)
 
 	filters.Source = c.Request.URL.Query().Get("filters[source]")
+
 	filters.Type = c.Request.URL.Query().Get("filters[type]")
+
 	filters.Priority = c.Request.URL.Query().Get("filters[priority]")
+
+	filters.CreatedAt, _ = time.Parse("2006-01-02", c.Request.URL.Query().Get("filters[created_at]"))
+
+	filters.ExpiryDate, _ = time.Parse("2006-01-02", c.Request.URL.Query().Get("filters[expiry_date]"))
+
 	filters.Status = c.Request.URL.Query().Get("filters[status]")
+
 	sort.SortBy = c.Request.URL.Query().Get("sort_by")
 	sort.SortType = c.Request.URL.Query().Get("sort_type")
+
 	// filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
 	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
 	ser, db := service.ListTicket(filters, sort)
-	pg := paginate.New()
+	pg := paginate.New() 
+	fmt.Println("count", db.RowsAffected, "count")
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
@@ -54,6 +65,7 @@ func ListTicketDetail(c *gin.Context) {
 
 	ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[id]"))
 	filters.TicketID = uint(ID)
+
 	c.JSON(200, service.ListTicketDetail(filters))
 }
 
