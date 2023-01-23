@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	ScheduleTicket = "ticket:schedule"
-	HandleTicket   = "ticket:escalated"
+	TicketEscalation = "ticket:escalated"
+	TicketExpiration = "ticket:expiration"
 )
 
-type TicketTaskPayloads struct {
+type TicketExpirationPayload struct {
 	TicketID       uint
 	ReviewerUserID uint
 	GroupID        uint
@@ -22,7 +22,7 @@ type TicketTaskPayloads struct {
 	ExpiryDate     time.Time
 }
 
-type TicketPayload struct {
+type TicketEscalationPayload struct {
 	TicketID       uint
 	ReviewerUserID uint
 	GroupID        uint
@@ -32,11 +32,21 @@ type TicketPayload struct {
 	ExpiryDate     time.Time
 }
 
-func ScheduleTicketTask(TicketID uint, ReviewerUserID uint, GroupID uint, GroupMemberID uint, GroupHeadID uint) (*asynq.Task, error) {
-	payload, err := json.Marshal(TicketTaskPayloads{TicketID: TicketID, ReviewerUserID: ReviewerUserID, GroupID: GroupID, GroupMemberID: GroupMemberID, GroupHeadID: GroupHeadID})
+func ScheduleTicketEscalationTask(TicketID uint, ReviewerUserID uint, GroupID uint, GroupMemberID uint, GroupHeadID uint) (*asynq.Task, error) {
+	payload, err := json.Marshal(TicketEscalationPayload{TicketID: TicketID, ReviewerUserID: ReviewerUserID, GroupID: GroupID, GroupMemberID: GroupMemberID, GroupHeadID: GroupHeadID})
 
 	if err != nil {
 		return nil, err
 	}
-	return asynq.NewTask(ScheduleTicket, payload), nil
+	return asynq.NewTask(TicketEscalation, payload), nil
 }
+
+func ScheduleTicketExpirationTask(TicketID uint, ReviewerUserID uint, GroupID uint, GroupMemberID uint, GroupHeadID uint) (*asynq.Task, error) {
+	payload, err := json.Marshal(TicketExpirationPayload{TicketID: TicketID, ReviewerUserID: ReviewerUserID, GroupID: GroupID, GroupMemberID: GroupMemberID, GroupHeadID: GroupHeadID})
+
+	if err != nil {
+		return nil, err
+	}
+	return asynq.NewTask(TicketExpiration, payload), nil
+}
+

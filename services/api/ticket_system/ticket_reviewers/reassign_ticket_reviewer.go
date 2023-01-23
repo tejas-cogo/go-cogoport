@@ -15,11 +15,16 @@ func ReassignTicketReviewer(body models.ReviewerActivity) string {
 
 	var ticket_reviewer_old models.TicketReviewer
 	var ticket_reviewer_active models.TicketReviewer
+	var group_member models.GroupMember
 
 	db.Where("ticket_id = ? AND status = 'active'", body.TicketID).Find(&ticket_reviewer_active)
 
 	ticket_reviewer_active.Status = "inactive"
 	db.Save(&ticket_reviewer_active)
+
+	db.Where("id = ?", ticket_reviewer_active.GroupMemberID).First(&group_member)
+	group_member.ActiveTicketCount -= 1
+	db.Save(&group_member)
 
 	fmt.Println("edcs", body, "rfd")
 
@@ -28,6 +33,10 @@ func ReassignTicketReviewer(body models.ReviewerActivity) string {
 	if ticket_reviewer_old.ID != 0 {
 		ticket_reviewer_old.Status = "active"
 		db.Save(&ticket_reviewer_old)
+
+		db.Where("id = ?", ticket_reviewer_old.GroupMemberID).First(&group_member)
+		group_member.ActiveTicketCount += 1
+		db.Save(&group_member)
 	} else {
 		var ticket_reviewer models.TicketReviewer
 		ticket_reviewer.TicketID = body.TicketID
@@ -35,6 +44,10 @@ func ReassignTicketReviewer(body models.ReviewerActivity) string {
 		ticket_reviewer.GroupID = body.GroupID
 		ticket_reviewer.GroupMemberID = body.GroupMemberID
 		db.Create(&ticket_reviewer)
+
+		db.Where("id = ?", ticket_reviewer.GroupMemberID).First(&group_member)
+		group_member.ActiveTicketCount += 1
+		db.Save(&group_member)
 	}
 
 	var filters models.Filter
