@@ -81,9 +81,9 @@ func ListTicketDetail(c *gin.Context) {
 }
 
 func CreateTicket(c *gin.Context) {
-	var ticket models.Ticket
-	c.BindJSON(&ticket)
-	c.JSON(200, service.CreateTicket(ticket))
+	var body models.Ticket
+	c.BindJSON(&body)
+	c.JSON(200, service.CreateTicket(body))
 }
 
 // func DeleteTicket(c *gin.Context) {

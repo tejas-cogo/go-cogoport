@@ -40,6 +40,7 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	if ticket_activity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
 			var ticket models.Ticket
+			ticket_activity.TicketID = u
 			db.Model(&ticket).Where("id = ?", u).Update("status", "closed")
 			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
@@ -47,6 +48,7 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	} else if ticket_activity.Status == "rejected" {
 		for _, u := range body.Activity.TicketID {
 			var ticket models.Ticket
+			ticket_activity.TicketID = u
 			db.Model(&ticket).Where("id = ?", u).Update("status", "rejected")
 			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
@@ -54,6 +56,7 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	} else if ticket_activity.Status == "escalated" {
 		for _, u := range body.Activity.TicketID {
 			var group_member models.GroupMember
+			ticket_activity.TicketID = u
 			var ticket_reviewer models.TicketReviewer
 			var ticket models.Ticket
 
@@ -73,6 +76,13 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 			db.Create(&ticket_activity)
 		}
 	}else if ticket_activity.Status == "activity"{
+		for _, u := range body.Activity.TicketID {
+			var ticket models.Ticket
+			ticket_activity.TicketID = u
+			db.Model(&ticket).Where("id = ?", u).Update("status", "rejected")
+			audits.CreateAuditTicket(ticket, db)
+			db.Create(&ticket_activity)
+		}
 		db.Create(&ticket_activity)
 	} else {
 		var ticket models.Ticket

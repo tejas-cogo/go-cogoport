@@ -12,6 +12,7 @@ import (
 type Ticket struct {
 	gorm.Model
 	TicketUserID            uint `gorm:"not null"`
+	PerformedByID           uuid.UUID
 	TicketUser              TicketUser
 	Source                  string `gorm:"not null"`
 	Type                    string `gorm:"not null"`
@@ -51,4 +52,14 @@ type TicketStat struct {
 	Closed      int64
 	Reassigned  int64
 	Unresolved  int64
+}
+
+type TicketEscalatedPayload struct {
+	TicketID       uint
+	ReviewerUserID uint
+	GroupID        uint
+	GroupMemberID  uint
+	GroupHeadID    uint
+	Tat            time.Time
+	ExpiryDate     time.Time
 }

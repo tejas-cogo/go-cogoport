@@ -40,6 +40,14 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 
 	var filters models.Filter
 
+	var ticket_user models.TicketUser
+
+	if ticket.TicketUserID == 0 {
+		db.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user)
+
+		ticket.TicketUserID = ticket_user.ID
+	}
+
 	filters.TicketDefaultTiming.TicketType = ticket.Type
 	// filters.TicketDefaultTiming.TicketPriority = ticket.Priority
 	filters.TicketDefaultTiming.Status = "active"
