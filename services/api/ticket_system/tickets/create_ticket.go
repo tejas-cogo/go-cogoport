@@ -34,17 +34,22 @@ func GetDuration(ExpiryDuration string) int {
 
 }
 
-func CreateTicket(ticket models.Ticket) models.Ticket {
+func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
+
+	tx := db.Begin()
+	var err error
 
 	var filters models.Filter
 
 	var ticket_user models.TicketUser
 
 	if ticket.TicketUserID == 0 {
-		db.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user)
-
+		if err := tx.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user).Error; err != nil {
+			tx.Rollback()
+			return ticket, err
+		}
 		ticket.TicketUserID = ticket_user.ID
 	}
 
@@ -66,7 +71,10 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	}
 	ticket.Status = "unresolved"
 
-	db.Create(&ticket)
+	if err := tx.Create(&ticket).Error; err != nil {
+		tx.Rollback()
+		return ticket, err
+	}
 
 	audits.CreateAuditTicket(ticket, db)
 
@@ -76,10 +84,18 @@ func CreateTicket(ticket models.Ticket) models.Ticket {
 	ticket_activity.Type = "Ticket Created"
 	ticket_activity.Status = "unresolved"
 
-	db.Create(&ticket_activity)
+	if err := tx.Create(&ticket_activity).Error; err != nil {
+		tx.Rollback()
+		return ticket, err
+	}
 
-	reviewers.CreateTicketReviewer(ticket)
+	if err := reviewers.CreateTicketReviewer(ticket); err != nil {
+		tx.Rollback()
+		return ticket, err
+	}
 
-	return ticket
+	tx.Commit()
+
+	return ticket, err
 
 }

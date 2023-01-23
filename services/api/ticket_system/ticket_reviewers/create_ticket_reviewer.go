@@ -12,9 +12,11 @@ type TicketReviewerService struct {
 	ReviewerActivity models.ReviewerActivity
 }
 
-func CreateTicketReviewer(body models.Ticket) models.TicketReviewer {
+func CreateTicketReviewer(body models.Ticket) error {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
+
+	tx := db.Begin()
 
 	var filters models.Filter
 	var ticket_reviewer models.TicketReviewer
@@ -34,7 +36,12 @@ func CreateTicketReviewer(body models.Ticket) models.TicketReviewer {
 			ticket_reviewer.TicketUserID = v.TicketUserID
 			filters.GroupMember.ID = v.ID
 			ticket_reviewer.Status = "active"
-			db.Create(&ticket_reviewer)
+
+			if err := tx.Create(&ticket_reviewer).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+
 			filters.GroupMember.ActiveTicketCount = v.ActiveTicketCount + 1
 			groupmember.UpdateGroupMember(filters.GroupMember)
 			break
@@ -49,7 +56,9 @@ func CreateTicketReviewer(body models.Ticket) models.TicketReviewer {
 	ticket_activity.Type = "Reviewer Assigned"
 	ticket_activity.Status = "assigned"
 
-	db.Create(&ticket_activity)
-
-	return ticket_reviewer
+	if err := tx.Create(&ticket_activity).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }

@@ -22,7 +22,7 @@ func CreateTokenTicket(token string, ticket models.Ticket) models.TicketToken {
 	if today.Before(ticket_token.ExpiryDate) && ticket_token.Status != "inactive" {
 
 		ticket.TicketUserID = ticket_token.TicketUserID
-		ticket_data := tickets.CreateTicket(ticket)
+		ticket_data, _ := tickets.CreateTicket(ticket)
 		ticket_token.TicketID = ticket_data.ID
 		ticket_token.Status = "inactive"
 		db.Save(&ticket_token)
