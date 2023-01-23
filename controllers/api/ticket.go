@@ -102,5 +102,10 @@ func CreateTicket(c *gin.Context) {
 func UpdateTicket(c *gin.Context) {
 	var body models.Ticket
 	c.BindJSON(&body)
-	c.JSON(200, service.UpdateTicket(body))
+	ser, err := service.UpdateTicket(body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
