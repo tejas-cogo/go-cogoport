@@ -11,10 +11,12 @@ func UpdateTicket(body models.Ticket) models.Ticket {
 	var ticket models.Ticket
 	db.Where("id = ?", body.ID).First(&ticket)
 
-	ticket.Priority = body.Priority
-
+	if body.Priority != ticket.Priority {
+		ticket.Priority = body.Priority
+	}
 	db.Save(&ticket)
 
 	audits.CreateAuditTicket(ticket, db)
+	
 	return ticket
 }
