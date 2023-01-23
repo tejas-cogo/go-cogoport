@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm.DB) {
+func ListTicket(filters models.Ticket, sort models.Sort, tags string) ([]models.Ticket, *gorm.DB) {
 	db := config.GetDB()
 
 	const (
@@ -52,9 +52,9 @@ func ListTicket(filters models.Ticket, sort models.Sort) ([]models.Ticket, *gorm
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
-	// if filters.Tags != "" {
-	// 	db = db.Where("? Like ANY(tags)", filters.Tags)
-	// }
+	if tags != "" {
+		db = db.Where("? Like ANY(tags)", tags)
+	}
 
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)

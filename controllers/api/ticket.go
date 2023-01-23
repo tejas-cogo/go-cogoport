@@ -34,9 +34,9 @@ func ListTicket(c *gin.Context) {
 	sort.SortBy = c.Request.URL.Query().Get("sort_by")
 	sort.SortType = c.Request.URL.Query().Get("sort_type")
 
-	// filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
+	tags := c.Request.URL.Query().Get("filters[tags]")
 	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
-	ser, db := service.ListTicket(filters, sort)
+	ser, db := service.ListTicket(filters, sort, tags)
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
