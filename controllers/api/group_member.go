@@ -28,7 +28,12 @@ func ListGroupMember(c *gin.Context) {
 func CreateGroupMember(c *gin.Context) {
 	var group_member models.CreateGroupMember
 	c.BindJSON(&group_member)
-	c.JSON(200, service.CreateGroupMember(group_member))
+	ser , err :=service.CreateGroupMember(group_member)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func DeleteGroupMember(c *gin.Context) {

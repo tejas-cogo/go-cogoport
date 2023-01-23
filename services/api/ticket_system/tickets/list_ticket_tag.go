@@ -5,10 +5,15 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicketTag(tag string) []string {
+type Tags struct{
+	Tag []string 
+}
+
+func ListTicketTag(tag string) Tags {
 	db := config.GetDB()
 
 	var tickets []models.Ticket
+	var t Tags
 
 	var tags []string
 
@@ -18,5 +23,7 @@ func ListTicketTag(tag string) []string {
 
 	db.Find(&tickets).Distinct("tags").Pluck("tags", &tags)
 
-	return tags
+	t.Tag = tags
+	 
+	return t
 }
