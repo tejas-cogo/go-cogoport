@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -13,8 +15,13 @@ func ListRole(c *gin.Context) {
 	filters.Name = c.Request.URL.Query().Get("filters[name]")
 
 	ser, db := service.ListRole(filters)
-	pg := paginate.New()
-	c.JSON(200, pg.Response(db, c.Request, &ser))
+	if c.Writer.Status() == 400 {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
 }
 
 func CreateRole(c *gin.Context) {
@@ -33,5 +40,5 @@ func DeleteRole(c *gin.Context) {
 func UpdateRole(c *gin.Context) {
 	var body models.Role
 	c.BindJSON(&body)
-	c.JSON(200, service.UpdateRole( body))
+	c.JSON(200, service.UpdateRole(body))
 }

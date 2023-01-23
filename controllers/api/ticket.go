@@ -37,9 +37,20 @@ func ListTicket(c *gin.Context) {
 	// filters.Tags[0] = c.Request.URL.Query().Get("filters[tags]")
 	// c.JSON(200, pg.Response(model, c.Request, &[]Article{}))
 	ser, db := service.ListTicket(filters, sort)
-	pg := paginate.New() 
-	fmt.Println("count", db.RowsAffected, "count")
-	c.JSON(200, pg.Response(db, c.Request, &ser))
+	if c.Writer.Status() == 400 {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
+}
+
+func ListTicketTag(c *gin.Context) {
+	var tag string
+
+	tag = c.Request.URL.Query().Get("filters[tag]")
+	c.JSON(c.Writer.Status(), service.ListTicketTag(tag))
 }
 
 func GetTicketStats(c *gin.Context) {

@@ -19,7 +19,7 @@ func ListGroupMember(filters models.GroupMember) ([]models.GroupMember, *gorm.DB
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db = db.Order("hierarchy_level desc").Order("active_ticket_count asc").Preload("ticket_user").Find(&group_members)
+	result := db.Order("hierarchy_level desc").Order("active_ticket_count asc").Preload("TicketUser").Find(&group_members)
 
-	return group_members, db
+	return group_members, result
 }

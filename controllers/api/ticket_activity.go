@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -24,8 +25,13 @@ func ListTicketActivity(c *gin.Context) {
 	filters.IsRead, _ = strconv.ParseBool(c.Request.URL.Query().Get("filters[is_read]"))
 
 	ser, db := service.ListTicketActivity(filters)
-	pg := paginate.New()
-	c.JSON(200, pg.Response(db, c.Request, &ser))
+	if c.Writer.Status() == 400 {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
 }
 
 func CreateTicketActivity(c *gin.Context) {

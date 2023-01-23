@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -19,8 +20,13 @@ func ListTicketReviewer(c *gin.Context) {
 	filters.TicketUserID = uint(TicketUserID)
 
 	ser, db := service.ListTicketReviewer(filters)
-	pg := paginate.New()
-	c.JSON(200, pg.Response(db, c.Request, &ser))
+	if c.Writer.Status() == 400 {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
 }
 
 // func CreateTicketReviewer(c *gin.Context) {

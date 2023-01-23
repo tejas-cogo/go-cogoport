@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -11,8 +13,13 @@ func ListTicketDefaultGroup(c *gin.Context) {
 	var ticket_default_group models.TicketDefaultGroup
 	c.BindJSON(&ticket_default_group)
 	ser, db := service.ListTicketDefaultGroup(ticket_default_group)
-	pg := paginate.New()
-	c.JSON(200, pg.Response(db, c.Request, &ser))
+	if c.Writer.Status() == 400 {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
 }
 
 func CreateTicketDefaultGroup(c *gin.Context) {
