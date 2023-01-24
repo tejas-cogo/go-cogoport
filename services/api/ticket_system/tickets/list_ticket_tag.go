@@ -10,11 +10,13 @@ func ListTicketTag(tag string) []string {
 
 	var t []string
 
+	db = db.Table("(?) as u", db.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag")
+
 	if tag != "" {
-		db = db.Where("? Like ANY(tags)", tag)
+		db = db.Where("u.tag = ?", tag)
 	}
 
-	db.Table("(?) as u", db.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag").Pluck("tag", &t)
+	db.Pluck("tag", &t)
 
 	return t
 }
