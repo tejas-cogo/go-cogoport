@@ -3,29 +3,35 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	"gorm.io/gorm"
 	// "fmt"
 )
 
-func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.TicketDefaultTiming, *gorm.DB) {
+func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.TicketDefaultTiming, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_default_timings []models.TicketDefaultTiming
 
 	if filters.TicketType != "" {
-		filters.TicketType = "%" + filters.TicketType + "%"
-		db = db.Where("ticket_type Like ?", filters.TicketType)
+		tx = tx.Where("ticket_type = ?", filters.TicketType)
+	
 	}
 
 	if filters.TicketPriority != "" {
-		db = db.Where("ticket_priority = ?", filters.TicketPriority)
+		tx = tx.Where("ticket_priority = ?", filters.TicketPriority)
 	}
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		tx = tx.Where("status = ?", filters.Status)
 	}
 
-	db = db.Order("created_at desc").Find(&ticket_default_timings)
+	if err := tx.Order("created_at desc").Find(&ticket_default_timings).Error; err != nil {
+		tx.Rollback()
+		return ticket_default_timings, err
+	}
 
-	return ticket_default_timings, db
+	tx.Commit()
+
+	return ticket_default_timings, err
 }

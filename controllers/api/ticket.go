@@ -97,11 +97,13 @@ func ListTicketDetail(c *gin.Context) {
 func CreateTicket(c *gin.Context) {
 	var body models.Ticket
 	c.BindJSON(&body)
-	ser, err := service.CreateTicket(body)
+	_, mesg, err := service.CreateTicket(body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
+	} else if mesg != "Successfully Created!" {
+		c.JSON(400, mesg)
 	} else {
-		c.JSON(c.Writer.Status(), ser)
+		c.JSON(c.Writer.Status(), mesg)
 	}
 
 }
