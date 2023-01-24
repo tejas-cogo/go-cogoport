@@ -5,25 +5,16 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-type Tags struct{
-	Tag []string 
-}
-
-func ListTicketTag(tag string) Tags {
+func ListTicketTag(tag string) []string {
 	db := config.GetDB()
 
-	var tickets []models.Ticket
-	var t Tags
-
-	var tags []string
+	var t []string
 
 	if tag != "" {
 		db = db.Where("? Like ANY(tags)", tag)
 	}
 
-	db.Find(&tickets).Distinct("tags").Pluck("tags", &tags)
+	db.Table("(?) as u", db.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag").Pluck("tag", &t)
 
-	t.Tag = tags
-	 
 	return t
 }
