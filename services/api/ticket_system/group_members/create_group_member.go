@@ -29,12 +29,12 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 			}
 			if err := tx.Create(&group_member).Error; err != nil {
 				tx.Rollback()
-				return "Error Occurred", err
+				return "Error Occurred!", err
 			}
 
 		}
 	} else {
-		return ("User Is Required"), err
+		return ("User Is Required!"), err
 	}
 
 	tx.Commit()
@@ -44,10 +44,10 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 
 func validate(group_member models.GroupMember) string {
 	if group_member.HierarchyLevel == 0 {
-		return ("Hierarchy Level Is Required")
+		return ("Hierarchy Level Is Required!")
 	}
 	if group_member.GroupID == 0 {
-		return ("Group Is Rquired")
+		return ("Group Is Rquired!")
 	}
 
 	return ("validated")
