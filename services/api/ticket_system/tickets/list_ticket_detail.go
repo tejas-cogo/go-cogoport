@@ -11,9 +11,12 @@ func ListTicketDetail(filters models.TicketDetail) models.TicketDetail {
 
 	var ticket_detail models.TicketDetail
 	var ticket models.Ticket
+	var f models.ExtraFilter
 	var sort models.Sort
+	var stats models.TicketStat
 	ticket.ID = filters.TicketID
-	ticket_data, _ := ListTicket(ticket, sort, "")
+
+	ticket_data, _ := ListTicket(ticket, sort, f,stats)
 	for _, u := range ticket_data {
 		ticket_detail.Ticket = u
 	}
