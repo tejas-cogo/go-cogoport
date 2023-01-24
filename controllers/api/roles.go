@@ -27,7 +27,14 @@ func ListRole(c *gin.Context) {
 func CreateRole(c *gin.Context) {
 	var role models.Role
 	c.BindJSON(&role)
-	c.JSON(200, service.CreateRole(role))
+	ser, err := service.CreateRole(role)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else if ser != "Successfully Created" {
+		c.JSON(400, ser)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func DeleteRole(c *gin.Context) {

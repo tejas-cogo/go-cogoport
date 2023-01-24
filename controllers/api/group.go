@@ -27,7 +27,14 @@ func ListGroup(c *gin.Context) {
 func CreateGroup(c *gin.Context) {
 	var group models.Group
 	c.BindJSON(&group)
-	c.JSON(200, service.CreateGroup(group))
+	ser, err := service.CreateGroup(group)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else if ser != "Successfully Created" {
+		c.JSON(400, ser)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func DeleteGroup(c *gin.Context) {

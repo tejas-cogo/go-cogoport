@@ -25,7 +25,14 @@ func ListTicketDefaultGroup(c *gin.Context) {
 func CreateTicketDefaultGroup(c *gin.Context) {
 	var ticket_default_group models.TicketDefaultGroup
 	c.BindJSON(&ticket_default_group)
-	c.JSON(200, service.CreateTicketDefaultGroup(ticket_default_group))
+	ser, err := service.CreateTicketDefaultGroup(ticket_default_group)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else if ser != "Successfully Created" {
+		c.JSON(400, ser)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func DeleteTicketDefaultGroup(c *gin.Context) {

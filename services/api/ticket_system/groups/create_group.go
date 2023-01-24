@@ -9,10 +9,32 @@ type GroupService struct {
 	Group models.Group
 }
 
-func CreateGroup(group models.Group) string {
+func CreateGroup(group models.Group) (string, error) {
 	db := config.GetDB()
-	//  result := map[string]interface{}{}
+	tx := db.Begin()
+	var err error
+
 	group.Status = "active"
-	db.Create(&group)
-	return "Successfully created"
+
+	stmt := validate(group)
+	if stmt != "validated" {
+		return stmt, err
+	}
+
+	if err := tx.Create(&group).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred", err
+	}
+
+	tx.Commit()
+
+	return "Successfully Created", err
+}
+
+func validate(group models.Group) string {
+	if group.Name == "" {
+		return ("Group Name Is Required")
+	}
+
+	return ("validated")
 }

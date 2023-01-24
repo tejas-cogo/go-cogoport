@@ -37,7 +37,14 @@ func ListTicketDefault(c *gin.Context) {
 func CreateTicketDefaultType(c *gin.Context) {
 	var ticket_default_type models.TicketDefaultType
 	c.BindJSON(&ticket_default_type)
-	c.JSON(200, service.CreateTicketDefaultType(ticket_default_type))
+	ser, err := service.CreateTicketDefaultType(ticket_default_type)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else if ser != "Successfully Created" {
+		c.JSON(400, ser)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func DeleteTicketDefaultType(c *gin.Context) {

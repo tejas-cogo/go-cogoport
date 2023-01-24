@@ -18,7 +18,7 @@ func ListGroupMember(c *gin.Context) {
 
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	} else {
 		pg := paginate.New()
 		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
@@ -28,9 +28,11 @@ func ListGroupMember(c *gin.Context) {
 func CreateGroupMember(c *gin.Context) {
 	var group_member models.CreateGroupMember
 	c.BindJSON(&group_member)
-	ser , err :=service.CreateGroupMember(group_member)
+	ser, err := service.CreateGroupMember(group_member)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err)
+	} else if ser != "Successfully Created" {
+		c.JSON(400, ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
