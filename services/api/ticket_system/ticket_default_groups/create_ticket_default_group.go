@@ -42,7 +42,7 @@ func validate(ticket_default_group models.TicketDefaultGroup) string {
 	}
 
 	if ticket_default_group.TicketDefaultTypeID == 0 {
-		return ("TicketDefaultType Is Required!")
+		return ("TicketDefaultTypeID Is Required!")
 	}
 
 	return ("validated")
