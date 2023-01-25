@@ -6,13 +6,17 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListGroupMember(filters models.GroupMember) ([]models.GroupMember, *gorm.DB) {
+func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *gorm.DB) {
 	db := config.GetDB()
 
 	var group_members []models.GroupMember
 
 	if filters.GroupID > 0 {
 		db = db.Where("group_id = ?", filters.GroupID)
+	}
+
+	if filters.NotGroupID > 0 {
+		db = db.Where("group_id != ?", filters.NotGroupID)
 	}
 
 	if filters.TicketUserID > 0 {
