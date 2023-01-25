@@ -22,17 +22,18 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	var ticket []models.Ticket
 
-	if filters.AgentRmID != "" {
-		var ticket_users []uint
-		var group_member models.GroupMember
+	// if filters.AgentRmID != "" {
+	// 	var ticket_users []uint
+	// 	var group_member models.GroupMember
 
-		db.Where("system_user_id = ?", filters.AgentRmID).First(&ticket_user)
+	// 	db.Where("system_user_id = ?", filters.AgentRmID).First(&ticket_user)
 
-		db.Where("group_head_id = ?", ticket_user.ID).Distinct("ticket_user_id").Order("ticket_user_id").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
+	// 	db.Where("group_head_id = ?", ticket_user.ID).Distinct("ticket_user_id").Order("ticket_user_id").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
 
-		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	// 	db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if filters.AgentID != "" {
+	// } else
+	if filters.AgentID != "" {
 		db.Where("system_user_id = ?", filters.AgentID).First(&ticket_user)
 
 		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
@@ -69,14 +70,14 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	}
 
 	if filters.TicketCreatedAt != "" {
-		CreatedAt, _ := time.Parse("2006-01-02", filters.TicketCreatedAt)
+		CreatedAt, _ := time.Parse(YYYYMMDD, filters.TicketCreatedAt)
 		x := CreatedAt
 		y := x.AddDate(0, 0, 1)
 		db = db.Where("created_at BETWEEN ? AND ?", x, y)
 	}
 
 	if filters.ExpiryDate != "" {
-		ExpiryDate, _ := time.Parse("2006-01-02", filters.ExpiryDate)
+		ExpiryDate, _ := time.Parse(YYYYMMDD, filters.ExpiryDate)
 		x := ExpiryDate
 		y := x.AddDate(0, 0, 1)
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)

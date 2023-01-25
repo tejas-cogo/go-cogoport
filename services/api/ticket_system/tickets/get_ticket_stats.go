@@ -21,23 +21,24 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 	t := time.Now()
 
 	fmt.Println("stats.AgentRmID", stats)
-	if stats.AgentRmID != "" {
-		var ticket_users []uint
-		var group_member models.GroupMember
-		// db2 := config.GetCDB()
-		// var partner_user_rm []models.PartnerUserRmMapping
-		// var partner_user []models.PartnerUser
+	// if stats.AgentRmID != "" {
+	// 	var ticket_users []uint
+	// 	var group_member models.GroupMember
+	// 	// db2 := config.GetCDB()
+	// 	// var partner_user_rm []models.PartnerUserRmMapping
+	// 	// var partner_user []models.PartnerUser
 
-		// db2.Where("reporting_manager_id = ? and status = 'active'", stats.AgentRmID).Distinct("user_id").Find(&partner_user_rm)
+	// 	// db2.Where("reporting_manager_id = ? and status = 'active'", stats.AgentRmID).Distinct("user_id").Find(&partner_user_rm)
 
-		// db2.
-		db.Where("system_user_id = ?", stats.AgentRmID).First(&ticket_user)
+	// 	// db2.
+	// 	db.Where("system_user_id = ?", stats.AgentRmID).First(&ticket_user)
 
-		db.Where("group_head_id = ?", ticket_user.ID).Distinct("ticket_user_id").Order("ticket_user_id").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
+	// 	db.Where("group_head_id = ?", ticket_user.ID).Distinct("ticket_user_id").Order("ticket_user_id").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
 
-		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	// 	db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if stats.AgentID != "" {
+	// } else
+	if stats.AgentID != "" {
 		db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
 
 		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)

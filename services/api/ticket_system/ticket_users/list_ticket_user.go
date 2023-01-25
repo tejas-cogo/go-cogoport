@@ -33,6 +33,10 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		db = db.Where("mobile_number = ?", filters.MobileNumber)
 	}
 
+	if filters.Type != "" {
+		db = db.Where("type = ?", filters.Type)
+	}
+
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
 	}

@@ -8,15 +8,15 @@ import (
 
 type GroupMember struct {
 	gorm.Model
-	PerformedByID     uuid.UUID `gorm:"type:uuid"`
-	GroupID           uint      `gorm:"not null"`
-	Group             Group `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	GroupHeadID       uint `gorm:"not null"`
-	TicketUserID      uint `gorm:"not null"`
+	PerformedByID     uuid.UUID  `gorm:"type:uuid"`
+	GroupID           uint       `gorm:"not null"`
+	Group             Group      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	GroupHeadID       uint       `gorm:"not null"`
+	TicketUserID      uint       `gorm:"not null"`
 	TicketUser        TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	ActiveTicketCount uint   `gorm:"default:0"`
-	HierarchyLevel    uint   `gorm:"not null"`
-	Status            string `gorm:"not null:default:'active'"`
+	ActiveTicketCount uint       `gorm:"default:0"`
+	HierarchyLevel    uint       `gorm:"not null"`
+	Status            string     `gorm:"not null:default:'active'"`
 }
 
 type CreateGroupMember struct {
@@ -32,10 +32,10 @@ type FilterGroupMember struct {
 	ID                uint
 	PerformedByID     string
 	GroupID           uint
-	Group             Group 
+	Group             Group
 	GroupHeadID       uint
 	TicketUserID      uint
-	TicketUser        TicketUser 
+	TicketUser        TicketUser
 	ActiveTicketCount uint
 	HierarchyLevel    uint
 	Status            string
