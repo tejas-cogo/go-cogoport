@@ -14,7 +14,7 @@ type Test struct {
 }
 
 func ListGroupMember(c *gin.Context) {
-	var filters models.GroupMember
+	var filters models.FilterGroupMember
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")

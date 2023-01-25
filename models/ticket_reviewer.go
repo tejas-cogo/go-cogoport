@@ -10,7 +10,7 @@ type TicketReviewer struct {
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
 	TicketID      uint      `gorm:"not null"`
 	TicketUserID  uint      `gorm:"not null"`
-	TicketUser    TicketUser
+	TicketUser    TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	GroupID       uint   `gorm:"not null"`
 	GroupMemberID uint   `gorm:"not null"`
 	Status        string `gorm:"not null:default:'active'"`

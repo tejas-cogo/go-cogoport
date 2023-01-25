@@ -13,10 +13,10 @@ type Ticket struct {
 	gorm.Model
 	TicketUserID            uint `gorm:"not null"`
 	PerformedByID           uuid.UUID
-	TicketUser              TicketUser
-	Source                  string `gorm:"not null"`
-	Type                    string `gorm:"not null"`
-	Category                string `gorm:"not null"`
+	TicketUser              TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Source                  string     `gorm:"not null"`
+	Type                    string     `gorm:"not null"`
+	Category                string     `gorm:"not null"`
 	Subcategory             string
 	Description             string
 	Priority                string          `gorm:"not null:default:'low'"`

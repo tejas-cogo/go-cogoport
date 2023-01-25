@@ -12,7 +12,7 @@ type TicketUser struct {
 	Email        string    `gorm:"not null:json:email:unique"`
 	MobileNumber string    `gorm:"type:varchar(10):unique"`
 	RoleID       uint
-	Role         Role
+	Role         Role   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Source       string `gorm:"not null"`
 	Type         string `gorm:"not null"`
 	Status       string `gorm:"not null:default:'active'"`

@@ -38,9 +38,9 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 
 	for _, u := range default_group {
 		ticket_reviewer.GroupID = u.GroupID
-		filters.GroupMember.GroupID = u.GroupID
-		filters.GroupMember.Status = "active"
-		group_member, _ := groupmember.ListGroupMember(filters.GroupMember)
+		filters.FilterGroupMember.GroupID = u.GroupID
+		filters.FilterGroupMember.Status = "active"
+		group_member, _ := groupmember.ListGroupMember(filters.FilterGroupMember)
 		for _, v := range group_member {
 			ticket_reviewer.GroupMemberID = v.ID
 			ticket_reviewer.TicketUserID = v.TicketUserID

@@ -11,7 +11,7 @@ type TicketDefaultTiming struct {
 	PerformedByID       uuid.UUID `gorm:"type:uuid"`
 	TicketType          string    `gorm:"not null"`
 	TicketDefaultTypeID uint
-	TicketDefaultType   TicketDefaultType
+	TicketDefaultType   TicketDefaultType `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	TicketPriority      string         `gorm:"not null"`
 	ExpiryDuration      string         `gorm:"not null"`
 	Tat                 string         `gorm:"not null"`
