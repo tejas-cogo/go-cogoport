@@ -41,6 +41,10 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		db = db.Where("status = ?", filters.Status)
 	}
 
+	if filters.RoleID > 0 {
+		db = db.Where("role_id = ?", filters.RoleID)
+	}
+
 	db = db.Find(&ticket_user)
 
 	return ticket_user, db
