@@ -12,7 +12,13 @@ import (
 func ListTicketDefaultType(c *gin.Context) {
 	var filters models.TicketDefaultType
 
-	filters.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
+	// filters.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
+
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
 
 	ser, db := service.ListTicketDefaultType(filters)
 	pg := paginate.New()
@@ -20,9 +26,15 @@ func ListTicketDefaultType(c *gin.Context) {
 }
 
 func ListTicketDefault(c *gin.Context) {
-	var filters models.Filter
+	var filters models.TicketDefaultType
 
-	filters.TicketDefaultType.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
+	// filters.TicketDefaultType.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
+
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
 
 	ser, db := service.ListTicketDefault(filters)
 	if c.Writer.Status() == 400 {

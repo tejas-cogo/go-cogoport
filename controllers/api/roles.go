@@ -12,7 +12,13 @@ import (
 func ListRole(c *gin.Context) {
 	var filters models.Role
 
-	filters.Name = c.Request.URL.Query().Get("filters[name]")
+	// filters.Name = c.Request.URL.Query().Get("filters[name]")
+
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
 
 	ser, db := service.ListRole(filters)
 	if c.Writer.Status() == 400 {

@@ -11,10 +11,13 @@ import (
 
 func ListGroup(c *gin.Context) {
 	var filters models.Group
-	filters.Name = c.Request.URL.Query().Get("filters[name]")
-	filters.Status = c.Request.URL.Query().Get("filters[status]")
-	tags := c.Request.URL.Query().Get("filters[tags]")
-	ser, db := service.ListGroup(filters, tags)
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
+
+	ser, db := service.ListGroup(filters)
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")

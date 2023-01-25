@@ -15,7 +15,7 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 	tx := db.Begin()
 	var err error
 
-	if group_members.TicketUserID != nil {
+	if len(group_members.TicketUserID) != 0 {
 		for _, u := range group_members.TicketUserID {
 			var group_member models.GroupMember
 			group_member.HierarchyLevel = group_members.HierarchyLevel

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
@@ -13,11 +12,17 @@ import (
 func ListTicketReviewer(c *gin.Context) {
 	var filters models.TicketReviewer
 
-	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
-	filters.TicketID = uint(TicketID)
+	// TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
+	// filters.TicketID = uint(TicketID)
 
-	TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
-	filters.TicketUserID = uint(TicketUserID)
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
+
+	// TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
+	// filters.TicketUserID = uint(TicketUserID)
 
 	ser, db := service.ListTicketReviewer(filters)
 	if c.Writer.Status() == 400 {

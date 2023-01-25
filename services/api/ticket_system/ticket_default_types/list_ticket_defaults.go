@@ -1,14 +1,12 @@
 package ticket_system
 
 import (
-	"fmt"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
 )
 
-func ListTicketDefault(filters models.Filter) ([]models.TicketDefault, *gorm.DB) {
+func ListTicketDefault(filters models.TicketDefaultType) ([]models.TicketDefault, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_default []models.TicketDefault
@@ -25,8 +23,11 @@ func ListTicketDefault(filters models.Filter) ([]models.TicketDefault, *gorm.DB)
 
 	db = db.Where("ticket_default_types.ticket_type != ?", "others")
 
+	if filters.TicketType != "" {
+		db = db.Where("ticket_default_types.ticket_type = ?", filters.TicketType)
+	}
+
 	db = db.Scan(&ticket_default)
 
-	fmt.Println("s", ticket_default, "s")
 	return ticket_default, db
 }

@@ -40,6 +40,7 @@ type Filter struct {
 	TicketSpectator     TicketSpectator
 	TicketTask          TicketTask
 	TicketToken         TicketToken
+	TicketUserFilter    TicketUserFilter
 }
 
 type Sort struct {

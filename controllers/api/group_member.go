@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
@@ -10,11 +9,19 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
 )
 
+type Test struct {
+	ID uint `query:"id"`
+}
+
 func ListGroupMember(c *gin.Context) {
-	var group_member models.GroupMember
-	TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[group_id]"))
-	group_member.GroupID = uint(TicketID)
-	ser, db := service.ListGroupMember(group_member)
+	var filters models.GroupMember
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
+
+	ser, db := service.ListGroupMember(filters)
 
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")

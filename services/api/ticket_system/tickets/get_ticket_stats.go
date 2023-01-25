@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+)
+
+const (
+	YYYYMMDD = "2006-01-02"
 )
 
 func GetTicketStats(stats models.TicketStat) models.TicketStat {
@@ -16,11 +19,9 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 	var ticket_user models.TicketUser
 	var ticket_id []uint
 	t := time.Now()
-	const (
-		YYYYMMDD = "2006-01-02"
-	)
 
-	if stats.AgentRmID != uuid.Nil {
+	fmt.Println("stats.AgentRmID", stats)
+	if stats.AgentRmID != "" {
 		var ticket_users []uint
 		var group_member models.GroupMember
 		// db2 := config.GetCDB()
@@ -36,7 +37,7 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 
 		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if stats.AgentID != uuid.Nil {
+	} else if stats.AgentID != "" {
 		db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
 
 		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)

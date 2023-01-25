@@ -16,6 +16,10 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB) {
 		db = db.Where("name Like ?", filters.Name)
 	}
 
+	if filters.Level > 0 {
+		db = db.Where("level = ?", filters.Level)
+	}
+
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
 	}

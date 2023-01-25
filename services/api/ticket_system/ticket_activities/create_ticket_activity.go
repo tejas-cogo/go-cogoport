@@ -18,13 +18,13 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	var ticket_user models.TicketUser
+	var ticket_user models.TicketUserFilter
 
 	if body.TicketActivity.UserType == "" {
 		if body.TicketActivity.TicketUserID == 0 {
-			ticket_user.SystemUserID = body.TicketUser.SystemUserID
+			ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
 		} else {
-			ticket_user.ID = body.TicketActivity.TicketUserID
+			ticket_user.ID = body.TicketUserFilter.ID
 		}
 
 		ticket_user, _ := user.ListTicketUser(ticket_user)
@@ -75,7 +75,7 @@ func CreateTicketActivity(body models.Filter) models.TicketActivity {
 			audits.CreateAuditTicket(ticket, db)
 			db.Create(&ticket_activity)
 		}
-	}else if ticket_activity.Status == "activity"{
+	} else if ticket_activity.Status == "activity" {
 		for _, u := range body.Activity.TicketID {
 			var ticket models.Ticket
 			ticket_activity.TicketID = u

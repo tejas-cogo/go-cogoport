@@ -41,8 +41,8 @@ type TicketDetail struct {
 }
 
 type TicketStat struct {
-	AgentID      uuid.UUID `gorm:"type:uuid"`
-	AgentRmID    uuid.UUID `gorm:"type:uuid"`
+	AgentID      string
+	AgentRmID    string
 	TicketUsers  []uint
 	Overdue      int64
 	DueToday     int64
@@ -66,7 +66,25 @@ type TicketEscalatedPayload struct {
 	ExpiryDate     time.Time
 }
 
-type ExtraFilter struct {
-	IsExpiringSoon string
-	Tags           string
+type TicketExtraFilter struct {
+	TicketUserID            uint
+	PerformedByID           string
+	AgentID                 string
+	AgentRmID               string
+	TicketUser              TicketUser
+	Source                  string
+	Type                    string
+	Category                string
+	Subcategory             string
+	Description             string
+	Priority                string
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Tat                     string
+	Status                  string
+	TicketCreatedAt         string
+	IsExpiringSoon          string
+	ExpiryDate              string
+	ID                      uint
 }

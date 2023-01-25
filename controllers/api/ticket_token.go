@@ -6,9 +6,9 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_tokens"
 )
 
-func ListTicketToken(c *gin.Context) {
-	c.JSON(200, service.ListTicketToken())
-}
+// func ListTicketToken(c *gin.Context) {
+// 	c.JSON(200, service.ListTicketToken())
+// }
 
 func CreateTicketToken(c *gin.Context) {
 	var body models.Filter
