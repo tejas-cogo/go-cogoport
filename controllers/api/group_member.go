@@ -38,7 +38,7 @@ func CreateGroupMember(c *gin.Context) {
 	ser, err := service.CreateGroupMember(group_member)
 	if err != nil {
 		c.JSON(400, err)
-	} else if ser != "Successfully Created" {
+	} else if ser != "Successfully Created!" {
 		c.JSON(400, ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)

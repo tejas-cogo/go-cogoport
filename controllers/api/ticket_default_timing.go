@@ -26,7 +26,7 @@ func CreateTicketDefaultTiming(c *gin.Context) {
 	ser, err := service.CreateTicketDefaultTiming(ticket_default_timing)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
-	} else if ser != "Successfully Created" {
+	} else if ser != "Successfully Created!" {
 		c.JSON(400, ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)

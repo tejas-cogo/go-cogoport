@@ -39,7 +39,7 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 
 	tx.Commit()
 
-	return "successfully Created", err
+	return "Successfully Created!", err
 }
 
 func validate(group_member models.GroupMember) string {

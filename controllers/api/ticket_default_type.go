@@ -52,7 +52,7 @@ func CreateTicketDefaultType(c *gin.Context) {
 	ser, err := service.CreateTicketDefaultType(ticket_default_type)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
-	} else if ser != "Successfully Created" {
+	} else if ser != "Successfully Created!" {
 		c.JSON(400, ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
