@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
@@ -16,12 +18,10 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 	db := config.GetDB()
 	// result := map[string]interface{}{}
 
-	tx := db.Begin()
+	txt := db.Begin()
 
 	var filters models.Filter
 	var ticket_reviewer models.TicketReviewer
-
-	ticket_reviewer.TicketID = body.ID
 
 	filters.TicketDefaultGroup.TicketType = body.Type
 	filters.TicketDefaultGroup.Status = "active"
@@ -30,8 +30,8 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 		return "Default Group had issue!", err
 	} else if len(default_group) == 0 {
 		var default_group []models.TicketDefaultGroup
-		if err := tx.Where("ticket_type = ? and status = ?", "others", "active").Find(&default_group).Error; err != nil {
-			tx.Rollback()
+		if err := txt.Where("ticket_type = ? and status = ?", "others", "active").Find(&default_group).Error; err != nil {
+			txt.Rollback()
 			return "Default Group couldn't be found", err
 		}
 	}
@@ -44,14 +44,19 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 		for _, v := range group_member {
 			ticket_reviewer.GroupMemberID = v.ID
 			ticket_reviewer.TicketUserID = v.TicketUserID
+			ticket_reviewer.TicketID = body.ID
 			filters.GroupMember.ID = v.ID
 			ticket_reviewer.Status = "active"
 
-			if err := tx.Create(&ticket_reviewer).Error; err != nil {
-				tx.Rollback()
+			stmt := validate(ticket_reviewer)
+			if stmt != "validated" {
+				return stmt, err
+			}
+			if err := txt.Create(&ticket_reviewer).Error; err != nil {
+				txt.Rollback()
 				return "TicketReviewer couldn't be created", err
 			}
-
+			fmt.Println("break", ticket_reviewer, "break")
 			filters.GroupMember.ActiveTicketCount = v.ActiveTicketCount + 1
 			groupmember.UpdateGroupMember(filters.GroupMember)
 			break
@@ -66,9 +71,31 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 	ticket_activity.Type = "Reviewer Assigned"
 	ticket_activity.Status = "assigned"
 
-	if err := tx.Create(&ticket_activity).Error; err != nil {
-		tx.Rollback()
+	if err := txt.Create(&ticket_activity).Error; err != nil {
+		txt.Rollback()
 		return "Reviewer Assigned Activity couldn't be created", err
 	}
+
+	txt.Commit()
 	return "Successfully Reviewer Assigned", err
+}
+
+func validate(ticket_reviewer models.TicketReviewer) string {
+	if ticket_reviewer.GroupMemberID == 0 {
+		return ("Group Member Is Required!")
+	}
+
+	if ticket_reviewer.GroupID == 0 {
+		return ("Group Is Required!")
+	}
+
+	if ticket_reviewer.TicketID == 0 {
+		return ("Ticket Is Required!")
+	}
+
+	if ticket_reviewer.TicketUserID == 0 {
+		return ("Ticket User Is Required!")
+	}
+
+	return ("validated")
 }
