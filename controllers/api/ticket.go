@@ -37,16 +37,6 @@ func ListTicketTag(c *gin.Context) {
 func GetTicketStats(c *gin.Context) {
 	var stats models.TicketStat
 
-	// id := c.Request.URL.Query().Get("AgentID")
-	// rm_id := c.Request.URL.Query().Get("AgentRmID")
-
-	// if id != "" {
-	// 	stats.AgentID, _ = uuid.Parse(id)
-	// }
-	// if rm_id != "" {
-	// 	stats.AgentRmID, _ = uuid.Parse(rm_id)
-	// }
-
 	err := c.Bind(&stats)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")

@@ -27,6 +27,12 @@ func ListGroup(c *gin.Context) {
 	}
 }
 
+func ListGroupTag(c *gin.Context) {
+	var Tag string
+	Tag = c.Request.URL.Query().Get("Tag")
+	c.JSON(c.Writer.Status(), service.ListGroupTag(Tag))
+}
+
 func CreateGroup(c *gin.Context) {
 	var group models.Group
 	c.BindJSON(&group)
