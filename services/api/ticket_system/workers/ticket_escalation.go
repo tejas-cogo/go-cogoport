@@ -92,10 +92,10 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 			return err
 		}
 
-		if err := db.Where("ticket_user_id = ? and status = 'active'", group_member.GroupHeadID).First(&group_head).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
+		// if err := db.Where("ticket_user_id = ? and status = 'active'", group_member.GroupHeadID).First(&group_head).Error; err != nil {
+		// 	tx.Rollback()
+		// 	return err
+		// }
 
 		ticket_reviewer_new.TicketID = ticket.ID
 		ticket_reviewer_new.GroupID = group_head.GroupID

@@ -49,7 +49,15 @@ func CreateTicketActivity(c *gin.Context) {
 	filters.TicketActivity.Data = body.Data
 	filters.TicketActivity.Status = body.Status
 
-	c.JSON(200, service.CreateTicketActivity(filters))
+	ser, mesg, err := service.CreateTicketActivity(filters)
+
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else if mesg != "Successfully Created!" {
+		c.JSON(400, mesg)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 // func DeleteTicketActivity(c *gin.Context) {
