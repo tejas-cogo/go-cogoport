@@ -29,3 +29,15 @@ type TicketUserFilter struct {
 	Type         string
 	Status       string
 }
+
+type TicketUserRole struct {
+	ID           []uint
+	Name         string
+	SystemUserID uuid.UUID
+	Email        string
+	MobileNumber string
+	RoleID       uint
+	Source       string
+	Type         string
+	Status       string
+}

@@ -42,15 +42,22 @@ func CreateTicketUser(c *gin.Context) {
 	c.JSON(200, service.CreateTicketUser(ticket_user))
 }
 
-// func DeleteTicketUser(c *gin.Context) {
-// 	var body models.TicketUser
-// 	c.BindJSON(&body)
-// 	id := body.ID
-// 	c.JSON(200, service.DeleteTicketUser(id))
-// }
-
-func UpdateTicketUser(c *gin.Context) {
+func DeleteTicketUser(c *gin.Context) {
 	var body models.TicketUser
 	c.BindJSON(&body)
-	c.JSON(200, service.UpdateTicketUser(body))
+	id := body.ID
+	c.JSON(200, service.DeleteTicketUser(id))
+}
+
+func UpdateTicketUser(c *gin.Context) {
+	var body models.TicketUserRole
+	c.BindJSON(&body)
+	ser, mesg, err := service.UpdateTicketUser(body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else if mesg != "Successfully Updated!" {
+		c.JSON(400, mesg)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }

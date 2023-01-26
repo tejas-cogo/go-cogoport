@@ -5,14 +5,12 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func DeleteTicketUser(id uint) uint{
+func DeleteTicketUser(id uint) uint {
 	db := config.GetDB()
 
 	var ticket_user models.TicketUser
 
-	db.Model(&ticket_user).Where("id = ?", id).Update("status","inactive")
-
-	db.Where("id = ?", id).Delete(&ticket_user)
+	db.Model(&ticket_user).Where("id = ?", id).Update("role_id", 1)
 
 	return id
 }
