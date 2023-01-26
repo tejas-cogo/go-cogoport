@@ -32,8 +32,8 @@ type TicketEscalationPayload struct {
 	ExpiryDate     time.Time
 }
 
-func ScheduleTicketEscalationTask(TicketID uint, ReviewerUserID uint, GroupID uint, GroupMemberID uint, GroupHeadID uint) (*asynq.Task, error) {
-	payload, err := json.Marshal(TicketEscalationPayload{TicketID: TicketID, ReviewerUserID: ReviewerUserID, GroupID: GroupID, GroupMemberID: GroupMemberID, GroupHeadID: GroupHeadID})
+func ScheduleTicketEscalationTask(TicketID uint) (*asynq.Task, error) {
+	payload, err := json.Marshal(TicketEscalationPayload{TicketID: TicketID})
 
 	if err != nil {
 		return nil, err

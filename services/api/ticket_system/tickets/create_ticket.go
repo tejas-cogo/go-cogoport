@@ -2,8 +2,6 @@ package ticket_system
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -11,28 +9,11 @@ import (
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	timings "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_timings"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
 type TicketService struct {
 	Ticket models.Ticket
-}
-
-func GetDuration(ExpiryDuration string) int {
-	duration := strings.Split(ExpiryDuration, ":")
-
-	durationd := strings.Split(duration[0], "d")
-	durationh := strings.Split(duration[1], "h")
-	durationm := strings.Split(duration[2], "m")
-
-	d, _ := strconv.Atoi(durationd[0])
-	h, _ := strconv.Atoi(durationh[0])
-	m, _ := strconv.Atoi(durationm[0])
-
-	h += m / 60
-	h += d * 24
-
-	return h
-
 }
 
 func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
@@ -67,7 +48,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 		fmt.Println("hjfxfghv")
 		filters.TicketDefaultTiming.TicketType = "others"
 		ticket_default_timing, err = timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
-		if err != nil  || len(ticket_default_timing) == 0{
+		if err != nil || len(ticket_default_timing) == 0 {
 			return ticket, "Default Timing had issue!", err
 		}
 	}
@@ -79,7 +60,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 		ticket.Tat = u.Tat
 		ticket.ExpiryDate = time.Now()
 
-		Duration := GetDuration(u.ExpiryDuration)
+		Duration := helpers.GetDuration(u.ExpiryDuration)
 
 		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 	}

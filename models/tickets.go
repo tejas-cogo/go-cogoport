@@ -58,12 +58,6 @@ type TicketStat struct {
 
 type TicketEscalatedPayload struct {
 	TicketID       uint
-	ReviewerUserID uint
-	GroupID        uint
-	GroupMemberID  uint
-	GroupHeadID    uint
-	Tat            time.Time
-	ExpiryDate     time.Time
 }
 
 type TicketExtraFilter struct {
