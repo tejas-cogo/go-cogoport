@@ -14,12 +14,12 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 	var ticket_user []models.TicketUser
 
 	if filters.GroupUnassigned == true {
-		var ticket_users []string
+		var ticket_users []uint
 		var group_member models.GroupMember
-		db.Where("status = ?", "active").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
+		db.Model(&group_member).Where("status = ?", "active").Distinct("ticket_user_id").Pluck("TicketUserId", &ticket_users)
 		fmt.Println("dnck", ticket_users)
 		if len(ticket_users) != 0 {
-			db = db.Where("id NOT IN ?", ticket_users)
+			db = db.Not("id IN ?", ticket_users)
 		}
 	}
 
