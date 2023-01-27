@@ -11,7 +11,7 @@ import (
 // }
 
 func CreateTicketToken(c *gin.Context) {
-	var body models.Filter
+	var body models.TicketUser
 	c.BindJSON(&body)
 	c.JSON(200, service.CreateTicketToken(body))
 }

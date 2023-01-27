@@ -14,12 +14,14 @@ type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(body models.Filter) models.TicketToken {
+func CreateTicketToken(body models.TicketUser) models.TicketToken {
 	db := config.GetDB()
 
 	var ticket_token models.TicketToken
 
-	ticket_user := ticketuser.CreateTicketUser(body.TicketUser)
+	body.RoleID = 1
+
+	ticket_user := ticketuser.CreateTicketUser(body)
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
 
