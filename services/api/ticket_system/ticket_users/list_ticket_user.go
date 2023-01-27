@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -14,8 +16,11 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 	if filters.GroupUnassigned == true {
 		var ticket_users []string
 		var group_member models.GroupMember
-		db.Model(&group_member).Where("status = ?", "active").Pluck("ticket_user_id", &ticket_users)
-		db = db.Where("id not in ?", ticket_users)
+		db.Where("status = ?", "active").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
+		fmt.Println("dnck", ticket_users)
+		if len(ticket_users) != 0 {
+			db = db.Where("id NOT IN ?", ticket_users)
+		}
 	}
 
 	if filters.ID != 0 {
@@ -48,7 +53,7 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	if filters.RoleID > 0 {
+	if filters.RoleID > 1 {
 		db = db.Where("role_id = ?", filters.RoleID)
 	}
 
