@@ -26,20 +26,20 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 
 	tx := db.Begin()
 
-	if err := db.Where("id = ?", p.TicketID).First(&ticket).Error; err != nil {
+	if err := tx.Where("id = ?", p.TicketID).First(&ticket).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	if ticket.Status == "unresolved" {
 
-		if err := db.Where("ticket_type = ?", ticket.Type).First(&ticket_default_timing).Error; err != nil {
+		if err := tx.Where("ticket_type = ?", ticket.Type).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
 
 		if ticket_default_timing.ID == 0 {
-			if err := db.Where("ticket_type = ?", "others").First(&ticket_default_timing).Error; err != nil {
+			if err := tx.Where("ticket_type = ?", "others").First(&ticket_default_timing).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -75,7 +75,7 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 
 		group_member.ActiveTicketCount -= 1
 
-		if err := db.Save(&group_member).Error; err != nil {
+		if err := tx.Save(&group_member).Error; err != nil {
 			tx.Rollback()
 			return err
 		}

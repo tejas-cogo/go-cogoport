@@ -30,3 +30,18 @@ func HandleTicketEscalationTask(c context.Context, t *asynq.Task) error {
 	log.Printf("Ticket Escalated=%d", p.TicketID)
 	return nil
 }
+
+func HandleTicketExpirationTask(c context.Context, t *asynq.Task) error {
+	// Get int with the user ID from the given task.
+
+	var p models.TicketEscalatedPayload
+
+	if err := json.Unmarshal(t.Payload(), &p); err != nil {
+		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
+	}
+
+	worker.TicketExpiration(p)
+
+	log.Printf("Ticket Expired=%d", p.TicketID)
+	return nil
+}

@@ -2,38 +2,21 @@ package tasks
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/hibiken/asynq"
 )
 
 const (
 	TicketEscalation = "ticket:escalated"
-	TicketExpiration = "ticket:expiration"
+	TicketExpiration = "ticket:expired"
 )
 
-type TicketExpirationPayload struct {
-	TicketID       uint
-	ReviewerUserID uint
-	GroupID        uint
-	GroupMemberID  uint
-	GroupHeadID    uint
-	Tat            time.Time
-	ExpiryDate     time.Time
-}
-
-type TicketEscalationPayload struct {
-	TicketID       uint
-	ReviewerUserID uint
-	GroupID        uint
-	GroupMemberID  uint
-	GroupHeadID    uint
-	Tat            time.Time
-	ExpiryDate     time.Time
+type TicketPayload struct {
+	TicketID uint
 }
 
 func ScheduleTicketEscalationTask(TicketID uint) (*asynq.Task, error) {
-	payload, err := json.Marshal(TicketEscalationPayload{TicketID: TicketID})
+	payload, err := json.Marshal(TicketPayload{TicketID: TicketID})
 
 	if err != nil {
 		return nil, err
@@ -41,12 +24,11 @@ func ScheduleTicketEscalationTask(TicketID uint) (*asynq.Task, error) {
 	return asynq.NewTask(TicketEscalation, payload), nil
 }
 
-func ScheduleTicketExpirationTask(TicketID uint, ReviewerUserID uint, GroupID uint, GroupMemberID uint, GroupHeadID uint) (*asynq.Task, error) {
-	payload, err := json.Marshal(TicketExpirationPayload{TicketID: TicketID, ReviewerUserID: ReviewerUserID, GroupID: GroupID, GroupMemberID: GroupMemberID, GroupHeadID: GroupHeadID})
+func ScheduleTicketExpirationTask(TicketID uint) (*asynq.Task, error) {
+	payload, err := json.Marshal(TicketPayload{TicketID: TicketID})
 
 	if err != nil {
 		return nil, err
 	}
 	return asynq.NewTask(TicketExpiration, payload), nil
 }
-
