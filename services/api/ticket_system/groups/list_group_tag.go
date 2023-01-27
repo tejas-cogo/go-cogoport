@@ -1,8 +1,6 @@
 package ticket_system
 
 import (
-	"fmt"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
@@ -14,9 +12,9 @@ func ListGroupTag(Tag string) []string {
 
 	db = db.Table("(?) as u", db.Model(&models.Group{}).Select("unnest(tags) as tag")).Distinct("u.tag")
 
-	fmt.Println(Tag)
 	if Tag != "" {
-		db = db.Where("u.tag like ?", Tag)
+		Tag = "%" + Tag + "%"
+		db = db.Where("u.tag LIKE ?", Tag)
 	}
 
 	db.Pluck("tag", &t)

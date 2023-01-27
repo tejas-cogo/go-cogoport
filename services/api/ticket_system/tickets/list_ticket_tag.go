@@ -16,6 +16,7 @@ func ListTicketTag(Tag string) []string {
 
 	fmt.Println(Tag)
 	if Tag != "" {
+		Tag = "%" + Tag + "%"
 		db = db.Where("u.tag = ?", Tag)
 	}
 
