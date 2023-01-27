@@ -5,7 +5,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func DeleteTicketUser(id uint) uint {
+func InactiveTicketUserRole(id uint) uint {
 	db := config.GetDB()
 
 	var ticket_user models.TicketUser
