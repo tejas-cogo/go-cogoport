@@ -18,7 +18,6 @@ type TicketService struct {
 
 func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 
 	tx := db.Begin()
 	var err error
@@ -38,7 +37,6 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 	}
 
 	filters.TicketDefaultTiming.TicketType = ticket.Type
-	// filters.TicketDefaultTiming.TicketPriority = ticket.Priority
 	filters.TicketDefaultTiming.Status = "active"
 
 	ticket_default_timing, err := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
@@ -106,9 +104,6 @@ func validate(ticket models.Ticket) string {
 	if ticket.NotificationPreferences == nil {
 		return ("Notification Preferences Is Required!")
 	}
-	// if ticket.Priority == nil {
-	// 	return ("Priority Is Required!")
-	// }
 	if ticket.Tat == "" {
 		return ("Tat couldn't be set!")
 	}

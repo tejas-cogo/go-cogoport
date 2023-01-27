@@ -12,14 +12,6 @@ import (
 func ListTicketUser(c *gin.Context) {
 	var filters models.TicketUserFilter
 
-	// filters.Name = c.Request.URL.Query().Get("Name")
-	// filters.Email = c.Request.URL.Query().Get("Email")
-	// filters.MobileNumber = c.Request.URL.Query().Get("MobileNumber")
-
-	// ID := c.Request.URL.Query().Get("SystemUserID")
-	// if ID != "" {
-	// 	filters.SystemUserID, _ = uuid.Parse(ID)
-	// }
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")

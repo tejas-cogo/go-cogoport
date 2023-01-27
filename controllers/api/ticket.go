@@ -49,8 +49,6 @@ func GetTicketStats(c *gin.Context) {
 func ListTicketDetail(c *gin.Context) {
 	var filters models.TicketExtraFilter
 
-	// ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[id]"))
-	// filters.TicketID = uint(ID)
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")

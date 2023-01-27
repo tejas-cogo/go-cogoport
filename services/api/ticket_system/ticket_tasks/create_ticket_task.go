@@ -11,7 +11,6 @@ type TicketTaskService struct {
 
 func CreateTicketTask(ticket_task models.TicketTask) models.TicketTask {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 	db.Create(&ticket_task)
 	return ticket_task
 }

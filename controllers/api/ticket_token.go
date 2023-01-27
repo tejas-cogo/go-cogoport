@@ -6,10 +6,6 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_tokens"
 )
 
-// func ListTicketToken(c *gin.Context) {
-// 	c.JSON(200, service.ListTicketToken())
-// }
-
 func CreateTicketToken(c *gin.Context) {
 	var body models.TicketUser
 	c.BindJSON(&body)
@@ -29,10 +25,3 @@ func DeleteTicketToken(c *gin.Context) {
 	id := body.ID
 	c.JSON(200, service.DeleteTicketToken(id))
 }
-
-// func UpdateTicketToken(c *gin.Context) {
-// 	var body models.TicketToken
-// 	c.BindJSON(&body)
-// 	id := body.ID
-// 	c.JSON(200, service.UpdateTicketToken(id, body))
-// }

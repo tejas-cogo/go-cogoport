@@ -12,8 +12,6 @@ import (
 func ListRole(c *gin.Context) {
 	var filters models.Role
 
-	// filters.Name = c.Request.URL.Query().Get("filters[name]")
-
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")

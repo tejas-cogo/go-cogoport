@@ -12,12 +12,6 @@ import (
 func ListTicketSpectator(c *gin.Context) {
 	var filters models.TicketSpectator
 
-	// TicketID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_id]"))
-	// filters.TicketID = uint(TicketID)
-
-	// TicketUserID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[ticket_user_id]"))
-	// filters.TicketUserID = uint(TicketUserID)
-
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
@@ -46,10 +40,3 @@ func DeleteTicketSpectator(c *gin.Context) {
 	id := body.ID
 	c.JSON(200, service.DeleteTicketSpectator(id))
 }
-
-// func UpdateTicketSpectator(c *gin.Context) {
-// 	var body models.TicketSpectator
-// 	c.BindJSON(&body)
-// 	id := body.ID
-// 	c.JSON(200, service.UpdateTicketSpectator(id, body))
-// }

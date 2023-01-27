@@ -14,7 +14,5 @@ func CreateTicketUser(ticket_user models.TicketUser) models.TicketUser {
 	ticket_user.Status = "active"
 	db.Create(&ticket_user)
 
-	// result := map[string]interface{}{}
-
 	return ticket_user
 }

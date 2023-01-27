@@ -10,16 +10,6 @@ func UpdateTicketActivity(body models.TicketActivity) models.TicketActivity {
 	var ticket_activity models.TicketActivity
 	db.Where("id = ?", body.ID).Find(&ticket_activity)
 
-	// if body.Type != "" {
-	// 	group.Name = body.Name
-	// }
-	// if body.Tags != nil {
-	// 	group.Tags = body.Tags
-	// }
-	// if body.UserType != "" {
-	// 	ticket_activity.UserType = body.UserType
-	// }
-
 	db.Save(&ticket_activity)
 	return ticket_activity
 }

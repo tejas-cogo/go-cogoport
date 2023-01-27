@@ -11,7 +11,6 @@ type TicketDefaultGroupService struct {
 
 func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (string, error) {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 	tx := db.Begin()
 	var err error
 

@@ -16,7 +16,6 @@ type TicketReviewerService struct {
 
 func CreateTicketReviewer(body models.Ticket) (string, error) {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 
 	txt := db.Begin()
 

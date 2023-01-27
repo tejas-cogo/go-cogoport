@@ -11,7 +11,6 @@ type TicketTaskAssigneeService struct {
 
 func CreateTicketTaskAssignee(ticket_task_assignee models.TicketTaskAssignee) models.TicketTaskAssignee {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 	db.Create(&ticket_task_assignee)
 	return ticket_task_assignee
 }

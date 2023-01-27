@@ -12,8 +12,6 @@ func UpdateTicketTask(id uint, body models.TicketTask) models.TicketTask {
 	fmt.Print("Body", body)
 	db.Where("id = ?", id).First(&ticket_task)
 
-	// ticket_task.Name = body.Name
-
 	db.Save(&ticket_task)
 	return ticket_task
 }

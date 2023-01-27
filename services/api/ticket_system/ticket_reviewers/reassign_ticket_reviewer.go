@@ -6,12 +6,10 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
-	// activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 )
 
 func ReassignTicketReviewer(body models.ReviewerActivity) string {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 
 	var ticket_reviewer_old models.TicketReviewer
 	var ticket_reviewer_active models.TicketReviewer

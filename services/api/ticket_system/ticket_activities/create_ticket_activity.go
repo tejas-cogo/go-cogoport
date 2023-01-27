@@ -8,7 +8,6 @@ import (
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
 	"gorm.io/gorm"
-	// tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
 type TicketActivityService struct {
@@ -19,7 +18,6 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
-	// result := map[string]interface{}{}
 
 	var ticket_user models.TicketUserFilter
 

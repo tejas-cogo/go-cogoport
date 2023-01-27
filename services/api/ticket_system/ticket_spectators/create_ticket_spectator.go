@@ -14,7 +14,7 @@ func CreateTicketSpectator(ticket_spectator models.TicketSpectator) models.Ticke
 	db := config.GetDB()
 	var spectator_activity models.SpectatorActivity
 	var filters models.Filter
-	// result := map[string]interface{}{}
+
 	ticket_spectator.Status = "active"
 
 	db.Create(&ticket_spectator)

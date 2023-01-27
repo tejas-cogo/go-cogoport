@@ -10,7 +10,6 @@ type GroupMemberService struct {
 }
 
 func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
-	// result := map[string]interface{}{}
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error

@@ -28,7 +28,5 @@ func ListGroup(filters models.Group) ([]models.Group, *gorm.DB) {
 
 	db = db.Order("name desc").Find(&groups)
 
-	// fmt.Println(db.Statement)
-
 	return groups, db
 }
