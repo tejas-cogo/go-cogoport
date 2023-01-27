@@ -154,7 +154,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 
 	tx.Commit()
 
-	return ticket_activity, "Created Successfully!", err
+	return ticket_activity, "Successfully Created!", err
 }
 
 func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {
