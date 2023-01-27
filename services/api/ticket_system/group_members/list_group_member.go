@@ -15,10 +15,6 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 		db = db.Where("group_id = ?", filters.GroupID)
 	}
 
-	if filters.NotGroupID > 0 {
-		db = db.Where("group_id != ?", filters.NotGroupID)
-	}
-
 	if filters.TicketUserID > 0 {
 		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}

@@ -36,5 +36,4 @@ type FilterGroupMember struct {
 	ActiveTicketCount uint
 	HierarchyLevel    uint
 	Status            string
-	NotGroupID        uint
 }

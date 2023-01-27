@@ -19,15 +19,17 @@ type TicketUser struct {
 }
 
 type TicketUserFilter struct {
-	ID           uint
-	Name         string
-	SystemUserID string
-	Email        string
-	MobileNumber string
-	RoleID       uint
-	Source       string
-	Type         string
-	Status       string
+	ID              uint
+	Name            string
+	SystemUserID    string
+	Email           string
+	MobileNumber    string
+	RoleID          uint
+	Source          string
+	Type            string
+	Status          string
+	RoleUnassigned  bool
+	GroupUnassigned bool
 }
 
 type TicketUserRole struct {

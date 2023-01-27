@@ -11,6 +11,13 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 
 	var ticket_user []models.TicketUser
 
+	if filters.GroupUnassigned == true {
+		var ticket_users []string
+		var group_member models.GroupMember
+		db.Model(&group_member).Where("status = ?", "active").Pluck("ticket_user_id", &ticket_users)
+		db = db.Where("id not in ?", ticket_users)
+	}
+
 	if filters.ID != 0 {
 		db = db.Where("id = ?", filters.ID)
 	}
@@ -45,7 +52,11 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		db = db.Where("role_id = ?", filters.RoleID)
 	}
 
-	db = db.Find(&ticket_user)
+	if filters.RoleUnassigned == true {
+		db = db.Where("role_id = ?", 1)
+	}
+
+	db = db.Preload("Role").Find(&ticket_user)
 
 	return ticket_user, db
 }
