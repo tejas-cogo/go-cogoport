@@ -16,7 +16,7 @@ func ListGroupTag(Tag string) []string {
 
 	fmt.Println(Tag)
 	if Tag != "" {
-		db = db.Where("u.tag = ?", Tag)
+		db = db.Where("u.tag like ?", Tag)
 	}
 
 	db.Pluck("tag", &t)
