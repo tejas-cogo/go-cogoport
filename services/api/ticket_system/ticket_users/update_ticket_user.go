@@ -17,14 +17,14 @@ func UpdateTicketUser(body models.TicketUserRole) (models.TicketUser, string, er
 			return ticket_user, "System User Not Found", err
 		}
 
-		if body.Type != ticket_user.Type {
+		if body.Type != "" {
 			ticket_user.Type = body.Type
 		}
 
-		if body.RoleID != ticket_user.RoleID {
+		if body.RoleID > 1 {
 			ticket_user.RoleID = body.RoleID
 		}
-		if body.Source != ticket_user.Source {
+		if body.Source != "" {
 			ticket_user.Source = body.Source
 		}
 
