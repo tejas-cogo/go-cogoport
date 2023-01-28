@@ -26,7 +26,7 @@ func ListGroup(filters models.Group) ([]models.Group, *gorm.DB) {
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db = db.Where("name != ?", "default")
+	db = db.Where("name != ?", "Default")
 
 	db = db.Order("name desc").Find(&groups)
 
