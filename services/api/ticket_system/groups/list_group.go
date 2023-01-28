@@ -1,6 +1,7 @@
 package ticket_system
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -8,10 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListGroup(filters models.Group) ([]models.Group, *gorm.DB) {
+func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB) {
 	db := config.GetDB()
 
-	var groups []models.Group
+	var groups []models.GroupWithMember
+
+	db = db.Model(&models.Group{})
+
+	db = db.Select("groups.id, groups.name,groups.status,groups.tags,Count( group_members.id) as count")
+
+	db = db.Joins("left join group_members on group_members.group_id = groups.id and group_members.status = ?", "active")
 
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
@@ -28,9 +35,13 @@ func ListGroup(filters models.Group) ([]models.Group, *gorm.DB) {
 
 	db = db.Where("name != ?", "Default")
 
-	db = db.Order("name desc").Find(&groups)
+	db = db.Order("name desc")
 
-	// fmt.Println(db.Statement)
+	db = db.Group("1,2,3,4")
+
+	db = db.Scan(&groups)
+
+	fmt.Println("group", groups)
 
 	return groups, db
 }
