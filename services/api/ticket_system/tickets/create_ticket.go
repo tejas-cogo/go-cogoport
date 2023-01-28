@@ -46,7 +46,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 		return ticket, "Default Timing had issue!", err
 	} else if len(ticket_default_timing) == 0 {
 		fmt.Println("hjfxfghv")
-		filters.TicketDefaultTiming.TicketType = "others"
+		filters.TicketDefaultTiming.TicketType = "default"
 		ticket_default_timing, err = timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
 		if err != nil || len(ticket_default_timing) == 0 {
 			return ticket, "Default Timing had issue!", err
@@ -81,7 +81,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = ticket.ID
 	ticket_activity.TicketUserID = ticket.TicketUserID
-	ticket_activity.Type = "Ticket Created"
+	ticket_activity.Type = "ticket_created"
 	ticket_activity.Status = "unresolved"
 
 	if err := tx.Create(&ticket_activity).Error; err != nil {

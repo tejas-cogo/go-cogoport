@@ -21,7 +21,7 @@ func ListTicketDefault(filters models.TicketDefaultType) ([]models.TicketDefault
 
 	db = db.Joins("left join groups on groups.id = ticket_default_groups.group_id")
 
-	db = db.Where("ticket_default_types.ticket_type != ?", "others")
+	db = db.Where("ticket_default_types.ticket_type != ?", "default")
 
 	if filters.TicketType != "" {
 		db = db.Where("ticket_default_types.ticket_type = ?", filters.TicketType)

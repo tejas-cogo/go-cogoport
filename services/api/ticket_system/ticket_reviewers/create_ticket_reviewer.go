@@ -30,7 +30,7 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 		return "Default Group had issue!", err
 	} else if len(default_group) == 0 {
 		var default_group []models.TicketDefaultGroup
-		if err := txt.Where("ticket_type = ? and status = ?", "others", "active").Find(&default_group).Error; err != nil {
+		if err := txt.Where("ticket_type = ? ", "default").Find(&default_group).Error; err != nil {
 			txt.Rollback()
 			return "Default Group couldn't be found", err
 		}
@@ -40,7 +40,10 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 		ticket_reviewer.GroupID = u.GroupID
 		filters.FilterGroupMember.GroupID = u.GroupID
 		filters.FilterGroupMember.Status = "active"
+		fmt.Println("group", filters.FilterGroupMember)
 		group_member, _ := groupmember.ListGroupMember(filters.FilterGroupMember)
+
+		fmt.Println("ticket V", group_member)
 		for _, v := range group_member {
 			ticket_reviewer.GroupMemberID = v.ID
 			ticket_reviewer.TicketUserID = v.TicketUserID
@@ -56,7 +59,7 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 				txt.Rollback()
 				return "TicketReviewer couldn't be created", err
 			}
-			fmt.Println("break", ticket_reviewer, "break")
+
 			filters.GroupMember.ActiveTicketCount = v.ActiveTicketCount + 1
 			groupmember.UpdateGroupMember(filters.GroupMember)
 			break
@@ -68,7 +71,7 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 	ticket_activity.TicketID = ticket_reviewer.TicketID
 	ticket_activity.TicketUserID = ticket_reviewer.TicketUserID
 	ticket_activity.UserType = "system"
-	ticket_activity.Type = "Reviewer Assigned"
+	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
 
 	if err := txt.Create(&ticket_activity).Error; err != nil {

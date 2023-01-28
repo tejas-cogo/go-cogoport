@@ -47,7 +47,7 @@ func validate(group_member models.GroupMember) string {
 		return ("Hierarchy Level Is Required!")
 	}
 	if group_member.GroupID == 0 {
-		return ("Group Is Rquired!")
+		return ("Group Is Required!")
 	}
 
 	return ("validated")
