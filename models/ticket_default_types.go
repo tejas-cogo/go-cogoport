@@ -29,5 +29,6 @@ type TicketDefault struct {
 	TicketDefaultGroupID     uint
 	GroupName                string         `gorm:"not null:unique"`
 	Tags                     pq.StringArray `gorm:"type:text[]"`
-	TicketDefaultGroupStatus string         `gorm:"not null:default:'active'"`
+	MemberCount              int
+	TicketDefaultGroupStatus string `gorm:"not null:default:'active'"`
 }
