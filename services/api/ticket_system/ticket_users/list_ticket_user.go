@@ -27,6 +27,10 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		db = db.Where("id = ?", filters.ID)
 	}
 
+	if filters.NotPresentID != 0 {
+		db = db.Where("id != ?", filters.NotPresentID)
+	}
+
 	if filters.SystemUserID != "" {
 		db = db.Where("system_user_id = ?", filters.SystemUserID)
 	}

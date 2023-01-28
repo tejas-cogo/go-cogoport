@@ -27,13 +27,14 @@ type CreateGroupMember struct {
 }
 
 type FilterGroupMember struct {
-	ID                uint
-	PerformedByID     string
-	GroupID           uint
-	Group             Group
-	TicketUserID      uint
-	TicketUser        TicketUser
-	ActiveTicketCount uint
-	HierarchyLevel    uint
-	Status            string
+	ID                     uint
+	PerformedByID          string
+	GroupID                uint
+	Group                  Group
+	TicketUserID           uint
+	TicketUser             TicketUser
+	NotPresentTicketUserID uint
+	ActiveTicketCount      uint
+	HierarchyLevel         uint
+	Status                 string
 }

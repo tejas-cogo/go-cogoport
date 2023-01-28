@@ -40,6 +40,7 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 		ticket_reviewer.GroupID = u.GroupID
 		filters.FilterGroupMember.GroupID = u.GroupID
 		filters.FilterGroupMember.Status = "active"
+		filters.FilterGroupMember.NotPresentTicketUserID = body.TicketUserID
 		fmt.Println("group", filters.FilterGroupMember)
 		group_member, _ := groupmember.ListGroupMember(filters.FilterGroupMember)
 

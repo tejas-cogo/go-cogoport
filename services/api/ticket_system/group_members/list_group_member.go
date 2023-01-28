@@ -23,6 +23,10 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 		db = db.Where("status = ?", filters.Status)
 	}
 
+	if filters.NotPresentTicketUserID > 0 {
+		db = db.Where("ticket_user_id != ?", filters.NotPresentTicketUserID)
+	}
+
 	db = db.Order("hierarchy_level desc").Order("active_ticket_count asc").Preload("TicketUser").Preload("Group").Find(&group_members)
 
 	return group_members, db

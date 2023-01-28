@@ -25,7 +25,7 @@ func CreateTicketToken(body models.TicketUser) models.TicketToken {
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
 
-	result = result + time.Now().String() + "dunningtoken"
+	result = result + time.Now().String() + "token"
 
 	message := []byte(result)
 
