@@ -24,10 +24,9 @@ type GroupWithMember struct {
 }
 
 type FilterGroup struct {
-	ID                  uint
-	Name                string
-	Tags                pq.StringArray
-	Status              string
-	PerformedByID       uuid.UUID
-	GroupMemberRequired bool
+	ID            uint
+	Name          string
+	Tags          pq.StringArray
+	Status        string
+	PerformedByID uuid.UUID
 }
