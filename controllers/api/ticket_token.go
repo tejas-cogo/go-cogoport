@@ -17,10 +17,10 @@ func CreateTicketToken(c *gin.Context) {
 }
 
 func CreateTokenTicket(c *gin.Context) {
-	token := c.Request.URL.Query().Get("TicketToken")
-	var ticket models.Ticket
-	c.BindJSON(&ticket)
-	c.JSON(200, service.CreateTokenTicket(token, ticket))
+
+	var token_ticket models.TicketToken
+	c.BindJSON(&token_ticket)
+	c.JSON(200, service.CreateTokenTicket(token_ticket))
 }
 
 func DeleteTicketToken(c *gin.Context) {
