@@ -56,8 +56,36 @@ type TicketStat struct {
 	HighPriority int64
 }
 
+type TicketGraph struct {
+	AgentID     string
+	AgentRmID   string
+	TodayOpen   TimeDistribution
+	TodayClosed TimeDistribution
+	WeekOpen    Week
+	WeekClosed  Week
+}
+
 type TicketEscalatedPayload struct {
-	TicketID       uint
+	TicketID uint
+}
+
+type TimeDistribution struct {
+	First  int64
+	Second int64
+	Third  int64
+	Fourth int64
+	Fifth  int64
+	Sixth  int64
+}
+
+type Week struct {
+	Monday    int64
+	Tuesday   int64
+	Wednesday int64
+	Thursday  int64
+	Friday    int64
+	Saturday  int64
+	Sunday    int64
 }
 
 type TicketExtraFilter struct {
