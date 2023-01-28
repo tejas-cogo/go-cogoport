@@ -38,13 +38,17 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 
 	for _, u := range default_group {
 		ticket_reviewer.GroupID = u.GroupID
-		filters.FilterGroupMember.GroupID = u.GroupID
-		filters.FilterGroupMember.Status = "active"
-		filters.FilterGroupMember.NotPresentTicketUserID = body.TicketUserID
-		fmt.Println("group", filters.FilterGroupMember)
-		group_member, _ := groupmember.ListGroupMember(filters.FilterGroupMember)
+		var group_member []models.GroupMember
+		if u.GroupMemberID < 1 {
+			filters.FilterGroupMember.GroupID = u.GroupID
+			filters.FilterGroupMember.Status = "active"
+			filters.FilterGroupMember.NotPresentTicketUserID = body.TicketUserID
+			fmt.Println("group", filters.FilterGroupMember)
+			group_member, _ = groupmember.ListGroupMember(filters.FilterGroupMember)
+		} else {
+			txt.Where("id = ?", u.GroupMemberID).Find(&group_member)
+		}
 
-		fmt.Println("ticket V", group_member)
 		for _, v := range group_member {
 			ticket_reviewer.GroupMemberID = v.ID
 			ticket_reviewer.TicketUserID = v.TicketUserID
