@@ -22,7 +22,7 @@ func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB) 
 
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
-		db = db.Where("name Like ?", filters.Name)
+		db = db.Where("name iLike ?", filters.Name)
 	}
 
 	if len(filters.Tags) != 0 {

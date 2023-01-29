@@ -13,7 +13,7 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB) {
 
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
-		db = db.Where("name Like ?", filters.Name)
+		db = db.Where("name iLike ?", filters.Name)
 	}
 
 	if filters.Level > 0 {

@@ -36,12 +36,12 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
-		db = db.Where("name LIKE ?", filters.Name)
+		db = db.Where("name iLIKE ?", filters.Name)
 	}
 
 	if filters.Email != "" {
 		filters.Email = "%" + filters.Email + "%"
-		db = db.Where("email LIKE ?", filters.Email)
+		db = db.Where("email iLIKE ?", filters.Email)
 	}
 
 	if filters.MobileNumber != "" {
