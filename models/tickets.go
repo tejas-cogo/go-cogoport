@@ -54,7 +54,8 @@ type TicketStat struct {
 	Unresolved   int64
 	ExpiringSoon int64
 	HighPriority int64
-	CreatedAt    uint
+	StartDate    string
+	EndDate      string
 }
 
 type TicketGraph struct {
@@ -64,6 +65,10 @@ type TicketGraph struct {
 	TodayClosed TimeDistribution
 	WeekOpen    Week
 	WeekClosed  Week
+	StartDate   time.Time
+	EndDate     time.Time
+	TodayDate   time.Time
+	Sum         int64
 }
 
 type TicketEscalatedPayload struct {

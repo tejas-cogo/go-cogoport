@@ -1,6 +1,7 @@
 package ticket_system
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -46,6 +47,8 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 	t := time.Now().Format(DateTime)
 	y, _ = time.Parse(DateTime, t)
 
+	graph.TodayDate = time.Now()
+
 	for i := 1; i <= 6; i++ {
 
 		var stats models.TicketStat
@@ -80,14 +83,25 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 	}
 
 	weekday := time.Now().Weekday()
+	fmt.Println(weekday)
 
 	y, _ = time.Parse(DateTime, t)
+	fmt.Println(y)
 
 	t1 := int(weekday)
+	fmt.Println(t1)
 
 	t1 = -t1 + 1
+	if t1 == 1 {
+		t1 = -6
+	}
+
+	fmt.Println(t1)
 
 	y = x.AddDate(0, 0, t1)
+	graph.StartDate = y
+
+	var count int64
 
 	for i := 1; i <= 7; i++ {
 
@@ -123,7 +137,12 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 			graph.WeekOpen.Sunday = stats.Open
 		}
 
+		count += stats.Closed
+
 	}
+
+	graph.EndDate = y
+	graph.Sum = count
 
 	return graph
 }
