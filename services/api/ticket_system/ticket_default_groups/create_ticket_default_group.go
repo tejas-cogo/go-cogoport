@@ -33,9 +33,6 @@ func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (s
 }
 
 func validate(ticket_default_group models.TicketDefaultGroup) string {
-	if ticket_default_group.TicketType == "" {
-		return ("TicketType Is Required!")
-	}
 
 	if ticket_default_group.GroupID == 0 {
 		return ("Group Is Required!")

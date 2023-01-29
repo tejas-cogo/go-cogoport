@@ -54,6 +54,7 @@ type TicketStat struct {
 	Unresolved   int64
 	ExpiringSoon int64
 	HighPriority int64
+	CreatedAt    uint
 }
 
 type TicketGraph struct {

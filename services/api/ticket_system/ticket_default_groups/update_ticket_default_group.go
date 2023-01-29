@@ -10,8 +10,8 @@ func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) models.TicketDefau
 	var ticket_default_group models.TicketDefaultGroup
 	db.Where("id = ?", body.ID).Find(&ticket_default_group)
 
-	if body.TicketType != "" {
-		ticket_default_group.TicketType = body.TicketType
+	if body.TicketDefaultTypeID > 0 {
+		ticket_default_group.TicketDefaultTypeID = body.TicketDefaultTypeID
 	}
 	if body.GroupID != 0 {
 		ticket_default_group.GroupID = body.GroupID

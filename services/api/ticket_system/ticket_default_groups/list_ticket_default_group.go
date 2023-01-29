@@ -13,9 +13,8 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) ([]models.TicketD
 
 	var ticket_default_groups []models.TicketDefaultGroup
 
-	if filters.TicketType != "" {
-		filters.TicketType = "%" + filters.TicketType + "%"
-		tx = tx.Where("ticket_type iLike ?", filters.TicketType)
+	if filters.TicketDefaultTypeID > 0 {
+		tx = tx.Where("ticket_default_type_id = ?", filters.TicketDefaultTypeID)
 	}
 
 	if filters.GroupID != 0 {

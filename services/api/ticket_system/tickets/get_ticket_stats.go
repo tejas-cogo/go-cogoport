@@ -18,6 +18,8 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 	var ticket_user models.TicketUser
 	var ticket_id []uint
 	t := time.Now()
+	c := time.Now().Format(YYYYMMDD)
+	y, _ := time.Parse(YYYYMMDD, c)
 
 	if stats.AgentRmID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
 		var ticket_users []uint
@@ -42,21 +44,21 @@ func GetTicketStats(stats models.TicketStat) models.TicketStat {
 
 	db = config.GetDB()
 
-	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.Unresolved)
+	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.Unresolved)
 
-	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Count(&stats.Closed)
+	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.Closed)
 
-	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Count(&stats.Rejected)
+	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.Rejected)
 
-	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? AND tat BETWEEN ? AND ?", "unresolved", t.Format(YYYYMMDD), time.Now()).Count(&stats.DueToday)
+	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? AND tat BETWEEN ? AND ?", "unresolved", t.Format(YYYYMMDD), time.Now()).Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.DueToday)
 
-	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Count(&stats.Overdue)
+	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.Overdue)
 
-	db.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "reassigned").Count(&stats.Reassigned)
+	db.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "reassigned").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.Reassigned)
 
-	db.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated)
+	db.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "escalated").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Count(&stats.Escalated)
 
-	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("priority = 'high'").Count(&stats.HighPriority)
+	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("created_at BETWEEN ? and ?", y, y.AddDate(0, 10, 1)).Where("priority = 'high'").Count(&stats.HighPriority)
 
 	db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
 
