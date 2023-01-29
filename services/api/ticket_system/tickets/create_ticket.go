@@ -7,7 +7,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
-	timings "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_timings"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
@@ -23,8 +22,9 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 	tx := db.Begin()
 	var err error
 
-	var filters models.Filter
 	var ticket_user []models.TicketUser
+	var ticket_default_type models.TicketDefaultType
+	var ticket_default_timing models.TicketDefaultTiming
 
 	if ticket.TicketUserID == 0 {
 		if err := tx.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user).Error; err != nil {
@@ -37,33 +37,37 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 		ticket.TicketUserID = ticket_user[0].ID
 	}
 
-	filters.TicketDefaultTiming.TicketType = ticket.Type
-	// filters.TicketDefaultTiming.TicketPriority = ticket.Priority
-	filters.TicketDefaultTiming.Status = "active"
+	if err := tx.Where("ticket_type = ? and status = ? ", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
+		tx.Rollback()
+		return ticket, "ticket_default_type User Not Found", err
+	}
 
-	ticket_default_timing, err := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
-	if err != nil {
-		return ticket, "Default Timing had issue!", err
-	} else if len(ticket_default_timing) == 0 {
-		fmt.Println("hjfxfghv")
-		filters.TicketDefaultTiming.TicketType = "default"
-		ticket_default_timing, err = timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
-		if err != nil || len(ticket_default_timing) == 0 {
+	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; 
+	erro != nil {
+		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
+			tx.Rollback()
 			return ticket, "Default Timing had issue!", err
 		}
 	}
 
+	// fmt.Println("hjfxfghv")
+	// filters.TicketDefaultTiming.TicketType = "default"
+	// ticket_default_timing, err = timings.ListTicketDefaultTiming(filters.TicketDefaultTiming
+	// filters.TicketDefaultTiming.TicketType = ticket.Type
+	// // filters.TicketDefaultTiming.TicketPriority =
+	// filters.TicketDefaultTiming.Status = "active"
+
+	// ticket_default_timing, err := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
+
 	fmt.Println("rfcds", ticket_default_timing, "gfvdc")
 
-	for _, u := range ticket_default_timing {
+	ticket.Tat = ticket_default_timing.Tat
+	ticket.ExpiryDate = time.Now()
 
-		ticket.Tat = u.Tat
-		ticket.ExpiryDate = time.Now()
+	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
 
-		Duration := helpers.GetDuration(u.ExpiryDuration)
+	ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 
-		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
-	}
 	ticket.Status = "unresolved"
 
 	stmt := validate(ticket)
