@@ -26,7 +26,7 @@ func ListTicketType(c *gin.Context) {
 }
 
 func ListTicketDefault(c *gin.Context) {
-	var filters models.TicketDefaultType
+	var filters models.TicketDefaultFilter
 
 	// filters.TicketDefaultType.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
 

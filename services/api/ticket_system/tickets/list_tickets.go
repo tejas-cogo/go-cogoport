@@ -35,7 +35,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if filters.AgentID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
+	} else if filters.AgentID != "" {
 		db.Where("system_user_id = ?", filters.AgentID).First(&ticket_user)
 
 		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)

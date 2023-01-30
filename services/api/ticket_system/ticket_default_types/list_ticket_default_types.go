@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicketDefault(filters models.TicketDefaultType) ([]models.TicketDefault, *gorm.DB) {
+func ListTicketDefault(filters models.TicketDefaultFilter) ([]models.TicketDefault, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_default []models.TicketDefault
@@ -33,7 +33,11 @@ func ListTicketDefault(filters models.TicketDefaultType) ([]models.TicketDefault
 		db = db.Where("ticket_default_types.ticket_type = ?", filters.TicketType)
 	}
 
-	db = db.Group("ticket_default_types.id, ticket_default_types.ticket_type,ticket_default_types.status,ticket_default_timings.id,ticket_default_timings.status ,ticket_default_timings.expiry_duration ,ticket_default_timings.tat ,ticket_default_timings.conditions,ticket_default_timings.ticket_priority ,ticket_default_timings.status ,ticket_default_groups.id ,groups.name ,groups.tags, ticket_default_groups.status,ticket_users.name,gpm.id,groups.id  ")
+	if filters.QFilter != "" {
+		db = db.Where("ticket_default_types.ticket_type = ? or groups.name = ? or ticket_users.name", filters.TicketType)
+	}
+
+	db = db.Group("ticket_default_types.id, ticket_default_types.ticket_type,ticket_default_types.status,ticket_default_timings.id,ticket_default_timings.status ,ticket_default_timings.expiry_duration ,ticket_default_timings.tat ,ticket_default_timings.conditions,ticket_default_timings.ticket_priority ,ticket_default_timings.status ,ticket_default_groups.id ,groups.name ,groups.tags, ticket_default_groups.status,ticket_users.name,gpm.id,groups.id")
 
 	db = db.Scan(&ticket_default)
 
