@@ -34,7 +34,7 @@ func ListTicketDefault(filters models.TicketDefaultFilter) ([]models.TicketDefau
 	}
 
 	if filters.QFilter != "" {
-		db = db.Where("ticket_default_types.ticket_type = ? or groups.name = ? or ticket_users.name", filters.TicketType)
+		db = db.Where("ticket_default_types.ticket_type = ? or groups.name = ? or ticket_users.name", filters.QFilter, filters.QFilter, filters.QFilter)
 	}
 
 	db = db.Group("ticket_default_types.id, ticket_default_types.ticket_type,ticket_default_types.status,ticket_default_timings.id,ticket_default_timings.status ,ticket_default_timings.expiry_duration ,ticket_default_timings.tat ,ticket_default_timings.conditions,ticket_default_timings.ticket_priority ,ticket_default_timings.status ,ticket_default_groups.id ,groups.name ,groups.tags, ticket_default_groups.status,ticket_users.name,gpm.id,groups.id")
