@@ -19,7 +19,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("create_group", controllers.CreateGroup)
 	ticket_system.DELETE("delete_group", controllers.DeleteGroup)
 	ticket_system.PUT("update_group", controllers.UpdateGroup)
-	ticket_system.GET("list_group_tag", controllers.ListGroupTag)
+	ticket_system.GET("list_group_tags", controllers.ListGroupTag)
 
 	ticket_system.GET("list_group_members", controllers.ListGroupMember)
 	ticket_system.POST("create_group_member", controllers.CreateGroupMember)
