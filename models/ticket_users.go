@@ -29,6 +29,7 @@ type TicketUserFilter struct {
 	Source          string
 	Type            string
 	Status          string
+	
 	RoleUnassigned  bool
 	GroupUnassigned bool
 }

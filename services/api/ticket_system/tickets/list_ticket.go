@@ -50,6 +50,10 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("type = ?", filters.Type)
 	}
 
+	if filters.QFilter != "" {
+		db = db.Where("name ilike ? or type ilike ?", filters.QFilter, filters.QFilter)
+	}
+
 	if filters.Priority != "" {
 		db = db.Where("priority = ?", filters.Priority)
 	}
@@ -59,10 +63,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		y := x.AddDate(0, 0, 10)
 		fmt.Println(x, ", ", y)
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
-	}
-
-	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.TicketUserID != 0 {
@@ -93,11 +93,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	db = db.Where("id IN ?", ticket_id)
 
-	// if sort.SortBy == "expiry_duration" && sort.SortType == "asc" {
-	// 	db = db.Order("expiry_date asc").Order("created_at desc")
-	// } else if sort.SortBy == "expiry_duration" && sort.SortType == "desc" {
-	// 	db = db.Order("expiry_date desc").Order("created_at desc")
-	// } else {
 	db = db.Order("created_at desc").Order("expiry_date desc")
 
 	db = db.Preload("TicketUser").Find(&ticket)

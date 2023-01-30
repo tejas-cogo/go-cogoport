@@ -96,6 +96,7 @@ type Week struct {
 
 type TicketExtraFilter struct {
 	TicketUserID            uint
+	QFilter                 string
 	PerformedByID           string
 	AgentID                 string
 	AgentRmID               string
