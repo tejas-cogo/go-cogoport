@@ -6,17 +6,29 @@ import (
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 )
 
-func UpdateTicket(body models.Ticket) models.Ticket {
+func UpdateTicket(body models.Ticket) (string,error,models.Ticket) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var ticket models.Ticket
-	db.Where("id = ?", body.ID).First(&ticket)
+
+	if err := tx.Where("id = ?", body.ID).First(&ticket).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
 
 	if body.Priority != ticket.Priority {
 		ticket.Priority = body.Priority
 	}
-	db.Save(&ticket)
+
+	if err := tx.Save(&ticket).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
 
 	audits.CreateAuditTicket(ticket, db)
 	
-	return ticket
+	tx.Commit()
+	return "Successfully Deleted!", err, ticket
 }

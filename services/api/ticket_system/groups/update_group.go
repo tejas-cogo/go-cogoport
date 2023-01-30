@@ -5,10 +5,16 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateGroup(body models.Group) models.Group {
+func UpdateGroup(body models.Group) (string, error, models.Group) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var group models.Group
-	db.Where("id = ?", body.ID).Find(&group)
+
+	if body.ID != 0 {
+		tx.Where("id = ?", body.ID).Find(&group)
+	}
 
 	if body.Name != "" {
 		group.Name = body.Name
@@ -20,6 +26,12 @@ func UpdateGroup(body models.Group) models.Group {
 		group.Status = body.Status
 	}
 
-	db.Save(&group)
-	return group
+	if err := tx.Save(&group).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
+
+	tx.Commit()
+	
+	return "Successfully Updated!", err, group
 }

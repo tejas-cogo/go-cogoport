@@ -9,8 +9,16 @@ type TicketTaskAssigneeService struct {
 	TicketTaskAssignee models.TicketTaskAssignee
 }
 
-func CreateTicketTaskAssignee(ticket_task_assignee models.TicketTaskAssignee) models.TicketTaskAssignee {
+func CreateTicketTaskAssignee(ticket_task_assignee models.TicketTaskAssignee) (string,error,models.TicketTaskAssignee) {
 	db := config.GetDB()
-	db.Create(&ticket_task_assignee)
-	return ticket_task_assignee
+	tx := db.Begin()
+	var err error
+
+	if err := tx.Create(&ticket_task_assignee).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, ticket_task_assignee
+	}
+
+	tx.Commit()
+	return "Successfully Created!", err, ticket_task_assignee
 }

@@ -5,8 +5,10 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func DeleteTicketTask(id uint) uint{
+func DeleteTicketTask(id uint) (string,error,uint){
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_task models.TicketTask
 
@@ -14,5 +16,6 @@ func DeleteTicketTask(id uint) uint{
 
 	db.Where("id = ?", id).Delete(&ticket_task)
 
-	return id
+	tx.Commit()
+	return "Successfully Created!", err, id
 }

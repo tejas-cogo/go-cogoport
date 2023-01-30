@@ -8,44 +8,86 @@ import (
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 )
 
-func ReassignTicketReviewer(body models.ReviewerActivity) string {
+func ReassignTicketReviewer(body models.ReviewerActivity) (string,error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_reviewer_old models.TicketReviewer
 	var ticket_reviewer_active models.TicketReviewer
 	var group_member models.GroupMember
 
-	db.Where("ticket_id = ? AND status = 'active'", body.TicketID).Find(&ticket_reviewer_active)
+	if err := tx.Where("ticket_id = ? AND status = 'active'", body.TicketID).Find(&ticket_reviewer_active).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
 
 	ticket_reviewer_active.Status = "inactive"
-	db.Save(&ticket_reviewer_active)
 
-	db.Where("id = ?", ticket_reviewer_active.GroupMemberID).First(&group_member)
+	if err := tx.Save(&ticket_reviewer_active).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
+
+	if err := tx.Where("id = ?", ticket_reviewer_active.GroupMemberID).First(&group_member).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
+
 	group_member.ActiveTicketCount -= 1
-	db.Save(&group_member)
+
+	if err := tx.Save(&group_member).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
 
 	fmt.Println("edcs", body, "rfd")
 
-	db.Where("ticket_id = ? AND ticket_user_id = ?", body.TicketID, body.ReviewerUserID).Find(&ticket_reviewer_old)
+	if err := tx.Where("ticket_id = ? AND ticket_user_id = ?", body.TicketID, body.ReviewerUserID).Find(&ticket_reviewer_old).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
 
 	if ticket_reviewer_old.ID != 0 {
 		ticket_reviewer_old.Status = "active"
-		db.Save(&ticket_reviewer_old)
+		if err := tx.Save(&ticket_reviewer_old).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
 
-		db.Where("id = ?", ticket_reviewer_old.GroupMemberID).First(&group_member)
+		if err := tx.Where("id = ?", ticket_reviewer_old.GroupMemberID).First(&group_member).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
+
 		group_member.ActiveTicketCount += 1
-		db.Save(&group_member)
+
+		if err := tx.Save(&group_member).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
 	} else {
 		var ticket_reviewer models.TicketReviewer
 		ticket_reviewer.TicketID = body.TicketID
 		ticket_reviewer.TicketUserID = body.ReviewerUserID
 		ticket_reviewer.GroupID = body.GroupID
 		ticket_reviewer.GroupMemberID = body.GroupMemberID
-		db.Create(&ticket_reviewer)
 
-		db.Where("id = ?", ticket_reviewer.GroupMemberID).First(&group_member)
+		if err := tx.Create(&ticket_reviewer).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
+
+		if err := tx.Where("id = ?", ticket_reviewer.GroupMemberID).First(&group_member).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
+
 		group_member.ActiveTicketCount += 1
-		db.Save(&group_member)
+		if err := tx.Save(&group_member).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
 	}
 
 	var filters models.Filter
@@ -57,5 +99,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) string {
 	filters.TicketActivity.Status = "reassigned"
 	activities.CreateTicketActivity(filters)
 
-	return "Reassigned Successfully"
+	tx.Commit()
+
+	return "Reassigned Successfully",err
 }

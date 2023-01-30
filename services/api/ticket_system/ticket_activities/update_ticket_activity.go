@@ -5,11 +5,24 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateTicketActivity(body models.TicketActivity) models.TicketActivity {
+func UpdateTicketActivity(body models.TicketActivity) (string,error,models.TicketActivity) {
 	db := config.GetDB()
-	var ticket_activity models.TicketActivity
-	db.Where("id = ?", body.ID).Find(&ticket_activity)
+	tx := db.Begin()
+	var err error
 
-	db.Save(&ticket_activity)
-	return ticket_activity
+	var ticket_activity models.TicketActivity
+	
+	if err := tx.Where("id = ?", body.ID).Find(&ticket_activity).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
+
+	if err := tx.Save(&ticket_activity).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
+
+	tx.Commit()
+	
+	return "Sucessfully Updated!", err, ticket_activity
 }

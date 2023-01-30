@@ -14,8 +14,10 @@ type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(body models.TicketUser) models.TicketToken {
+func CreateTicketToken(body models.TicketUser) (string,error,models.TicketToken) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_token models.TicketToken
 
@@ -38,7 +40,11 @@ func CreateTicketToken(body models.TicketUser) models.TicketToken {
 	ticket_token.TicketUserID = ticket_user.ID
 	ticket_token.Status = "active"
 
-	db.Create(&ticket_token)
+	if err := tx.Create(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, ticket_token
+	}
 
-	return ticket_token
+	tx.Commit()
+	return "Successfully Created!", err, ticket_token
 }

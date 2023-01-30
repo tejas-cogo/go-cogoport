@@ -5,14 +5,21 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateGroupMember(body models.GroupMember) models.GroupMember {
+func UpdateGroupMember(body models.GroupMember) (string,error,models.GroupMember) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var group_member models.GroupMember
 
 	if body.ID != 0 {
-		db.Where("id = ?", body.ID)
+		tx.Where("id = ?", body.ID)
 	}
-	db.Find(&group_member)
+
+	if err := tx.Find(&group_member).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
 
 	if body.ActiveTicketCount != 0 {
 		group_member.ActiveTicketCount = body.ActiveTicketCount
@@ -27,6 +34,12 @@ func UpdateGroupMember(body models.GroupMember) models.GroupMember {
 		group_member.HierarchyLevel = body.HierarchyLevel
 	}
 
-	db.Save(&group_member)
-	return group_member
+	if err := tx.Save(&group_member).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
+
+	tx.Commit()
+	
+	return "Successfully Updated!",err, group_member
 }

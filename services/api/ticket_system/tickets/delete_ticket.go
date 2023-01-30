@@ -5,14 +5,23 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func DeleteTicket(body models.Ticket) models.Ticket {
+func DeleteTicket(body models.Ticket) (string,error,models.Ticket) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket models.Ticket
 
-	db.Model(&ticket).Where("id = ?", body.ID).Update("status", "inactive")
+	if err := tx.Model(&ticket).Where("id = ?", body.ID).Update("status", "inactive").Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
 
-	db.Where("id = ?", body.ID).Delete(&ticket)
+	if err := tx.Where("id = ?", body.ID).Delete(&ticket).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
 
-	return body
+	tx.Commit()
+	return "Successfully Deleted!", err, body
 }

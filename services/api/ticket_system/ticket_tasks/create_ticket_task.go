@@ -9,8 +9,16 @@ type TicketTaskService struct {
 	TicketTask models.TicketTask
 }
 
-func CreateTicketTask(ticket_task models.TicketTask) models.TicketTask {
+func CreateTicketTask(ticket_task models.TicketTask) (string,error,models.TicketTask) {
 	db := config.GetDB()
-	db.Create(&ticket_task)
-	return ticket_task
+	tx := db.Begin()
+	var err error
+
+	if err := tx.Create(&ticket_task).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, ticket_task
+	}
+
+	tx.Commit()
+	return "Successfully Created!", err, ticket_task
 }

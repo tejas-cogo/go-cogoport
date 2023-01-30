@@ -8,12 +8,20 @@ import (
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
-func CreateTokenTicket(ticket_token models.TicketToken) string {
+func CreateTokenTicket(ticket_token models.TicketToken) (string,error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
-	db.Where("ticket_token = ?", ticket_token.TicketToken)
+	if err := tx.Where("ticket_token = ?", ticket_token.TicketToken).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
 
-	db.Find(&ticket_token)
+	if err := tx.Find(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err
+	}
 
 	today := time.Now()
 
@@ -36,13 +44,18 @@ func CreateTokenTicket(ticket_token models.TicketToken) string {
 		if mesg == "Successfully Created!" {
 			ticket_token.TicketID = ticket_data.ID
 		} else {
-			return mesg
+			return mesg, err
 		}
 
 		ticket_token.Status = "used"
-		db.Save(&ticket_token)
+		if err := tx.Save(&ticket_token).Error; err != nil {
+			tx.Rollback()
+			return "Error Occurred!", err
+		}
 	} else {
 		DeleteTicketToken(ticket_token.ID)
 	}
-	return "Successfully Created!"
+
+	tx.Commit()
+	return "Successfully Created!", err
 }

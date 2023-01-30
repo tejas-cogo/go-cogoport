@@ -5,10 +5,17 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) models.TicketDefaultTiming {
+func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (string,error,models.TicketDefaultTiming) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var ticket_default_timing models.TicketDefaultTiming
-	db.Where("id = ?", body.ID).Find(&ticket_default_timing)
+
+	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_timing).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
 
 	if body.TicketDefaultTypeID > 0 {
 		ticket_default_timing.TicketDefaultTypeID = body.TicketDefaultTypeID
@@ -30,6 +37,12 @@ func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) models.TicketDef
 		ticket_default_timing.Status = body.Status
 	}
 
-	db.Save(&ticket_default_timing)
-	return ticket_default_timing
+	if err := tx.Save(&ticket_default_timing).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, body
+	}
+
+	tx.Commit()
+
+	return "Sucessfully Updated!", err, ticket_default_timing
 }

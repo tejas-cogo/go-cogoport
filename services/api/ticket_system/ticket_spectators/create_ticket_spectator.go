@@ -10,14 +10,20 @@ type TicketSpectatorService struct {
 	TicketSpectator models.TicketSpectator
 }
 
-func CreateTicketSpectator(ticket_spectator models.TicketSpectator) models.TicketSpectator {
+func CreateTicketSpectator(ticket_spectator models.TicketSpectator) (string,error,models.TicketSpectator) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var spectator_activity models.SpectatorActivity
 	var filters models.Filter
 
 	ticket_spectator.Status = "active"
 
-	db.Create(&ticket_spectator)
+	if err := tx.Create(&ticket_spectator).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, ticket_spectator
+	}
 
 	spectator_activity.TicketID = ticket_spectator.TicketID
 	spectator_activity.PerformedByID = ticket_spectator.PerformedByID
@@ -25,5 +31,7 @@ func CreateTicketSpectator(ticket_spectator models.TicketSpectator) models.Ticke
 	filters.TicketActivity.Status = "assigned"
 
 	activities.CreateTicketActivity(filters)
-	return ticket_spectator
+
+	tx.Commit()
+	return "Successfully Created!", err, ticket_spectator
 }

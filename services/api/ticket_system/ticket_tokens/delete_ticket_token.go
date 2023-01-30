@@ -5,14 +5,23 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func DeleteTicketToken(id uint) uint{
+func DeleteTicketToken(id uint) (string,error,uint){
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_token models.TicketToken
 
-	db.Model(&ticket_token).Where("id = ?", id).Update("status","inactive")
+	if err := tx.Model(&ticket_token).Where("id = ?", id).Update("status","inactive").Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, id
+	}
 
 	db.Where("id = ?", id).Delete(&ticket_token)
+	if err := tx.Find(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, id
+	}
 
-	return id
+	return "Successfully Created!", err, id
 }

@@ -5,12 +5,17 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicketTask() []models.TicketTask {
+func ListTicketTask() (string,error,[]models.TicketTask) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_task []models.TicketTask
 
-	db.Find(&ticket_task)
+	if err := tx.Find(&ticket_task).Error; err != nil {
+		tx.Rollback()
+		return "Error Occurred!", err, ticket_task
+	}
 
-	return ticket_task
+	return "Successfully Listed!", err, ticket_task
 }
