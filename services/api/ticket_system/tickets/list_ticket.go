@@ -26,12 +26,12 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		var ticket_users []uint
 
 		db2 := config.GetCDB()
-		var partner_user_rm []models.PartnerUserRmMapping
+		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
 
-		db2.Where("reporting_manager_id = ? and status = 'active'", filters.AgentRmID).Distinct("user_id").Find(&partner_user_rm).Pluck("user_id", &partner_user_rm_ids)
+		db2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
 
-		db.Where("system_user_id IN ?", partner_user_rm_ids).Find(&ticket_user).Pluck("id", &ticket_users)
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
 		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
