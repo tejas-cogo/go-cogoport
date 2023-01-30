@@ -86,11 +86,11 @@ func CreateTicket(c *gin.Context) {
 
 }
 
-func DeleteTicket(c *gin.Context) {
-	var body models.Ticket
-	c.BindJSON(&body)
-	c.JSON(200, service.DeleteTicket(body))
-}
+// func DeleteTicket(c *gin.Context) {
+// 	var body models.Ticket
+// 	c.BindJSON(&body)
+// 	c.JSON(200, service.DeleteTicket(body))
+// }
 
 func UpdateTicket(c *gin.Context) {
 	var body models.Ticket

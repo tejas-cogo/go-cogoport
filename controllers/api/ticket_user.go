@@ -42,12 +42,12 @@ func CreateTicketUser(c *gin.Context) {
 	c.JSON(200, service.CreateTicketUser(ticket_user))
 }
 
-func InactiveTicketUserRole(c *gin.Context) {
-	var body models.TicketUser
-	c.BindJSON(&body)
-	id := body.ID
-	c.JSON(200, service.InactiveTicketUserRole(id))
-}
+// func UpdateTicketUserRole(c *gin.Context) {
+// 	var body models.TicketUser
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	c.JSON(200, service.InactiveTicketUserRole(id))
+// }
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUserRole
