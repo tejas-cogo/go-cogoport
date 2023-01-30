@@ -13,10 +13,10 @@ func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) models.TicketDefau
 	if body.TicketDefaultTypeID > 0 {
 		ticket_default_group.TicketDefaultTypeID = body.TicketDefaultTypeID
 	}
-	if body.GroupID != 0 {
+	if body.GroupID > 0 {
 		ticket_default_group.GroupID = body.GroupID
 	}
-	if body.GroupMemberID != 0 {
+	if body.GroupMemberID >= 0 {
 		ticket_default_group.GroupMemberID = body.GroupMemberID
 	}
 	if body.Status != "" {
