@@ -140,6 +140,8 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 				tx.Rollback()
 				return ticket_activity, "Activity couldn't be created", err
 			}
+
+			SendTicketActivity(ticket_activity)
 		}
 	} else {
 		var ticket models.Ticket

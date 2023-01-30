@@ -46,6 +46,18 @@ func GetTicketStats(c *gin.Context) {
 	c.JSON(200, service.GetTicketStats(stats))
 }
 
+func GetTicketGraph(c *gin.Context) {
+	var graph models.TicketGraph
+
+	err := c.Bind(&graph)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
+
+	c.JSON(200, service.GetTicketGraph(graph))
+}
+
 func ListTicketDetail(c *gin.Context) {
 	var filters models.TicketExtraFilter
 

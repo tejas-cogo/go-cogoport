@@ -14,7 +14,7 @@ func ListGroupTag(Tag string) []string {
 
 	if Tag != "" {
 		Tag = "%" + Tag + "%"
-		db = db.Where("u.tag LIKE ?", Tag)
+		db = db.Where("u.tag iLIKE ?", Tag)
 	}
 
 	db.Pluck("tag", &t)

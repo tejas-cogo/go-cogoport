@@ -14,12 +14,12 @@ func ListTicketDefaultType(filters models.TicketDefaultType) ([]models.TicketDef
 
 	if filters.TicketType != "" {
 		filters.TicketType = "%" + filters.TicketType + "%"
-		db = db.Where("ticket_type Like ?", filters.TicketType)
+		db = db.Where("ticket_type iLike ?", filters.TicketType)
 	}
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
 	}
-	db = db.Where("ticket_type != ?", "others")
+	db = db.Where("ticket_type != ?", "default")
 	db = db.Order("created_at desc").Find(&ticket_default_type)
 
 	return ticket_default_type, db

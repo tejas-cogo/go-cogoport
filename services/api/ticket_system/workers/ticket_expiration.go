@@ -28,7 +28,7 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 	if ticket.Status == "unresolved" {
 
 		if ticket.ExpiryDate == time.Now() {
-			ticket.Status = "expired"
+			ticket.Status = "overdue"
 			if err := tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
 				return err

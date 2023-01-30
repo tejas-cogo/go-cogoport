@@ -39,7 +39,7 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 		}
 
 		if ticket_default_timing.ID == 0 {
-			if err := tx.Where("ticket_type = ?", "others").First(&ticket_default_timing).Error; err != nil {
+			if err := tx.Where("ticket_type = ?", "default").First(&ticket_default_timing).Error; err != nil {
 				tx.Rollback()
 				return err
 			}

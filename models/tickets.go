@@ -54,15 +54,51 @@ type TicketStat struct {
 	Unresolved   int64
 	ExpiringSoon int64
 	HighPriority int64
+	StartDate    string
+	EndDate      string
+}
+
+type TicketGraph struct {
+	AgentID     string
+	AgentRmID   string
+	TodayOpen   TimeDistribution
+	TodayClosed TimeDistribution
+	WeekOpen    Week
+	WeekClosed  Week
+	StartDate   time.Time
+	EndDate     time.Time
+	TodayDate   time.Time
+	Sum         int64
 }
 
 type TicketEscalatedPayload struct {
-	TicketID       uint
+	TicketID uint
+}
+
+type TimeDistribution struct {
+	First  int64
+	Second int64
+	Third  int64
+	Fourth int64
+	Fifth  int64
+	Sixth  int64
+}
+
+type Week struct {
+	Monday    int64
+	Tuesday   int64
+	Wednesday int64
+	Thursday  int64
+	Friday    int64
+	Saturday  int64
+	Sunday    int64
 }
 
 type TicketExtraFilter struct {
 	TicketUserID            uint
+	QFilter                 string
 	PerformedByID           string
+	MyTicket                uint
 	AgentID                 string
 	AgentRmID               string
 	TicketUser              TicketUser

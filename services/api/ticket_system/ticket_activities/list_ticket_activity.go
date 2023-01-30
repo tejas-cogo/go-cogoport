@@ -25,7 +25,7 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 
 	if filters.UserType != "" {
 		filters.UserType = "%" + filters.UserType + "%"
-		db = db.Where("user_type Like ?", filters.UserType)
+		db = db.Where("user_type iLike ?", filters.UserType)
 	}
 
 	if filters.Status != "" {

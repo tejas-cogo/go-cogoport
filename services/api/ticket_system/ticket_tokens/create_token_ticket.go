@@ -8,12 +8,10 @@ import (
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
-func CreateTokenTicket(token string, ticket models.Ticket) string {
+func CreateTokenTicket(ticket_token models.TicketToken) string {
 	db := config.GetDB()
 
-	var ticket_token models.TicketToken
-
-	db.Where("ticket_token = ?", token)
+	db.Where("ticket_token = ?", ticket_token.TicketToken)
 
 	db.Find(&ticket_token)
 
@@ -21,6 +19,17 @@ func CreateTokenTicket(token string, ticket models.Ticket) string {
 
 	if today.Before(ticket_token.ExpiryDate) && ticket_token.Status != "inactive" {
 
+		var ticket models.Ticket
+
+		ticket.Source = ticket_token.Source
+		ticket.Type = ticket_token.Type
+		ticket.Category = ticket_token.Category
+		ticket.Subcategory = ticket_token.Subcategory
+		ticket.Description = ticket_token.Description
+		ticket.Priority = ticket_token.Priority
+		ticket.Tags = ticket_token.Tags
+		ticket.Data = ticket_token.Data
+		ticket.NotificationPreferences = ticket_token.NotificationPreferences
 		ticket.TicketUserID = ticket_token.TicketUserID
 		ticket_data, mesg, _ := tickets.CreateTicket(ticket)
 

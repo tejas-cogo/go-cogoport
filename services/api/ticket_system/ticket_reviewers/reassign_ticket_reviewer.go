@@ -52,7 +52,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) string {
 
 	filters.TicketActivity.TicketID = body.TicketID
 	filters.TicketUser.SystemUserID = body.PerformedByID
-	filters.TicketActivity.Type = "Reviewer Reassigned"
+	filters.TicketActivity.Type = "reviewer_reassigned"
 	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Status = "reassigned"
 	activities.CreateTicketActivity(filters)

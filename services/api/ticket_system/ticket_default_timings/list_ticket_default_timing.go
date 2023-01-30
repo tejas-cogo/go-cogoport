@@ -12,9 +12,9 @@ func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.Ticke
 
 	var ticket_default_timings []models.TicketDefaultTiming
 
-	if filters.TicketType != "" {
-		tx = tx.Where("ticket_type = ?", filters.TicketType)
-	
+	if filters.TicketDefaultTypeID > 0 {
+		tx = tx.Where("ticket_type = ?", filters.TicketDefaultTypeID)
+
 	}
 
 	if filters.TicketPriority != "" {

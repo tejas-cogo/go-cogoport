@@ -5,30 +5,30 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateTicketUser(body models.TicketUserRole) (models.TicketUser, string, error) {
+func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, string, error) {
 	db := config.GetDB()
-	var ticket_user models.TicketUser
+	var ticket_user []models.TicketUser
 	tx := db.Begin()
 	var err error
-	for _, u := range body.ID {
 
-		if err := tx.Where("id = ?", u).First(&ticket_user).Error; err != nil {
-			tx.Rollback()
-			return ticket_user, "System User Not Found", err
-		}
+	if err := tx.Where("id IN ?", body.ID).Find(&ticket_user).Error; err != nil {
+		tx.Rollback()
+		return ticket_user, "System User Not Found", err
+	}
 
+	for _, u := range ticket_user {
 		if body.Type != "" {
-			ticket_user.Type = body.Type
+			u.Type = body.Type
 		}
 
 		if body.RoleID > 1 {
-			ticket_user.RoleID = body.RoleID
+			u.RoleID = body.RoleID
 		}
 		if body.Source != "" {
-			ticket_user.Source = body.Source
+			u.Source = body.Source
 		}
 
-		if err := tx.Save(&ticket_user).Error; err != nil {
+		if err := tx.Save(&u).Error; err != nil {
 			tx.Rollback()
 			return ticket_user, "System User Not Found", err
 		}

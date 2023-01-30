@@ -32,9 +32,6 @@ func CreateTicketDefaultTiming(ticket_default_timing models.TicketDefaultTiming)
 }
 
 func validate(ticket_default_timing models.TicketDefaultTiming) string {
-	if ticket_default_timing.TicketType == "" {
-		return ("TicketType Is Required!")
-	}
 
 	if ticket_default_timing.TicketPriority == "" {
 		return ("Ticket Priority Is Required!")

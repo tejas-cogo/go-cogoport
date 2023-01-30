@@ -22,13 +22,29 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	var ticket []models.Ticket
 
-	if filters.AgentID != "" {
+	if filters.AgentRmID != "" {
+		var ticket_users []uint
+
+		db2 := config.GetCDB()
+		var partner_user_rm []models.PartnerUserRmMapping
+		var partner_user_rm_ids []string
+
+		db2.Where("reporting_manager_id = ? and status = 'active'", filters.AgentRmID).Distinct("user_id").Find(&partner_user_rm).Pluck("user_id", &partner_user_rm_ids)
+
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Find(&ticket_user).Pluck("id", &ticket_users)
+
+		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
+	} else if filters.AgentID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
 		db.Where("system_user_id = ?", filters.AgentID).First(&ticket_user)
 
 		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	} else {
-
 		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	}
+
+	if filters.MyTicket > 0 {
+		db = db.Where("ticket_user_id = ?", filters.MyTicket)
 	}
 
 	if filters.ID > 0 {
@@ -37,6 +53,10 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	if filters.Type != "" {
 		db = db.Where("type = ?", filters.Type)
+	}
+
+	if filters.QFilter != "" {
+		db = db.Where("name ilike ? or type ilike ?", filters.QFilter, filters.QFilter)
 	}
 
 	if filters.Priority != "" {
@@ -48,10 +68,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		y := x.AddDate(0, 0, 10)
 		fmt.Println(x, ", ", y)
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
-	}
-
-	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.TicketUserID != 0 {

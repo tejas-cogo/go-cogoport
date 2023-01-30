@@ -10,7 +10,7 @@ import (
 )
 
 func ListGroup(c *gin.Context) {
-	var filters models.Group
+	var filters models.FilterGroup
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")

@@ -19,15 +19,19 @@ type TicketDefault struct {
 	ID                       uint
 	TicketType               string
 	AdditionalOptions        gormjsonb.JSONB `gorm:"type:json"`
-	TypeStatus               string          `gorm:"not null:default:'active'"`
+	TypeStatus               string
 	TicketDefaultTimingID    uint
-	TicketPriority           string         `gorm:"not null"`
-	ExpiryDuration           string         `gorm:"not null"`
-	Tat                      string         `gorm:"not null"`
+	TicketPriority           string
+	ExpiryDuration           string
+	Tat                      string
 	Conditions               pq.StringArray `gorm:"type:text[]"`
-	TimingStatus             string         `gorm:"not null:default:'active'"`
+	TimingStatus             string
 	TicketDefaultGroupID     uint
-	GroupName                string         `gorm:"not null:unique"`
+	GroupID                  uint
+	GroupName                string
+	GroupMemberName          string
+	GroupMemberID            uint
 	Tags                     pq.StringArray `gorm:"type:text[]"`
-	TicketDefaultGroupStatus string         `gorm:"not null:default:'active'"`
+	MemberCount              int
+	TicketDefaultGroupStatus string
 }

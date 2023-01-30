@@ -20,6 +20,7 @@ type TicketUser struct {
 
 type TicketUserFilter struct {
 	ID              uint
+	NotPresentID    uint
 	Name            string
 	SystemUserID    string
 	Email           string
@@ -28,6 +29,7 @@ type TicketUserFilter struct {
 	Source          string
 	Type            string
 	Status          string
+	AgentRmID       string
 	RoleUnassigned  bool
 	GroupUnassigned bool
 }
