@@ -9,7 +9,7 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_default_types"
 )
 
-func ListTicketDefaultType(c *gin.Context) {
+func ListTicketType(c *gin.Context) {
 	var filters models.TicketDefaultType
 
 	// filters.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
