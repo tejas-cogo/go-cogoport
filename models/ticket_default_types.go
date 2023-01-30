@@ -35,3 +35,8 @@ type TicketDefault struct {
 	MemberCount              int
 	TicketDefaultGroupStatus string
 }
+
+type TicketDefaultFilter struct {
+	TicketType string
+	QFilter    string
+}

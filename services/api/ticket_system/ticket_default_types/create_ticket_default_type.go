@@ -9,7 +9,7 @@ type TicketDefaultTypeService struct {
 	TicketDefaultType models.TicketDefaultType
 }
 
-func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (string,error) {
+func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (string, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error

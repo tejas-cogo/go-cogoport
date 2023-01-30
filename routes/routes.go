@@ -13,13 +13,13 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(cors.Default())
 
-	ticket_system := r.Group("/api/tickets")
+	ticket_system := r.Group("")
 
 	ticket_system.GET("list_groups", controllers.ListGroup)
 	ticket_system.POST("create_group", controllers.CreateGroup)
 	ticket_system.DELETE("delete_group", controllers.DeleteGroup)
 	ticket_system.PUT("update_group", controllers.UpdateGroup)
-	ticket_system.GET("list_group_tag", controllers.ListGroupTag)
+	ticket_system.GET("list_group_tags", controllers.ListGroupTag)
 
 	ticket_system.GET("list_group_members", controllers.ListGroupMember)
 	ticket_system.POST("create_group_member", controllers.CreateGroupMember)

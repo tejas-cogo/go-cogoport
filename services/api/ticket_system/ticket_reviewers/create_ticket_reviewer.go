@@ -4,6 +4,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
+	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 )
 
 type TicketReviewerService struct {
@@ -70,6 +71,10 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 	if err := txt.Create(&ticket_activity).Error; err != nil {
 		txt.Rollback()
 		return "Reviewer Assigned Activity couldn't be created", err
+	}
+
+	if ticket_activity.UserType == "internal" {
+		activity.SendTicketActivity(ticket_activity)
 	}
 
 	txt.Commit()

@@ -24,7 +24,7 @@ func ListTicketType(c *gin.Context) {
 }
 
 func ListTicketDefault(c *gin.Context) {
-	var filters models.TicketDefaultType
+	var filters models.TicketDefaultFilter
 
 	err := c.Bind(&filters)
 	if err != nil {

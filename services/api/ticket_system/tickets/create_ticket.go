@@ -41,8 +41,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 		return ticket, "ticket_default_type User Not Found", err
 	}
 
-	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; 
-	erro != nil {
+	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
 			return ticket, "Default Timing had issue!", err

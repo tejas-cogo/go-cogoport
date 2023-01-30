@@ -62,6 +62,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 				tx.Rollback()
 				return ticket_activity, "Activity couldn't be created", err
 			}
+
+			if ticket_activity.UserType == "internal" {
+				SendTicketActivity(ticket_activity)
+			}
 		}
 	} else if ticket_activity.Status == "rejected" {
 		for _, u := range body.Activity.TicketID {
@@ -85,6 +89,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, "Activity couldn't be created", err
+			}
+
+			if ticket_activity.UserType == "internal" {
+				SendTicketActivity(ticket_activity)
 			}
 		}
 	} else if ticket_activity.Status == "escalated" {
@@ -130,6 +138,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 				tx.Rollback()
 				return ticket_activity, "Activity couldn't be created", err
 			}
+
 		}
 	} else if ticket_activity.Status == "activity" {
 		for _, u := range body.Activity.TicketID {
@@ -141,7 +150,9 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 				return ticket_activity, "Activity couldn't be created", err
 			}
 
-			SendTicketActivity(ticket_activity)
+			if ticket_activity.UserType == "internal" {
+				SendTicketActivity(ticket_activity)
+			}
 		}
 	} else {
 		var ticket models.Ticket
