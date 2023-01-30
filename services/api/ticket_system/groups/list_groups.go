@@ -20,22 +20,26 @@ func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB) 
 
 	db = db.Joins("left join group_members on group_members.group_id = groups.id and group_members.status = ?", "active")
 
+	if filters.GroupMemberID > 0 {
+		db = db.Where("group_members.id = ?", filters.GroupMemberID)
+	}
+
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
 		db = db.Where("name iLike ?", filters.Name)
 	}
 
 	if len(filters.Tags) != 0 {
-		db = db.Where("tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
+		db = db.Where("groups.tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
 	}
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		db = db.Where("groups.status = ?", filters.Status)
 	}
 
-	db = db.Where("name != ?", "Default")
+	db = db.Where("groups.name != ?", "Default")
 
-	db = db.Order("name desc")
+	db = db.Order("groups.name desc")
 
 	db = db.Group("1,2,3,4")
 
