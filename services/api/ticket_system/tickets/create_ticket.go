@@ -60,6 +60,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 
 	fmt.Println("rfcds", ticket_default_timing, "gfvdc")
 
+	ticket.Priority = ticket_default_timing.TicketPriority
 	ticket.Tat = ticket_default_timing.Tat
 	ticket.ExpiryDate = time.Now()
 

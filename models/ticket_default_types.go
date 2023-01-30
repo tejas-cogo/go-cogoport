@@ -30,6 +30,7 @@ type TicketDefault struct {
 	GroupID                  uint
 	GroupName                string
 	GroupMemberName          string
+	GroupMemberEmail          string
 	GroupMemberID            uint
 	Tags                     pq.StringArray `gorm:"type:text[]"`
 	MemberCount              int
