@@ -98,7 +98,7 @@ type TicketExtraFilter struct {
 	TicketUserID            uint
 	QFilter                 string
 	PerformedByID           string
-	MyTicket                uint
+	MyTicket                string
 	AgentID                 string
 	AgentRmID               string
 	TicketUser              TicketUser
