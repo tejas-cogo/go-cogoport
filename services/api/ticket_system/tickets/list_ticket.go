@@ -22,24 +22,29 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	var ticket []models.Ticket
 
-	// if filters.AgentRmID != "" {
-	// 	var ticket_users []uint
-	// 	var group_member models.GroupMember
+	if filters.AgentRmID != "" {
+		var ticket_users []uint
 
-	// 	db.Where("system_user_id = ?", filters.AgentRmID).First(&ticket_user)
+		db2 := config.GetCDB()
+		var partner_user_rm []models.PartnerUserRmMapping
+		var partner_user_rm_ids []string
 
-	// 	db.Where("group_head_id = ?", ticket_user.ID).Distinct("ticket_user_id").Order("ticket_user_id").Find(&group_member).Pluck("ticket_user_id", &ticket_users)
+		db2.Where("reporting_manager_id = ? and status = 'active'", filters.AgentRmID).Distinct("user_id").Find(&partner_user_rm).Pluck("user_id", &partner_user_rm_ids)
 
-	// 	db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Find(&ticket_user).Pluck("id", &ticket_users)
 
-	// } else
-	if filters.AgentID != "" {
+		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
+	} else if filters.AgentID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
 		db.Where("system_user_id = ?", filters.AgentID).First(&ticket_user)
 
 		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	} else {
-
 		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	}
+
+	if filters.MyTicket > 0 {
+		db = db.Where("ticket_user_id = ?", filters.MyTicket)
 	}
 
 	if filters.ID > 0 {

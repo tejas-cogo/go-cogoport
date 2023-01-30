@@ -20,7 +20,7 @@ func main() {
 	}
 
 	config.Connect()
-	// config.ConnectCogoport()
+	config.ConnectCogoport()
 	// workers.Workers()
 
 	models.Init()

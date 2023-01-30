@@ -11,30 +11,32 @@ import (
 func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 	db := config.GetDB()
 
-	var ticket_reviewer models.TicketReviewer
+	var ticket_reviewer []models.TicketReviewer
 	var ticket_user models.TicketUser
 	var ticket_id []uint
+	var ticket_users []uint
 
 	const (
 		DateTime = "2006-01-02"
 	)
 
-	if graph.AgentRmID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
-		var ticket_users []uint
+	if graph.AgentRmID != "" {
+
 		db2 := config.GetCDB()
-		var partner_user_rm []models.PartnerUserRmMapping
+		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
 
-		db2.Where("reporting_manager_id = ? and status = 'active'", graph.AgentRmID).Distinct("user_id").Find(&partner_user_rm).Pluck("user_id", &partner_user_rm_ids)
+		db2.Where("reporting_manager_id = ? and status = ?", graph.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
+		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
 
-		db.Where("system_user_id IN ?", partner_user_rm_ids).Find(&ticket_user).Pluck("id", &ticket_users)
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
 		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if graph.AgentID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
-		db.Where("system_user_id = ?", graph.AgentID).First(&ticket_user)
+	} else if graph.AgentID != "" {
+		db.Where("system_user_id = ?", graph.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
-		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	} else {
 
 		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)

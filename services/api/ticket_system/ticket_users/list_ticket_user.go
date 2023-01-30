@@ -64,6 +64,25 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		db = db.Where("role_id = ?", 1)
 	}
 
+	if filters.AgentRmID != "" {
+
+		db2 := config.GetCDB()
+		var partner_user_rm_mapping []models.PartnerUserRmMapping
+		var partner_user_rm_ids []string
+		var ticket_reviewer []models.TicketReviewer
+		var ticket_user []models.TicketUser
+		var ticket_id []uint
+		var ticket_users []uint
+
+		db2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
+		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
+
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
+
+		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
+	}
+
 	db = db.Preload("Role").Find(&ticket_user)
 
 	return ticket_user, db

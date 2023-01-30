@@ -1,6 +1,7 @@
 package ticket_system
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -14,27 +15,29 @@ const (
 func GetTicketStats(stats models.TicketStat) models.TicketStat {
 	db := config.GetDB()
 
-	var ticket_reviewer models.TicketReviewer
-	var ticket_user models.TicketUser
+	var ticket_reviewer []models.TicketReviewer
+	var ticket_user []models.TicketUser
 	var ticket_id []uint
+	var ticket_users []uint
 	t := time.Now()
 
-	if stats.AgentRmID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
-		var ticket_users []uint
+	if stats.AgentRmID != "" {
+
 		db2 := config.GetCDB()
-		var partner_user_rm []models.PartnerUserRmMapping
+		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
 
-		db2.Where("reporting_manager_id = ? and status = 'active'", stats.AgentRmID).Distinct("user_id").Find(&partner_user_rm).Pluck("user_id", &partner_user_rm_ids)
+		db2.Where("reporting_manager_id = ? and status = ?", stats.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
+		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
 
-		db.Where("system_user_id IN ?", partner_user_rm_ids).Find(&ticket_user).Pluck("id", &ticket_users)
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
 		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if stats.AgentID != "7c6c1fe7-4a4d-4f3a-b432-b05ffdec3b44" {
-		db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
+	} else if stats.AgentID != "" {
+		db.Where("system_user_id = ?", stats.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
-		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	} else {
 
 		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)

@@ -18,7 +18,6 @@ func DeleteGroup(id uint) uint {
 	db.Model(&group).Where("id = ?", id).Update("status", "inactive")
 
 	db.Model(&group_member).Where("group_id = ? ", id).Update("status", "inactive")
-
 	db.Where("id = ?", id).Delete(&group_member)
 
 	db.Where("id = ?", id).Delete(&group)
