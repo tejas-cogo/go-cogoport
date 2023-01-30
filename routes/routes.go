@@ -38,7 +38,7 @@ func SetupRouter() *gin.Engine {
 
 	ticket_system.GET("list_ticket_details", controllers.ListTicketDetail)
 	ticket_system.GET("list_tickets", controllers.ListTicket)
-	ticket_system.GET("list_ticket_tag", controllers.ListTicketTag)
+	ticket_system.GET("list_ticket_tags", controllers.ListTicketTag)
 	ticket_system.GET("get_ticket_stats", controllers.GetTicketStats)
 	ticket_system.GET("get_ticket_graph", controllers.GetTicketGraph)
 	ticket_system.POST("create_ticket", controllers.CreateTicket)
