@@ -110,9 +110,6 @@ func validate(ticket models.Ticket) string {
 	if ticket.NotificationPreferences == nil {
 		return ("Notification Preferences Is Required!")
 	}
-	// if ticket.Priority == nil {
-	// 	return ("Priority Is Required!")
-	// }
 	if ticket.Tat == "" {
 		return ("Tat couldn't be set!")
 	}
