@@ -1,14 +1,23 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_tokens"
 )
 
-// func ListTicketToken(c *gin.Context) {
-// 	c.JSON(200, service.ListTicketToken())
-// }
+func ListTokenTicketDetail(c *gin.Context) {
+	var filters models.TokenFilter
+	err := c.Bind(&filters)
+	if err != nil {
+		fmt.Println("status", c.Writer.Status(), "status")
+		c.JSON(400, "Not Found")
+	}
+
+	c.JSON(200, service.ListTokenTicketDetail(filters))
+}
 
 func CreateTicketToken(c *gin.Context) {
 	var body models.TicketUser
