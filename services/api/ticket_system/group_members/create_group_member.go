@@ -43,7 +43,6 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 }
 
 func validate(group_member models.GroupMember) string {
-	db := config.GetDB()
 
 	if group_member.HierarchyLevel == 0 {
 		return ("Hierarchy Level Is Required!")
@@ -51,8 +50,6 @@ func validate(group_member models.GroupMember) string {
 	if group_member.GroupID == 0 {
 		return ("Group Is Required!")
 	}
-
-	db.Where("hierarchy_level = ? and group_id = ? and status = ? and ticket_user_id = ?", group_member.HierarchyLevel, group_member.GroupID, "active", group_member.TicketUserID).Find(&group_member)
 
 	return ("validated")
 }

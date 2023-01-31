@@ -20,23 +20,23 @@ func ListTicketType(c *gin.Context) {
 		c.JSON(400, "Not Found")
 	}
 
-	ser, db := service.ListTicketDefaultType(filters)
+	ser, db := service.ListTicketType(filters)
 	pg := paginate.New()
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
-func ListTicketDefault(c *gin.Context) {
+func ListTicketDefaultType(c *gin.Context) {
+	fmt.Println("filterssssssss")
 	var filters models.TicketDefaultFilter
-
-	// filters.TicketDefaultType.TicketType = c.Request.URL.Query().Get("filters[ticket_type]")
 
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
+	fmt.Println("filters", filters)
 
-	ser, db := service.ListTicketDefault(filters)
+	ser, db := service.ListTicketDefaultType(filters)
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")

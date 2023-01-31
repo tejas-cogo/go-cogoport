@@ -38,6 +38,5 @@ type TicketDefault struct {
 }
 
 type TicketDefaultFilter struct {
-	TicketType string
 	QFilter    string
 }

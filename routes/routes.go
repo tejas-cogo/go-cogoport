@@ -86,7 +86,7 @@ func SetupRouter() *gin.Engine {
 
 	ticket_system.POST("create_ticket_default_type", controllers.CreateTicketDefaultType)
 	ticket_system.GET("list_ticket_types", controllers.ListTicketType)
-	ticket_system.GET("list_ticket_default_types", controllers.ListTicketDefault)
+	ticket_system.GET("list_ticket_default_types", controllers.ListTicketDefaultType)
 	ticket_system.DELETE("delete_ticket_default_type", controllers.DeleteTicketDefaultType)
 	ticket_system.PUT("update_ticket_default_type", controllers.UpdateTicketDefaultType)
 

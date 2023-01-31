@@ -1,12 +1,14 @@
 package ticket_system
 
 import (
+	"fmt"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
 )
 
-func ListTicketDefault(filters models.TicketDefaultFilter) ([]models.TicketDefault, *gorm.DB) {
+func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketDefault, *gorm.DB) {
 	db := config.GetDB()
 
 	var ticket_default []models.TicketDefault
@@ -27,19 +29,16 @@ func ListTicketDefault(filters models.TicketDefaultFilter) ([]models.TicketDefau
 
 	db = db.Joins("left join group_members on groups.id = group_members.group_id")
 
-	db = db.Where("ticket_default_types.ticket_type != ?", "default")
+	db = db.Where("ticket_default_types.id != ?", 1)
 
-	if filters.TicketType != "" {
-		db = db.Where("ticket_default_types.ticket_type = ?", filters.TicketType)
-	}
-
+	fmt.Println("ewdfs", filters.QFilter, "Q")
 	if filters.QFilter != "" {
-		db = db.Where("ticket_default_types.ticket_type ilike ? or groups.name ilike ? or ticket_users.name ilike ?", filters.QFilter, filters.QFilter, filters.QFilter)
+		filters.QFilter = "%" + filters.QFilter + "%"
+		db = db.Where("ticket_default_types.ticket_type iLike ?", filters.QFilter)
+
 	}
 
 	db = db.Group("ticket_default_types.id, ticket_default_types.ticket_type,ticket_default_types.status,ticket_default_timings.id,ticket_default_timings.status ,ticket_default_timings.expiry_duration ,ticket_default_timings.tat ,ticket_default_timings.conditions,ticket_default_timings.ticket_priority ,ticket_default_timings.status ,ticket_default_groups.id ,groups.name ,groups.tags, ticket_default_groups.status,ticket_users.name,gpm.id,groups.id,ticket_users.email")
-
-	db = db.Scan(&ticket_default)
 
 	return ticket_default, db
 }

@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicketDefaultType(filters models.TicketDefaultType) ([]models.TicketDefaultType, *gorm.DB) {
+func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultType, *gorm.DB) {
 
 	db := config.GetDB()
 
@@ -19,7 +19,7 @@ func ListTicketDefaultType(filters models.TicketDefaultType) ([]models.TicketDef
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
 	}
-	db = db.Where("ticket_type != ?", "default")
+	db = db.Where("ticket_default_type_id != ?", 1)
 	db = db.Order("created_at desc").Find(&ticket_default_type)
 
 	return ticket_default_type, db
