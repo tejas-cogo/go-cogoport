@@ -27,12 +27,13 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB, error) {
 		tx = tx.Where("status = ?", filters.Status)
 	}
 
-	tx = tx.Where("name != ?", "Default")
+
 	tx = tx.Order("created_at desc").Find(&role)
 	if err := tx.Error; err != nil {
 		tx.Rollback()
 		return role, tx, errors.New("Error Occurred!")
 	}
+
 
 	tx.Commit()
 	return role, tx, err

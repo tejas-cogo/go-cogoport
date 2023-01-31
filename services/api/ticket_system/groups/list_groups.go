@@ -39,9 +39,10 @@ func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB, 
 		tx = tx.Where("groups.status = ?", filters.Status)
 	}
 
-	tx = tx.Where("groups.name != ?", "Default")
+
 
 	tx = tx.Order("groups.name desc")
+
 
 	tx = tx.Group("1,2,3,4")
 

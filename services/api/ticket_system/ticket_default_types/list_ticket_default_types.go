@@ -31,8 +31,6 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 
 	tx = tx.Joins("left join group_members on groups.id = group_members.group_id")
 
-	tx = tx.Where("ticket_default_types.id != ?", 1)
-
 	if filters.QFilter != "" {
 		filters.QFilter = "%" + filters.QFilter + "%"
 		tx = tx.Where("ticket_default_types.ticket_type iLike ?", filters.QFilter)
