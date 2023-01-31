@@ -1,6 +1,7 @@
 package ticket_system
 
 import (
+	"errors"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -8,11 +9,21 @@ import (
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
 )
 
-func CreateTokenTicket(token_filter models.TokenFilter) string {
+func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 	var ticket_token models.TicketToken
 
-	db.Where("ticket_token = ?", token_filter.TicketToken).Find(&ticket_token)
+	if err := tx.Where("ticket_token = ?", ticket_token.TicketToken).Error; err != nil {
+		tx.Rollback()
+		return ticket_token, errors.New("Error Occurred!")
+	}
+
+	if err := tx.Find(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return ticket_token, errors.New("Error Occurred!")
+	}
 
 	today := time.Now()
 
@@ -29,23 +40,21 @@ func CreateTokenTicket(token_filter models.TokenFilter) string {
 		ticket.Data = token_filter.Data
 		ticket.NotificationPreferences = token_filter.NotificationPreferences
 		ticket.TicketUserID = ticket_token.TicketUserID
-		ticket_data, mesg, _ := tickets.CreateTicket(ticket)
+		ticket_data, err := tickets.CreateTicket(ticket)
 
-		if mesg == "Successfully Created!" {
+		if err != nil {
 			ticket_token.TicketID = ticket_data.ID
-		} else {
-			return mesg, err
-		}
+		} 
 
 		ticket_token.Status = "used"
 		if err := tx.Save(&ticket_token).Error; err != nil {
 			tx.Rollback()
-			return "Error Occurred!", err
+			return ticket_token, errors.New("Error Occurred!")
 		}
 	} else {
 		DeleteTicketToken(ticket_token.ID)
 	}
 
 	tx.Commit()
-	return "Successfully Created!", err
+	return ticket_token, err
 }
