@@ -19,7 +19,7 @@ func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultTyp
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
 	}
-	db = db.Where("ticket_default_type_id != ?", 1)
+	db = db.Where("id != ?", 1)
 	db = db.Order("created_at desc").Find(&ticket_default_type)
 
 	return ticket_default_type, db

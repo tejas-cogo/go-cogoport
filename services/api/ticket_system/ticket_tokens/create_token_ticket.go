@@ -15,15 +15,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 	var err error
 	var ticket_token models.TicketToken
 
-	if err := tx.Where("ticket_token = ?", ticket_token.TicketToken).Error; err != nil {
-		tx.Rollback()
-		return ticket_token, errors.New("Error Occurred!")
-	}
-
-	if err := tx.Find(&ticket_token).Error; err != nil {
-		tx.Rollback()
-		return ticket_token, errors.New("Error Occurred!")
-	}
+	db.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "used").Find(&ticket_token)
 
 	today := time.Now()
 
@@ -42,15 +34,14 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		ticket.TicketUserID = ticket_token.TicketUserID
 		ticket_data, err := tickets.CreateTicket(ticket)
 
-		if err != nil {
-			ticket_token.TicketID = ticket_data.ID
-		} 
-
-		ticket_token.Status = "used"
-		if err := tx.Save(&ticket_token).Error; err != nil {
-			tx.Rollback()
-			return ticket_token, errors.New("Error Occurred!")
+		if mesg != "Successfully Created!" {
+			return mesg
 		}
+
+		ticket_token.TicketID = ticket_data.ID
+		ticket_token.Status = "utilized"
+		db.Save(&ticket_token)
+
 	} else {
 		DeleteTicketToken(ticket_token.ID)
 	}
