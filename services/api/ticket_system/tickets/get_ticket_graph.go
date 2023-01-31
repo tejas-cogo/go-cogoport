@@ -59,7 +59,7 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
+		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
 
 		switch i {
 		case 1:
@@ -110,7 +110,7 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 
 		fmt.Println("x", x)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
+		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
 
 		switch x.Weekday() {
 		case 1:
