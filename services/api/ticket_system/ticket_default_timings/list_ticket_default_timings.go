@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.TicketDefaultTiming, error) {
+func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.TicketDefaultTiming, *gorm.DB, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -27,10 +28,10 @@ func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.Ticke
 
 	if err := tx.Order("created_at desc").Find(&ticket_default_timings).Error; err != nil {
 		tx.Rollback()
-		return ticket_default_timings, err
+		return ticket_default_timings, tx, err
 	}
 
 	tx.Commit()
 
-	return ticket_default_timings, err
+	return ticket_default_timings, tx, err
 }

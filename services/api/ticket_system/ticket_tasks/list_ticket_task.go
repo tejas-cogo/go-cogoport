@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func ListTicketTask() (string,error,[]models.TicketTask) {
+func ListTicketTask() ([]models.TicketTask,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -14,8 +15,8 @@ func ListTicketTask() (string,error,[]models.TicketTask) {
 
 	if err := tx.Find(&ticket_task).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, ticket_task
+		return ticket_task, errors.New("Error Occurred!")
 	}
 
-	return "Successfully Listed!", err, ticket_task
+	return ticket_task, err
 }

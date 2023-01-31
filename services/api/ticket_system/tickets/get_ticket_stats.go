@@ -162,5 +162,6 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat,error) {
 		}
 	}
 
+	tx.Commit()
 	return stats,err
 }

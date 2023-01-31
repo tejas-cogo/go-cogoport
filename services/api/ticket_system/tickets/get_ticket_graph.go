@@ -173,5 +173,6 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph,error) {
 	graph.EndDate = y
 	graph.Sum = count
 
+	tx.Commit()
 	return graph, err
 }

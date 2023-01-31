@@ -25,5 +25,6 @@ func UpdateTicketTask(id uint, body models.TicketTask) (models.TicketTask,error)
 		tx.Rollback()
 		return ticket_task, errors.New("Error Occured!")
 	}
+	tx.Commit()
 	return ticket_task, err
 }

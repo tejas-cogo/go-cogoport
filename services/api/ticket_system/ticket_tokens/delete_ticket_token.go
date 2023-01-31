@@ -18,11 +18,11 @@ func DeleteTicketToken(id uint) (uint,error){
 		return id, errors.New("Error Occurred!")
 	}
 
-	db.Where("id = ?", id).Delete(&ticket_token)
-	if err := tx.Find(&ticket_token).Error; err != nil {
+	if err := tx.Where("id = ?", id).Delete(&ticket_token).Error; err != nil {
 		tx.Rollback()
 		return id, errors.New("Error Occurred!")
 	}
 
+	tx.Commit()
 	return id, err
 }

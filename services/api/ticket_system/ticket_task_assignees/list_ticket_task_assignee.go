@@ -3,14 +3,21 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func ListTicketTaskAssignee() []models.TicketTaskAssignee {
+func ListTicketTaskAssignee() ([]models.TicketTaskAssignee, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_task_assignee []models.TicketTaskAssignee
 
-	db.Find(&ticket_task_assignee)
+	if err := tx.Find(&ticket_task_assignee).Error; err != nil {
+		tx.Rollback()
+		return ticket_task_assignee, errors.New("Error Occurred!")
+	}
 
-	return ticket_task_assignee
+	tx.Commit()
+	return ticket_task_assignee, err
 }
