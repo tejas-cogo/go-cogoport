@@ -12,12 +12,12 @@ func ListTicketType(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db, err := service.ListTicketType(filters)
 	pg := paginate.New()
-	c.JSON(200, pg.Response(db, c.Request, &ser))
+	c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
 }
 
 func ListTicketDefaultType(c *gin.Context) {
@@ -25,7 +25,7 @@ func ListTicketDefaultType(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db, err := service.ListTicketDefaultType(filters)
@@ -54,7 +54,7 @@ func DeleteTicketDefaultType(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketDefaultType(id)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -65,7 +65,7 @@ func UpdateTicketDefaultType(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicketDefaultType(body)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

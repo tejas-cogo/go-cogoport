@@ -12,7 +12,7 @@ func ListTicketUser(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db, err := service.ListTicketUser(filters)
@@ -29,7 +29,7 @@ func CreateTicketUser(c *gin.Context) {
 	c.BindJSON(&ticket_user)
 	ser, err := service.CreateTicketUser(ticket_user)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

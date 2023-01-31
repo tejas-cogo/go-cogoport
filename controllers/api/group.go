@@ -11,7 +11,7 @@ func ListGroup(c *gin.Context) {
 	var filters models.FilterGroup
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db, err := service.ListGroup(filters)
@@ -63,7 +63,7 @@ func UpdateGroup(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateGroup(body)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

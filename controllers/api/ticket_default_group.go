@@ -23,7 +23,7 @@ func DeleteTicketDefaultGroup(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketDefaultGroup(id)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(c.Writer.Status(),err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -34,7 +34,7 @@ func UpdateTicketDefaultGroup(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicketDefaultGroup(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(c.Writer.Status(),err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

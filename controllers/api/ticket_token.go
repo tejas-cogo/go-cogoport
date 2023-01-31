@@ -10,10 +10,10 @@ func ListTokenTicketDetail(c *gin.Context) {
 	var filters models.TokenFilter
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
-	c.JSON(200, service.ListTokenTicketDetail(filters))
+	c.JSON(c.Writer.Status(), service.ListTokenTicketDetail(filters))
 }
 
 func CreateTicketToken(c *gin.Context) {
@@ -21,7 +21,7 @@ func CreateTicketToken(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.CreateTicketToken(body)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -33,7 +33,7 @@ func CreateTokenTicket(c *gin.Context) {
 	c.BindJSON(&token_filter)
 	ser, err := service.CreateTokenTicket(token_filter)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -45,7 +45,7 @@ func DeleteTicketToken(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketToken(id)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
