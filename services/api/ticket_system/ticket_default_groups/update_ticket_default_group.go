@@ -3,12 +3,20 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) models.TicketDefaultGroup {
+func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) (models.TicketDefaultGroup,error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var ticket_default_group models.TicketDefaultGroup
-	db.Where("id = ?", body.ID).Find(&ticket_default_group)
+
+	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_group).Error; err != nil {
+		tx.Rollback()
+		return body, errors.New("Error Occurred!")
+	}
 
 	if body.TicketDefaultTypeID > 0 {
 		ticket_default_group.TicketDefaultTypeID = body.TicketDefaultTypeID
@@ -23,6 +31,12 @@ func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) models.TicketDefau
 		ticket_default_group.Status = body.Status
 	}
 
-	db.Save(&ticket_default_group)
-	return ticket_default_group
+	if err := tx.Save(&ticket_default_group).Error; err != nil {
+		tx.Rollback()
+		return body, errors.New("Error Occurred!")
+	}
+
+	tx.Commit()
+	
+	return ticket_default_group, err
 }

@@ -3,17 +3,18 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type GroupMemberService struct {
 	GroupMember models.GroupMember
 }
 
-func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
-	// result := map[string]interface{}{}
+func CreateGroupMember(group_members models.CreateGroupMember) (models.GroupMember,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
+	var group_member models.GroupMember
 
 	if len(group_members.TicketUserID) != 0 {
 		for _, u := range group_members.TicketUserID {
@@ -25,21 +26,21 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 			stmt := validate(group_member)
 			if stmt != "validated" {
 
-				return stmt, err
+				return  group_member, errors.New(stmt)
 			}
 			if err := tx.Create(&group_member).Error; err != nil {
 				tx.Rollback()
-				return "Error Occurred!", err
+				return group_member, errors.New("Error Occurred!")
 			}
 
 		}
 	} else {
-		return ("User Is Required!"), err
+		return  group_member,errors.New("User Is Required!")
 	}
 
 	tx.Commit()
 
-	return "Successfully Created!", err
+	return  group_member,err
 }
 
 func validate(group_member models.GroupMember) string {

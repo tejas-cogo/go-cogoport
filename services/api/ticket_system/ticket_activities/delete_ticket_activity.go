@@ -6,11 +6,6 @@ import (
 )
 
 func DeleteTicketActivity(id uint) uint{
-	// db := config.GetDB()
-
-	// var ticket_activity models.TicketActivity
-
-	// // db.Where("id = ?", id).Delete(&ticket_activity)
 
 	return id
 }

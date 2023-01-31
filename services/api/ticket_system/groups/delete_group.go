@@ -3,24 +3,38 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	// "time"
+	"errors"
 )
 
-func DeleteGroup(id uint) uint {
+func DeleteGroup(id uint) (uint,error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var group models.Group
 	var group_member models.GroupMember
 
-	// db.Where("id = ?", id).First(&group)
-	// group.Status = "inactive"
-	// db.Save(&group)
-	db.Model(&group).Where("id = ?", id).Update("status", "inactive")
+	if err := tx.Model(&group).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
+	}
 
-	db.Model(&group_member).Where("group_id = ? ", id).Update("status", "inactive")
-	db.Where("id = ?", id).Delete(&group_member)
+	if err := tx.Model(&group_member).Where("group_id = ? ", id).Update("status", "inactive").Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
+	}
 
-	db.Where("id = ?", id).Delete(&group)
+	if err := tx.Where("id = ?", id).Delete(&group_member).Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
+	}
 
-	return id
+	if err := tx.Where("id = ?", id).Delete(&group).Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
+	}
+
+	tx.Commit()
+
+	return id, err
 }

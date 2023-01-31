@@ -3,23 +3,27 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateTicketActivity(body models.TicketActivity) models.TicketActivity {
+func UpdateTicketActivity(body models.TicketActivity) (models.TicketActivity,error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var ticket_activity models.TicketActivity
-	db.Where("id = ?", body.ID).Find(&ticket_activity)
+	
+	if err := tx.Where("id = ?", body.ID).Find(&ticket_activity).Error; err != nil {
+		tx.Rollback()
+		return ticket_activity, errors.New("Error Occurred!")
+	}
 
-	// if body.Type != "" {
-	// 	group.Name = body.Name
-	// }
-	// if body.Tags != nil {
-	// 	group.Tags = body.Tags
-	// }
-	// if body.UserType != "" {
-	// 	ticket_activity.UserType = body.UserType
-	// }
+	if err := tx.Save(&ticket_activity).Error; err != nil {
+		tx.Rollback()
+		return ticket_activity, errors.New("Error Occurred!")
+	}
 
-	db.Save(&ticket_activity)
-	return ticket_activity
+	tx.Commit()
+	
+	return ticket_activity, err
 }

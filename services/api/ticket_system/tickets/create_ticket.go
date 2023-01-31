@@ -1,7 +1,7 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -15,9 +15,8 @@ type TicketService struct {
 	Ticket models.Ticket
 }
 
-func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
+func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 
 	tx := db.Begin()
 	var err error
@@ -29,36 +28,25 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 	if ticket.TicketUserID == 0 {
 		if err := tx.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
-			return ticket, "System User Not Found", err
+			return ticket, errors.New("System User Not Found")
 		}
 		if ticket_user == nil {
-			return ticket, "System User Not Found", err
+			return ticket, errors.New("System User Not Found")
 		}
 		ticket.TicketUserID = ticket_user[0].ID
 	}
 
 	if err := tx.Where("ticket_type = ? and status = ? ", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return ticket, "ticket_default_type User Not Found", err
+		return ticket, errors.New("ticket_default_type User Not Found")
 	}
 
 	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
-			return ticket, "Default Timing had issue!", err
+			return ticket, errors.New("Default Timing had issue!")
 		}
 	}
-
-	// fmt.Println("hjfxfghv")
-	// filters.TicketDefaultTiming.TicketType = "default"
-	// ticket_default_timing, err = timings.ListTicketDefaultTiming(filters.TicketDefaultTiming
-	// filters.TicketDefaultTiming.TicketType = ticket.Type
-	// // filters.TicketDefaultTiming.TicketPriority =
-	// filters.TicketDefaultTiming.Status = "active"
-
-	// ticket_default_timing, err := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
-
-	fmt.Println("rfcds", ticket_default_timing, "gfvdc")
 
 	ticket.Priority = ticket_default_timing.TicketPriority
 	ticket.Tat = ticket_default_timing.Tat
@@ -72,12 +60,12 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 
 	stmt := validate(ticket)
 	if stmt != "validated" {
-		return ticket, stmt, err
+		return ticket, errors.New(stmt)
 	}
 
 	if err := tx.Create(&ticket).Error; err != nil {
 		tx.Rollback()
-		return ticket, "Ticket couldn't be created", err
+		return ticket, errors.New("Ticket couldn't be created")
 	}
 
 	audits.CreateAuditTicket(ticket, db)
@@ -90,16 +78,15 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, string, error) {
 
 	if err := tx.Create(&ticket_activity).Error; err != nil {
 		tx.Rollback()
-		return ticket, "Activity couldn't be created", err
+		return ticket, errors.New("Activity couldn't be created")
 	}
-
-	if stmt, err := reviewers.CreateTicketReviewer(ticket); err != nil {
-		return ticket, stmt, err
+	ticket, err = reviewers.CreateTicketReviewer(ticket)
+	if err != nil {
+		return ticket, err
 	}
-
 	tx.Commit()
 
-	return ticket, "Successfully Created!", err
+	return ticket, err
 
 }
 

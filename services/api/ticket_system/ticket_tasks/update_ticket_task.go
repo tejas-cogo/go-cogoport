@@ -1,19 +1,28 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateTicketTask(id uint, body models.TicketTask) models.TicketTask {
+func UpdateTicketTask(id uint, body models.TicketTask) (models.TicketTask, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var ticket_task models.TicketTask
-	fmt.Print("Body", body)
-	db.Where("id = ?", id).First(&ticket_task)
 
-	// ticket_task.Name = body.Name
+	if err := tx.Where("id = ?", id).First(&ticket_task).Error; err != nil {
+		tx.Rollback()
+		return ticket_task, errors.New("Error Occured!")
+	}
 
-	db.Save(&ticket_task)
-	return ticket_task
+	if err := tx.Save(&ticket_task).Error; err != nil {
+		tx.Rollback()
+		return ticket_task, errors.New("Error Occured!")
+	}
+	tx.Commit()
+	return ticket_task, err
 }

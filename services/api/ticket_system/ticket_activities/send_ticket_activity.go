@@ -3,7 +3,6 @@ package ticket_system
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,8 +19,6 @@ func SendTicketActivity(ticket_activity models.TicketActivity) {
 
 		db.Where("id = ?", ticket_activity.TicketUserID).First(&ticket_user)
 
-		fmt.Println("stage1")
-
 		hc := http.Client{}
 
 		var body models.Post
@@ -31,7 +28,7 @@ func SendTicketActivity(ticket_activity models.TicketActivity) {
 		body.Service = "user"
 		body.ServiceID = ticket_user.SystemUserID
 		body.TemplateName = "Ticket System"
-		
+
 		reqBody, err := json.Marshal(body)
 
 		req, err := http.NewRequest("POST", "https://api-apollo3.dev.cogoport.io/communication/create_communication", bytes.NewBuffer(reqBody))
@@ -42,8 +39,6 @@ func SendTicketActivity(ticket_activity models.TicketActivity) {
 
 		req.Header.Add("Authorization", "Bearer: 787b8f21-ca0a-4e79-af6e-81e3ca847909")
 		req.Header.Add("AuthorizationScope", "partner")
-
-		fmt.Println("stage2")
 
 		req.Header.Add("Content-type", "application/json; charset=utf-8")
 
@@ -69,10 +64,5 @@ func SendTicketActivity(ticket_activity models.TicketActivity) {
 
 		log.Printf("Successfully Created")
 
-		fmt.Println("stage3", resp)
-
 	}
-
-	fmt.Println("nostage")
-
 }

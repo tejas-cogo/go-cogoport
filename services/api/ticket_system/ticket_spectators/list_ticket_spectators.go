@@ -4,26 +4,35 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
+	"errors"
 )
 
-func ListTicketSpectator(filters models.TicketSpectator) ([]models.TicketSpectator, *gorm.DB) {
+func ListTicketSpectator(filters models.TicketSpectator) ([]models.TicketSpectator, *gorm.DB, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_spectator []models.TicketSpectator
 
 	if filters.TicketID != 0 {
-		db = db.Where("ticket_id = ?", filters.TicketID)
+		tx = tx.Where("ticket_id = ?", filters.TicketID)
 	}
 
 	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+		tx = tx.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		tx = tx.Where("status = ?", filters.Status)
 	}
 
-	db = db.Preload("TicketUser").Find(&ticket_spectator)
+	tx = tx.Preload("TicketUser").Find(&ticket_spectator)
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return ticket_spectator, tx, errors.New("Error Occurred!")
+	}
 
-	return ticket_spectator, db
+	tx.Commit()
+
+	return ticket_spectator, tx, err
 }
