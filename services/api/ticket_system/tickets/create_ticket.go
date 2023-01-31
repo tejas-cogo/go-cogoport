@@ -94,9 +94,6 @@ func validate(ticket models.Ticket) string {
 	if ticket.Type == "" {
 		return ("Ticket Type Is Required!")
 	}
-	if ticket.NotificationPreferences == nil {
-		return ("Notification Preferences Is Required!")
-	}
 	if ticket.Tat == "" {
 		return ("Tat couldn't be set!")
 	}
