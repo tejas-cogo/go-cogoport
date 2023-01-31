@@ -14,7 +14,7 @@ func ListTicket(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", err, "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 		return
 	}
 
@@ -40,10 +40,10 @@ func GetTicketStats(c *gin.Context) {
 	err := c.Bind(&stats)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 
-	c.JSON(c.Writer.Status(), service.GetTicketStats(stats))
+	c.JSON(200, service.GetTicketStats(stats))
 }
 
 func GetTicketGraph(c *gin.Context) {
@@ -52,22 +52,24 @@ func GetTicketGraph(c *gin.Context) {
 	err := c.Bind(&graph)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 
-	c.JSON(c.Writer.Status(), service.GetTicketGraph(graph))
+	c.JSON(200, service.GetTicketGraph(graph))
 }
 
 func ListTicketDetail(c *gin.Context) {
 	var filters models.TicketExtraFilter
 
+	// ID, _ := strconv.Atoi(c.Request.URL.Query().Get("filters[id]"))
+	// filters.TicketID = uint(ID)
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 
-	c.JSON(c.Writer.Status(), service.ListTicketDetail(filters))
+	c.JSON(200, service.ListTicketDetail(filters))
 }
 
 func CreateTicket(c *gin.Context) {
@@ -77,16 +79,22 @@ func CreateTicket(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else if mesg != "Successfully Created!" {
-		c.JSON(c.Writer.Status(), mesg)
+		c.JSON(400, mesg)
 	} else {
 		c.JSON(c.Writer.Status(), mesg)
 	}
 
 }
 
+// func DeleteTicket(c *gin.Context) {
+// 	var body models.Ticket
+// 	c.BindJSON(&body)
+// 	c.JSON(200, service.DeleteTicket(body))
+// }
+
 func UpdateTicket(c *gin.Context) {
 	var body models.Ticket
 	c.BindJSON(&body)
 
-	c.JSON(c.Writer.Status(), service.UpdateTicket(body))
+	c.JSON(200, service.UpdateTicket(body))
 }

@@ -21,7 +21,7 @@ func ListTicketSpectator(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 
 	ser, db := service.ListTicketSpectator(filters)
@@ -37,12 +37,19 @@ func ListTicketSpectator(c *gin.Context) {
 func CreateTicketSpectator(c *gin.Context) {
 	var ticket_spectator models.TicketSpectator
 	c.BindJSON(&ticket_spectator)
-	c.JSON(c.Writer.Status(), service.CreateTicketSpectator(ticket_spectator))
+	c.JSON(200, service.CreateTicketSpectator(ticket_spectator))
 }
 
 func DeleteTicketSpectator(c *gin.Context) {
 	var body models.TicketSpectator
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(c.Writer.Status(), service.DeleteTicketSpectator(id))
+	c.JSON(200, service.DeleteTicketSpectator(id))
 }
+
+// func UpdateTicketSpectator(c *gin.Context) {
+// 	var body models.TicketSpectator
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	c.JSON(200, service.UpdateTicketSpectator(id, body))
+// }

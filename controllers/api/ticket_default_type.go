@@ -17,12 +17,12 @@ func ListTicketType(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 
 	ser, db := service.ListTicketType(filters)
 	pg := paginate.New()
-	c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
 
 func ListTicketDefaultType(c *gin.Context) {
@@ -32,7 +32,7 @@ func ListTicketDefaultType(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 	fmt.Println("filters", filters)
 
@@ -53,7 +53,7 @@ func CreateTicketDefaultType(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else if ser != "Successfully Created!" {
-		c.JSON(c.Writer.Status(), ser)
+		c.JSON(400, ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -63,11 +63,11 @@ func DeleteTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(c.Writer.Status(), service.DeleteTicketDefaultType(id))
+	c.JSON(200, service.DeleteTicketDefaultType(id))
 }
 
 func UpdateTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	c.BindJSON(&body)
-	c.JSON(c.Writer.Status(), service.UpdateTicketDefaultType(body))
+	c.JSON(200, service.UpdateTicketDefaultType(body))
 }

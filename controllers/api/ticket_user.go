@@ -11,10 +11,19 @@ import (
 
 func ListTicketUser(c *gin.Context) {
 	var filters models.TicketUserFilter
+
+	// filters.Name = c.Request.URL.Query().Get("Name")
+	// filters.Email = c.Request.URL.Query().Get("Email")
+	// filters.MobileNumber = c.Request.URL.Query().Get("MobileNumber")
+
+	// ID := c.Request.URL.Query().Get("SystemUserID")
+	// if ID != "" {
+	// 	filters.SystemUserID, _ = uuid.Parse(ID)
+	// }
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, "Not Found")
 	}
 
 	ser, db := service.ListTicketUser(filters)
@@ -30,8 +39,15 @@ func ListTicketUser(c *gin.Context) {
 func CreateTicketUser(c *gin.Context) {
 	var ticket_user models.TicketUser
 	c.BindJSON(&ticket_user)
-	c.JSON(c.Writer.Status(), service.CreateTicketUser(ticket_user))
+	c.JSON(200, service.CreateTicketUser(ticket_user))
 }
+
+// func UpdateTicketUserRole(c *gin.Context) {
+// 	var body models.TicketUser
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	c.JSON(200, service.InactiveTicketUserRole(id))
+// }
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUserRole
@@ -40,7 +56,7 @@ func UpdateTicketUser(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else if mesg != "Successfully Updated!" {
-		c.JSON(c.Writer.Status(), mesg)
+		c.JSON(400, mesg)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
