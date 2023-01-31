@@ -8,13 +8,14 @@ import (
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
 	"gorm.io/gorm"
+	"errors"
 )
 
 type TicketActivityService struct {
 	TicketActivity models.TicketActivity
 }
 
-func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, error) {
+func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -45,14 +46,14 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Ticket not found", err
+				return ticket_activity, errors.New("Ticket not found")
 			}
 
 			ticket.Status = "closed"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Ticket couldn't be saved", err
+				return ticket_activity, errors.New("Ticket couldn't be saved")
 			}
 
 			DeactivateReviewer(u, tx)
@@ -60,7 +61,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 			audits.CreateAuditTicket(ticket, tx)
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Activity couldn't be created", err
+				return ticket_activity, errors.New("Activity couldn't be created")
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -74,13 +75,13 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "ticket couldn't be find", err
+				return ticket_activity, errors.New("ticket couldn't be find")
 			}
 			ticket.Status = "rejected"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Ticket couldn't be saved", err
+				return ticket_activity, errors.New("Ticket couldn't be saved")
 			}
 
 			DeactivateReviewer(u, tx)
@@ -88,7 +89,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 			audits.CreateAuditTicket(ticket, tx)
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Activity couldn't be created", err
+				return ticket_activity, errors.New("Activity couldn't be created")
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -105,19 +106,19 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 			group_member, err := DeactivateReviewer(u, tx)
 			if err != nil {
 				tx.Rollback()
-				return ticket_activity, "Escalated Group Member not found", err
+				return ticket_activity, errors.New("Escalated Group Member not found")
 			}
 
 			if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)+1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Escalated Group Member not found", err
+				return ticket_activity, errors.New("Escalated Group Member not found")
 			}
 
 			group_head.ActiveTicketCount += 1
 
 			if err = tx.Save(&group_head).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Escalated Group Member couldn't be saved", err
+				return ticket_activity, errors.New("Escalated Group Member couldn't be saved")
 			}
 
 			ticket_reviewer.TicketID = u
@@ -128,7 +129,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 
 			if err = tx.Create(&ticket_reviewer).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Reviewer couldn't be created", err
+				return ticket_activity, errors.New("Reviewer couldn't be created")
 			}
 
 			ticket.Status = "escalated"
@@ -136,7 +137,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Activity couldn't be created", err
+				return ticket_activity, errors.New("Activity couldn't be created")
 			}
 
 		}
@@ -147,7 +148,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 			audits.CreateAuditTicket(ticket, tx)
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, "Activity couldn't be created", err
+				return ticket_activity, errors.New("Activity couldn't be created")
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -159,13 +160,13 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, string, er
 		audits.CreateAuditTicket(ticket, tx)
 		if err = tx.Create(&ticket_activity).Error; err != nil {
 			tx.Rollback()
-			return ticket_activity, "Activity couldn't be created", err
+			return ticket_activity, errors.New("Activity couldn't be created")
 		}
 	}
 
 	tx.Commit()
 
-	return ticket_activity, "Successfully Created!", err
+	return ticket_activity, err
 }
 
 func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {

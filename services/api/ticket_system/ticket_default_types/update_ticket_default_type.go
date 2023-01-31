@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateTicketDefaultType(body models.TicketDefaultType) (string,error,models.TicketDefaultType) {
+func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaultType,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -14,7 +15,7 @@ func UpdateTicketDefaultType(body models.TicketDefaultType) (string,error,models
 
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occurred!")
 	}
 
 	if body.TicketType != "" {
@@ -29,10 +30,10 @@ func UpdateTicketDefaultType(body models.TicketDefaultType) (string,error,models
 
 	if err := tx.Save(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 
-	return "Sucessfully Updated!", err, ticket_default_type
+	return ticket_default_type, err
 }

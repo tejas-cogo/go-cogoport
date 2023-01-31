@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func DeleteTicketToken(id uint) (string,error,uint){
+func DeleteTicketToken(id uint) (uint,error){
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -14,14 +15,14 @@ func DeleteTicketToken(id uint) (string,error,uint){
 
 	if err := tx.Model(&ticket_token).Where("id = ?", id).Update("status","inactive").Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, id
+		return id, errors.New("Error Occurred!")
 	}
 
 	db.Where("id = ?", id).Delete(&ticket_token)
 	if err := tx.Find(&ticket_token).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, id
+		return id, errors.New("Error Occurred!")
 	}
 
-	return "Successfully Created!", err, id
+	return id, err
 }

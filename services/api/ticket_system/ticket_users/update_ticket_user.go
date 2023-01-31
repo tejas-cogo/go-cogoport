@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, string, error) {
+func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, error) {
 	db := config.GetDB()
 	var ticket_user []models.TicketUser
 	tx := db.Begin()
@@ -13,7 +14,7 @@ func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, string, 
 
 	if err := tx.Where("id IN ?", body.ID).Find(&ticket_user).Error; err != nil {
 		tx.Rollback()
-		return ticket_user, "System User Not Found", err
+		return ticket_user, errors.New("System User Not Found")
 	}
 
 	for _, u := range ticket_user {
@@ -30,10 +31,10 @@ func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, string, 
 
 		if err := tx.Save(&u).Error; err != nil {
 			tx.Rollback()
-			return ticket_user, "System User Not Found", err
+			return ticket_user, errors.New("System User Not Found")
 		}
 	}
 
 	tx.Commit()
-	return ticket_user, "Successfully Updated!", err
+	return ticket_user, err
 }

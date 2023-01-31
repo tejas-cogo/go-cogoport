@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (string,error,models.TicketDefaultTiming) {
+func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (models.TicketDefaultTiming,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -14,7 +15,7 @@ func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (string,error,mo
 
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error occured!")
 	}
 
 	if body.TicketDefaultTypeID > 0 {
@@ -39,10 +40,10 @@ func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (string,error,mo
 
 	if err := tx.Save(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error occured!")
 	}
 
 	tx.Commit()
 
-	return "Sucessfully Updated!", err, ticket_default_timing
+	return ticket_default_timing, err
 }

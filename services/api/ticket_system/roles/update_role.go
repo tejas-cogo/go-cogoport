@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateRole(body models.Role) (string, error, models.Role) {
+func UpdateRole(body models.Role) (models.Role,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -14,7 +15,7 @@ func UpdateRole(body models.Role) (string, error, models.Role) {
 
 	if err := tx.Where("id = ?", body.ID).First(&role).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occured!")
 	}
 	
 	if body.Name != "" {
@@ -29,10 +30,10 @@ func UpdateRole(body models.Role) (string, error, models.Role) {
 
 	if err := tx.Save(&role).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occured!")
 	}
 
 	tx.Commit()
 	
-	return "Successfully Updated!", err, role
+	return role, err
 }

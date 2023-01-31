@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateTicketActivity(body models.TicketActivity) (string,error,models.TicketActivity) {
+func UpdateTicketActivity(body models.TicketActivity) (models.TicketActivity,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -14,15 +15,15 @@ func UpdateTicketActivity(body models.TicketActivity) (string,error,models.Ticke
 	
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_activity).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return ticket_activity, errors.New("Error Occurred!")
 	}
 
 	if err := tx.Save(&ticket_activity).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return ticket_activity, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 	
-	return "Sucessfully Updated!", err, ticket_activity
+	return ticket_activity, err
 }

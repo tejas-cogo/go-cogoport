@@ -1,12 +1,14 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 )
 
-func UpdateTicket(body models.Ticket) (string,error,models.Ticket) {
+func UpdateTicket(body models.Ticket) (models.Ticket,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -15,7 +17,7 @@ func UpdateTicket(body models.Ticket) (string,error,models.Ticket) {
 
 	if err := tx.Where("id = ?", body.ID).First(&ticket).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occurred!")
 	}
 
 	if body.Priority != ticket.Priority {
@@ -24,11 +26,11 @@ func UpdateTicket(body models.Ticket) (string,error,models.Ticket) {
 
 	if err := tx.Save(&ticket).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occurred!")
 	}
 
 	audits.CreateAuditTicket(ticket, db)
 	
 	tx.Commit()
-	return "Successfully Deleted!", err, ticket
+	return ticket,err
 }

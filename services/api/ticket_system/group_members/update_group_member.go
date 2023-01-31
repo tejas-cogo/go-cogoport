@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func UpdateGroupMember(body models.GroupMember) (string,error,models.GroupMember) {
+func UpdateGroupMember(body models.GroupMember) (models.GroupMember,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -18,7 +19,7 @@ func UpdateGroupMember(body models.GroupMember) (string,error,models.GroupMember
 
 	if err := tx.Find(&group_member).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occurred!")
 	}
 
 	if body.ActiveTicketCount != 0 {
@@ -36,10 +37,10 @@ func UpdateGroupMember(body models.GroupMember) (string,error,models.GroupMember
 
 	if err := tx.Save(&group_member).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, body
+		return body, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 	
-	return "Successfully Updated!",err, group_member
+	return group_member, err
 }

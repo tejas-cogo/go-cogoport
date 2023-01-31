@@ -1,6 +1,8 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
@@ -10,7 +12,7 @@ type TicketSpectatorService struct {
 	TicketSpectator models.TicketSpectator
 }
 
-func CreateTicketSpectator(ticket_spectator models.TicketSpectator) (string,error,models.TicketSpectator) {
+func CreateTicketSpectator(ticket_spectator models.TicketSpectator) (models.TicketSpectator,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -22,7 +24,7 @@ func CreateTicketSpectator(ticket_spectator models.TicketSpectator) (string,erro
 
 	if err := tx.Create(&ticket_spectator).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err, ticket_spectator
+		return ticket_spectator, errors.New("Error Occurred!")
 	}
 
 	spectator_activity.TicketID = ticket_spectator.TicketID
@@ -33,5 +35,5 @@ func CreateTicketSpectator(ticket_spectator models.TicketSpectator) (string,erro
 	activities.CreateTicketActivity(filters)
 
 	tx.Commit()
-	return "Successfully Created!", err, ticket_spectator
+	return ticket_spectator, err
 }

@@ -3,32 +3,33 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type TicketDefaultGroupService struct {
 	TicketDefaultGroup models.TicketDefaultGroup
 }
 
-func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (string, error) {
+func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (models.TicketDefaultGroup,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
 
 	stmt := validate(ticket_default_group)
 	if stmt != "validated" {
-		return stmt, err
+		return ticket_default_group, errors.New(stmt)
 	}
 
 	ticket_default_group.Status = "active"
 
 	if err := tx.Create(&ticket_default_group).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err
+		return ticket_default_group, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 
-	return "Successfully Created!", err
+	return ticket_default_group, err
 }
 
 func validate(ticket_default_group models.TicketDefaultGroup) string {
