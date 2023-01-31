@@ -24,7 +24,7 @@ func CreateTicketToken(body models.TicketUser) (models.TicketToken,error) {
 
 	body.RoleID = 1
 
-	ticket_user := ticketuser.CreateTicketUser(body)
+	ticket_user, _ := ticketuser.CreateTicketUser(body)
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
 

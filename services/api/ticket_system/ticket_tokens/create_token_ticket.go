@@ -1,9 +1,7 @@
 package ticket_system
 
 import (
-	"errors"
 	"time"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
@@ -34,8 +32,8 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		ticket.TicketUserID = ticket_token.TicketUserID
 		ticket_data, err := tickets.CreateTicket(ticket)
 
-		if mesg != "Successfully Created!" {
-			return mesg
+		if err != nil {
+			return ticket_token, err
 		}
 
 		ticket_token.TicketID = ticket_data.ID

@@ -18,7 +18,7 @@ func ListTicketUser(c *gin.Context) {
 		c.JSON(400, "Not Found")
 	}
 
-	ser, db := service.ListTicketUser(filters)
+	ser, db, err := service.ListTicketUser(filters)
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
@@ -31,24 +31,20 @@ func ListTicketUser(c *gin.Context) {
 func CreateTicketUser(c *gin.Context) {
 	var ticket_user models.TicketUser
 	c.BindJSON(&ticket_user)
-	c.JSON(200, service.CreateTicketUser(ticket_user))
+	ser, err := service.CreateTicketUser(ticket_user)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
-
-// func UpdateTicketUserRole(c *gin.Context) {
-// 	var body models.TicketUser
-// 	c.BindJSON(&body)
-// 	id := body.ID
-// 	c.JSON(200, service.InactiveTicketUserRole(id))
-// }
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUserRole
 	c.BindJSON(&body)
-	ser, mesg, err := service.UpdateTicketUser(body)
+	ser, err := service.UpdateTicketUser(body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
-	} else if mesg != "Successfully Updated!" {
-		c.JSON(400, mesg)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

@@ -29,7 +29,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket_user.ID = body.TicketUserFilter.ID
 		}
 
-		ticket_user, _ := user.ListTicketUser(ticket_user)
+		ticket_user, _, _ := user.ListTicketUser(ticket_user)
 		for _, u := range ticket_user {
 			fmt.Println("Fdv", u.ID, "vs")
 			body.TicketActivity.UserType = u.Type

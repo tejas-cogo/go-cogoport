@@ -5,10 +5,9 @@ import (
 	"errors"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	"gorm.io/gorm"
 )
 
-func ListTicketTag(Tag string) ([]string, *gorm.DB, error) {
+func ListTicketTag(Tag string) ([]string, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -25,9 +24,9 @@ func ListTicketTag(Tag string) ([]string, *gorm.DB, error) {
 
 	if err := tx.Pluck("tag", &t).Error; err != nil {
 		tx.Rollback()
-		return t, tx, errors.New("Error Occurred!")
+		return t, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
-	return t, tx, err
+	return t, err
 }

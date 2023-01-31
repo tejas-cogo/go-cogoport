@@ -18,7 +18,7 @@ func ListTicketType(c *gin.Context) {
 		c.JSON(400, "Not Found")
 	}
 
-	ser, db := service.ListTicketType(filters)
+	ser, db, err := service.ListTicketType(filters)
 	pg := paginate.New()
 	c.JSON(200, pg.Response(db, c.Request, &ser))
 }
@@ -34,7 +34,7 @@ func ListTicketDefaultType(c *gin.Context) {
 	}
 	fmt.Println("filters", filters)
 
-	ser, db := service.ListTicketDefaultType(filters)
+	ser, db, err := service.ListTicketDefaultType(filters)
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
@@ -50,8 +50,6 @@ func CreateTicketDefaultType(c *gin.Context) {
 	ser, err := service.CreateTicketDefaultType(ticket_default_type)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
-	} else if ser != "Successfully Created!" {
-		c.JSON(400, ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -61,11 +59,21 @@ func DeleteTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(200, service.DeleteTicketDefaultType(id))
+	ser, err := service.DeleteTicketDefaultType(id)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func UpdateTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	c.BindJSON(&body)
-	c.JSON(200, service.UpdateTicketDefaultType(body))
+	ser, err := service.UpdateTicketDefaultType(body)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }

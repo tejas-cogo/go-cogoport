@@ -22,19 +22,34 @@ func ListTokenTicketDetail(c *gin.Context) {
 func CreateTicketToken(c *gin.Context) {
 	var body models.TicketUser
 	c.BindJSON(&body)
-	c.JSON(200, service.CreateTicketToken(body))
+	ser, err := service.CreateTicketToken(body)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func CreateTokenTicket(c *gin.Context) {
 
 	var token_filter models.TokenFilter
 	c.BindJSON(&token_filter)
-	c.JSON(200, service.CreateTokenTicket(token_filter))
+	ser, err := service.CreateTokenTicket(token_filter)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func DeleteTicketToken(c *gin.Context) {
 	var body models.TicketToken
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(200, service.DeleteTicketToken(id))
+	ser, err := service.DeleteTicketToken(id)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }

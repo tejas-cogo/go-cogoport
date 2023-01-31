@@ -18,7 +18,7 @@ func ListTicket(c *gin.Context) {
 		return
 	}
 
-	ser, db := service.ListTicket(filters)
+	ser, db, err := service.ListTicket(filters)
 	if c.Writer.Status() == 400 {
 		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
@@ -31,7 +31,12 @@ func ListTicket(c *gin.Context) {
 func ListTicketTag(c *gin.Context) {
 	var Tag string
 	Tag = c.Request.URL.Query().Get("Tag")
-	c.JSON(c.Writer.Status(), service.ListTicketTag(Tag))
+	ser, err := service.ListTicketTag(Tag)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func GetTicketStats(c *gin.Context) {
@@ -43,7 +48,12 @@ func GetTicketStats(c *gin.Context) {
 		c.JSON(400, "Not Found")
 	}
 
-	c.JSON(200, service.GetTicketStats(stats))
+	ser, err := service.GetTicketStats(stats)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func GetTicketGraph(c *gin.Context) {
@@ -55,7 +65,12 @@ func GetTicketGraph(c *gin.Context) {
 		c.JSON(400, "Not Found")
 	}
 
-	c.JSON(200, service.GetTicketGraph(graph))
+	ser, err := service.GetTicketGraph(graph)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func ListTicketDetail(c *gin.Context) {
@@ -73,26 +88,22 @@ func ListTicketDetail(c *gin.Context) {
 func CreateTicket(c *gin.Context) {
 	var body models.Ticket
 	c.BindJSON(&body)
-	_, mesg, err := service.CreateTicket(body)
+	_, err := service.CreateTicket(body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
-	} else if mesg != "Successfully Created!" {
-		c.JSON(400, mesg)
 	} else {
-		c.JSON(c.Writer.Status(), mesg)
+		c.JSON(c.Writer.Status(), "Successfully created!")
 	}
 
 }
 
-// func DeleteTicket(c *gin.Context) {
-// 	var body models.Ticket
-// 	c.BindJSON(&body)
-// 	c.JSON(200, service.DeleteTicket(body))
-// }
-
 func UpdateTicket(c *gin.Context) {
 	var body models.Ticket
 	c.BindJSON(&body)
-
-	c.JSON(200, service.UpdateTicket(body))
+	ser, err := service.UpdateTicket(body)
+	if err != nil {
+		c.JSON(400,err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
