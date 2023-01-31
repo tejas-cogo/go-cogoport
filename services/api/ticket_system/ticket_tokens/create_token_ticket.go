@@ -12,7 +12,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) string {
 	db := config.GetDB()
 	var ticket_token models.TicketToken
 
-	db.Where("ticket_token = ?", token_filter.TicketToken).Find(&ticket_token)
+	db.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "used").Find(&ticket_token)
 
 	today := time.Now()
 
