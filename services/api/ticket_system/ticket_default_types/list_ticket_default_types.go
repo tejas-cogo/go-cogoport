@@ -29,8 +29,6 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 
 	db = db.Joins("left join group_members on groups.id = group_members.group_id")
 
-	db = db.Where("ticket_default_types.id != ?", 1)
-
 	fmt.Println("ewdfs", filters.QFilter, "Q")
 	if filters.QFilter != "" {
 		filters.QFilter = "%" + filters.QFilter + "%"
