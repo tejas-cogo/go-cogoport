@@ -38,6 +38,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) string {
 		ticket_token.TicketID = ticket_data.ID
 		ticket_token.Status = "utilized"
 		db.Save(&ticket_token)
+
 	} else {
 		DeleteTicketToken(ticket_token.ID)
 	}
