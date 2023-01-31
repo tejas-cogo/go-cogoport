@@ -14,7 +14,7 @@ func ListGroup(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db := service.ListGroup(filters)
@@ -40,7 +40,7 @@ func CreateGroup(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else if ser != "Successfully Created!" {
-		c.JSON(400, ser)
+		c.JSON(c.Writer.Status(), ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -50,11 +50,11 @@ func DeleteGroup(c *gin.Context) {
 	var body models.Group
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(200, service.DeleteGroup(id))
+	c.JSON(c.Writer.Status(), service.DeleteGroup(id))
 }
 
 func UpdateGroup(c *gin.Context) {
 	var body models.Group
 	c.BindJSON(&body)
-	c.JSON(200, service.UpdateGroup(body))
+	c.JSON(c.Writer.Status(), service.UpdateGroup(body))
 }

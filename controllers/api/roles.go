@@ -17,7 +17,7 @@ func ListRole(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		fmt.Println("status", c.Writer.Status(), "status")
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db := service.ListRole(filters)
@@ -37,7 +37,7 @@ func CreateRole(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else if ser != "Successfully Created!" {
-		c.JSON(400, ser)
+		c.JSON(c.Writer.Status(), ser)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -47,11 +47,11 @@ func DeleteRole(c *gin.Context) {
 	var body models.Role
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(200, service.DeleteRole(id))
+	c.JSON(c.Writer.Status(), service.DeleteRole(id))
 }
 
 func UpdateRole(c *gin.Context) {
 	var body models.Role
 	c.BindJSON(&body)
-	c.JSON(200, service.UpdateRole(body))
+	c.JSON(c.Writer.Status(), service.UpdateRole(body))
 }
