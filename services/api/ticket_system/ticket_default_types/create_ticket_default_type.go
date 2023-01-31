@@ -3,32 +3,33 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type TicketDefaultTypeService struct {
 	TicketDefaultType models.TicketDefaultType
 }
 
-func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (string, error) {
+func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (models.TicketDefaultType, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
 
 	stmt := validate(ticket_default_type)
 	if stmt != "validated" {
-		return stmt, err
+		return ticket_default_type, errors.New(stmt)
 	}
 
 	ticket_default_type.Status = "active"
 
 	if err := tx.Create(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err
+		return ticket_default_type, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 
-	return "Successfully Created!", err
+	return ticket_default_type, err
 
 }
 

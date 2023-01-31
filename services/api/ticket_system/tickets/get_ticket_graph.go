@@ -1,15 +1,17 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
+func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_reviewer []models.TicketReviewer
 	var ticket_user models.TicketUser
@@ -23,26 +25,46 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 	if graph.AgentRmID != "" {
 
 		db2 := config.GetCDB()
+		tx2 := db2.Begin()
+
 		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
 
-		db2.Where("reporting_manager_id = ? and status = ?", graph.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
-		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
+		if err := tx2.Where("reporting_manager_id = ? and status = ?", graph.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
-		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
+		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
-		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
 	} else if graph.AgentID != "" {
-		db.Where("system_user_id = ?", graph.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
+		if err := tx.Where("system_user_id = ?", graph.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
-		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 	} else {
 
-		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+		if err := tx.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 	}
 
 	db = config.GetDB()
+	tx = db.Begin()
 
 	var x time.Time
 	var y time.Time
@@ -57,7 +79,10 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 		x = y
 		y = x.Add(time.Hour * 4)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed)
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
 
@@ -85,13 +110,10 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 	}
 
 	weekday := time.Now().Weekday()
-	fmt.Println(weekday)
 
 	y, _ = time.Parse(DateTime, t)
-	fmt.Println(y)
 
 	t1 := int(weekday)
-	fmt.Println(t1)
 
 	t1 = -t1 + 1
 
@@ -106,9 +128,10 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 		x = y
 		y = x.AddDate(0, 0, 1)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed)
-
-		fmt.Println("x", x)
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
 
@@ -143,5 +166,6 @@ func GetTicketGraph(graph models.TicketGraph) models.TicketGraph {
 	graph.EndDate = y
 	graph.Sum = count
 
-	return graph
+	tx.Commit()
+	return graph, err
 }

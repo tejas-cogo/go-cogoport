@@ -1,7 +1,7 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 	"time"
 
@@ -10,8 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
+func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+
 	var ticket_user models.TicketUser
 	var ticket_reviewer models.TicketReviewer
 	var ticket_id []string
@@ -50,58 +53,62 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	}
 
 	if filters.ID > 0 {
-		db = db.Where("id = ?", filters.ID)
+		tx = tx.Where("id = ?", filters.ID)
 	}
 
 	if filters.Type != "" {
-		db = db.Where("type ilike ?", filters.Type)
+		tx = tx.Where("type ilike ?", filters.Type)
 	}
 
 	if filters.QFilter != "" {
 
-		db = db.Where("id::text ilike ? OR type ilike ?", filters.QFilter, "%"+filters.QFilter+"%")
+		tx = tx.Where("id::text ilike ? OR type ilike ?", filters.QFilter, "%"+filters.QFilter+"%")
 	}
 
 	if filters.Priority != "" {
-		db = db.Where("priority = ?", filters.Priority)
+		tx = tx.Where("priority = ?", filters.Priority)
 	}
 
 	if filters.IsExpiringSoon == "true" {
 		x := time.Now()
 		y := x.AddDate(0, 0, 10)
-		fmt.Println(x, ", ", y)
-		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
+		tx = tx.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
 	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+		tx = tx.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.TicketCreatedAt != "" {
 		CreatedAt, _ := time.Parse(YYYYMMDD, filters.TicketCreatedAt)
 		x := CreatedAt
 		y := x.AddDate(0, 0, 1)
-		db = db.Where("created_at BETWEEN ? AND ?", x, y)
+		tx = tx.Where("created_at BETWEEN ? AND ?", x, y)
 	}
 
 	if filters.ExpiryDate != "" {
 		ExpiryDate, _ := time.Parse(YYYYMMDD, filters.ExpiryDate)
 		x := ExpiryDate
 		y := x.AddDate(0, 0, 1)
-		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
+		tx = tx.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
 	if len(filters.Tags) != 0 {
-		db = db.Where("tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
+		tx = tx.Where("tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
 	}
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		tx = tx.Where("status = ?", filters.Status)
 	}
 
 	db = db.Order("created_at desc").Order("expiry_date desc")
 
-	db = db.Preload("TicketUser").Find(&ticket)
+	tx = tx.Preload("TicketUser").Find(&ticket)
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return ticket, tx, errors.New("Error Occurred!")
+	}
 
-	return ticket, db
+	tx.Commit()
+	return ticket, tx, err
 }

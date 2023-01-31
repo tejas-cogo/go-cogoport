@@ -3,32 +3,33 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type RoleService struct {
 	Role models.Role
 }
 
-func CreateRole(role models.Role) (string, error) {
+func CreateRole(role models.Role) (models.Role,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
 
 	stmt := validate(role)
 	if stmt != "validated" {
-		return stmt, err
+		return role, errors.New(stmt)
 	}
 
 	role.Status = "active"
 
 	if err := tx.Create(&role).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err
+		return role, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 
-	return "Successfully Created!", err
+	return role, err
 }
 
 func validate(role models.Role) string {

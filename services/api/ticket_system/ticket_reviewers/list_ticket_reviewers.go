@@ -4,26 +4,34 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
+	"errors"
 )
 
-func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer, *gorm.DB) {
+func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer, *gorm.DB, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_reviewer []models.TicketReviewer
 
 	if filters.TicketID != 0 {
-		db = db.Where("ticket_id = ?", filters.TicketID)
+		tx = tx.Where("ticket_id = ?", filters.TicketID)
 	}
 
 	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+		tx = tx.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		tx = tx.Where("status = ?", filters.Status)
 	}
 
-	db = db.Preload("TicketUser").Find(&ticket_reviewer)
+	tx = tx.Preload("TicketUser").Find(&ticket_reviewer)
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return ticket_reviewer, tx, errors.New("Error Occurred!")
+	}
 
-	return ticket_reviewer, db
+	tx.Commit()
+	return ticket_reviewer, tx, err
 }

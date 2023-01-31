@@ -3,15 +3,23 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type TicketTaskService struct {
 	TicketTask models.TicketTask
 }
 
-func CreateTicketTask(ticket_task models.TicketTask) models.TicketTask {
+func CreateTicketTask(ticket_task models.TicketTask) (models.TicketTask,error) {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
-	db.Create(&ticket_task)
-	return ticket_task
+	tx := db.Begin()
+	var err error
+
+	if err := tx.Create(&ticket_task).Error; err != nil {
+		tx.Rollback()
+		return ticket_task, errors.New("Error Occurred!")
+	}
+
+	tx.Commit()
+	return ticket_task,err
 }

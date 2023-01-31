@@ -1,26 +1,31 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicketTag(Tag string) []string {
+func ListTicketTag(Tag string) ([]string, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var t []string
 
-	db = db.Table("(?) as u", db.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag")
+	tx = tx.Table("(?) as u", tx.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag")
 
-	fmt.Println(Tag)
 	if Tag != "" {
 		Tag = "%" + Tag + "%"
-		db = db.Where("u.tag = ?", Tag)
+		tx = tx.Where("u.tag = ?", Tag)
 	}
 
-	db.Pluck("tag", &t)
+	if err := tx.Pluck("tag", &t).Error; err != nil {
+		tx.Rollback()
+		return t, errors.New("Error Occurred!")
+	}
 
-	return t
+	tx.Commit()
+	return t, err
 }

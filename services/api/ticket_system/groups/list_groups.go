@@ -1,7 +1,7 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -9,41 +9,49 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB) {
+func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB, error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var groups []models.GroupWithMember
 
-	db = db.Model(&models.Group{})
+	tx = tx.Model(&models.Group{})
 
-	db = db.Select("groups.id, groups.name,groups.status,groups.tags,Count( group_members.id) as count")
+	tx = tx.Select("groups.id, groups.name,groups.status,groups.tags,Count( group_members.id) as count")
 
-	db = db.Joins("left join group_members on group_members.group_id = groups.id and group_members.status = ?", "active")
+	tx = tx.Joins("left join group_members on group_members.group_id = groups.id and group_members.status = ?", "active")
 
 	if filters.GroupMemberID > 0 {
-		db = db.Where("group_members.id = ?", filters.GroupMemberID)
+		tx = tx.Where("group_members.id = ?", filters.GroupMemberID)
 	}
 
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
-		db = db.Where("name iLike ?", filters.Name)
+		tx = tx.Where("name iLike ?", filters.Name)
 	}
 
 	if len(filters.Tags) != 0 {
-		db = db.Where("groups.tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
+		tx = tx.Where("groups.tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
 	}
 
 	if filters.Status != "" {
-		db = db.Where("groups.status = ?", filters.Status)
+		tx = tx.Where("groups.status = ?", filters.Status)
 	}
 
-	db = db.Order("groups.name desc")
 
-	db = db.Group("1,2,3,4")
 
-	db = db.Scan(&groups)
+	tx = tx.Order("groups.name desc")
 
-	fmt.Println("group", groups)
 
-	return groups, db
+	tx = tx.Group("1,2,3,4")
+
+	tx = tx.Scan(&groups)
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return groups, tx, errors.New("Error Occurred!")
+	}
+
+	tx.Commit()
+	return groups, tx, err
 }

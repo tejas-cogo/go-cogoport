@@ -3,32 +3,33 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type TicketDefaultTimingService struct {
 	TicketDefaultTiming models.TicketDefaultTiming
 }
 
-func CreateTicketDefaultTiming(ticket_default_timing models.TicketDefaultTiming) (string, error) {
+func CreateTicketDefaultTiming(ticket_default_timing models.TicketDefaultTiming) (models.TicketDefaultTiming,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
 
 	stmt := validate(ticket_default_timing)
 	if stmt != "validated" {
-		return stmt, err
+		return ticket_default_timing, errors.New(stmt)
 	}
 
 	ticket_default_timing.Status = "active"
 
 	if err := tx.Create(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err
+		return ticket_default_timing, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 
-	return "Successfully Created!", err
+	return ticket_default_timing, err
 }
 
 func validate(ticket_default_timing models.TicketDefaultTiming) string {

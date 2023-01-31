@@ -3,13 +3,14 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
 type GroupService struct {
 	Group models.Group
 }
 
-func CreateGroup(group models.Group) (string, error) {
+func CreateGroup(group models.Group) (models.Group,error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -18,17 +19,17 @@ func CreateGroup(group models.Group) (string, error) {
 
 	stmt := validate(group)
 	if stmt != "validated" {
-		return stmt, err
+		return group, errors.New(stmt)
 	}
 
 	if err := tx.Create(&group).Error; err != nil {
 		tx.Rollback()
-		return "Error Occurred!", err
+		return group, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
 
-	return "Successfully Created!", err
+	return group, err
 }
 
 func validate(group models.Group) string {

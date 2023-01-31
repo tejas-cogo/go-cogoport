@@ -3,24 +3,46 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"errors"
 )
 
-func DeleteGroupMember(id uint) (string, uint) {
+
+
+func DeleteGroupMember(id uint) (uint,error){
+
+
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var group_member models.GroupMember
 	var member models.GroupMember
 
-	db.Where("id != ? and status = ?", id, "active").Find(&group_member)
 
-	db.Where("group_id = ? and id != ? and status = ?", group_member.GroupID, id, "active").Find(&member)
+	tx.Where("id != ? and status = ?", id, "active").Find(&group_member)
+
+	tx.Where("group_id = ? and id != ? and status = ?", group_member.GroupID, id, "active").Find(&member)
 
 	if member.ID == 0 {
-		return "Cannot be deleted", id
+		return id, errors.New("Last remaining member cannot be deleted.")
+	
+  }
+
+
+	if err := tx.Model(&group_member).Where("id = ?", id).Update("status","inactive").Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
+
+
+
+	if err := tx.Where("id = ?", id).Delete(&group_member).Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
 	}
-	db.Model(&group_member).Where("id = ?", id).Update("status", "inactive")
 
-	db.Where("id = ?", id).Delete(&group_member)
+	tx.Commit()
 
-	return "Successfully Deleted", id
+	return id, err
+
 }
+

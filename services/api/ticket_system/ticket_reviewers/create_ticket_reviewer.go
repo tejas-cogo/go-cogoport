@@ -5,6 +5,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
 	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
+	"errors"
 )
 
 type TicketReviewerService struct {
@@ -12,9 +13,8 @@ type TicketReviewerService struct {
 	ReviewerActivity models.ReviewerActivity
 }
 
-func CreateTicketReviewer(body models.Ticket) (string, error) {
+func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	db := config.GetDB()
-	// result := map[string]interface{}{}
 
 	txt := db.Begin()
 
@@ -26,13 +26,13 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 
 	if err := txt.Where("ticket_type = ? and status = ?", body.Type, "active").First(&ticket_default_type).Error; err != nil {
 		txt.Rollback()
-		return "Default type had issue!", err
+		return body, errors.New("Default type had issue!")
 	}
 
 	if erro := txt.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_group).Error; erro != nil {
 		if err := txt.Where("ticket_default_type_id = ? ", 1).First(&ticket_default_group).Error; err != nil {
 			txt.Rollback()
-			return "Default Group couldn't be found", err
+			return body, errors.New("Default Group couldn't be found")
 		}
 	}
 
@@ -52,11 +52,11 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 
 	stmt := validate(ticket_reviewer)
 	if stmt != "validated" {
-		return stmt, err
+		return body, errors.New(stmt)
 	}
 	if err := txt.Create(&ticket_reviewer).Error; err != nil {
 		txt.Rollback()
-		return "TicketReviewer couldn't be created", err
+		return body, errors.New("TicketReviewer couldn't be created")
 	}
 
 	filters.GroupMember.ActiveTicketCount = group_member.ActiveTicketCount + 1
@@ -71,7 +71,7 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 
 	if err := txt.Create(&ticket_activity).Error; err != nil {
 		txt.Rollback()
-		return "Reviewer Assigned Activity couldn't be created", err
+		return body, errors.New("Reviewer Assigned Activity couldn't be created")
 	}
 
 	if ticket_activity.UserType == "internal" {
@@ -79,7 +79,7 @@ func CreateTicketReviewer(body models.Ticket) (string, error) {
 	}
 
 	txt.Commit()
-	return "Successfully Reviewer Assigned", err
+	return body, err
 }
 
 func validate(ticket_reviewer models.TicketReviewer) string {

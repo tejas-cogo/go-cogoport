@@ -2,6 +2,7 @@ package ticket_system
 
 import (
 	"encoding/hex"
+	"errors"
 	"strconv"
 	"time"
 
@@ -14,14 +15,16 @@ type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(body models.TicketUser) models.TicketToken {
+func CreateTicketToken(body models.TicketUser) (models.TicketToken,error) {
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
 	var ticket_token models.TicketToken
 
 	body.RoleID = 1
 
-	ticket_user := ticketuser.CreateTicketUser(body)
+	ticket_user, _ := ticketuser.CreateTicketUser(body)
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
 
@@ -38,7 +41,11 @@ func CreateTicketToken(body models.TicketUser) models.TicketToken {
 	ticket_token.TicketUserID = ticket_user.ID
 	ticket_token.Status = "active"
 
-	db.Create(&ticket_token)
+	if err := tx.Create(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return ticket_token, errors.New("Error Occured!")
+	}
 
-	return ticket_token
+	tx.Commit()
+	return ticket_token, err
 }
