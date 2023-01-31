@@ -24,7 +24,6 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB) {
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db = db.Where("name != ?", "Default")
 	db = db.Order("created_at desc").Find(&role)
 
 	return role, db
