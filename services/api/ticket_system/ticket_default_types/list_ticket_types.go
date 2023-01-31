@@ -1,10 +1,11 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
-	"errors"
 )
 
 func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultType, *gorm.DB, error) {
@@ -22,11 +23,9 @@ func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultTyp
 	if filters.Status != "" {
 		tx = tx.Where("status = ?", filters.Status)
 	}
-	tx = tx.Where("ticket_default_type_id != ?", 1)
-	tx = tx.Order("created_at desc").Find(&ticket_default_type)
-	
 	tx = tx.Where("id != ?", 1)
 	tx = tx.Order("created_at desc").Find(&ticket_default_type)
+
 	if err := tx.Error; err != nil {
 		tx.Rollback()
 		return ticket_default_type, tx, errors.New("Error Occurred!")
