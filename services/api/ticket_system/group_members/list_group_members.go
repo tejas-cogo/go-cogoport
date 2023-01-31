@@ -20,7 +20,7 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 	}
 
 	if filters.Status != "" {
-		db = db.Where("status = ?", filters.Status)
+		db = db.Where("group_members.status = ?", filters.Status)
 	}
 
 	if filters.NotPresentTicketUserID > 0 {
