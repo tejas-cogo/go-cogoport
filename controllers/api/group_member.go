@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -17,14 +15,12 @@ func ListGroupMember(c *gin.Context) {
 	var filters models.FilterGroupMember
 	err := c.Bind(&filters)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
 
 	ser, db, _ := service.ListGroupMember(filters)
 
 	if c.Writer.Status() == 400 {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	} else {
 		pg := paginate.New()
@@ -49,7 +45,7 @@ func DeleteGroupMember(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteGroupMember(id)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -60,7 +56,7 @@ func UpdateGroupMember(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateGroupMember(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

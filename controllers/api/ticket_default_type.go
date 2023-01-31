@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -14,7 +12,6 @@ func ListTicketType(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
 
@@ -24,19 +21,15 @@ func ListTicketType(c *gin.Context) {
 }
 
 func ListTicketDefaultType(c *gin.Context) {
-	fmt.Println("filterssssssss")
 	var filters models.TicketDefaultFilter
 
 	err := c.Bind(&filters)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
-	fmt.Println("filters", filters)
 
 	ser, db, err := service.ListTicketDefaultType(filters)
 	if c.Writer.Status() == 400 {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
@@ -61,7 +54,7 @@ func DeleteTicketDefaultType(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketDefaultType(id)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -72,7 +65,7 @@ func UpdateTicketDefaultType(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicketDefaultType(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

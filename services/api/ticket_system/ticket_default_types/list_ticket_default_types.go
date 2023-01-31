@@ -1,8 +1,8 @@
 package ticket_system
 
 import (
-	"fmt"
 	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -33,7 +33,6 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 
 	tx = tx.Where("ticket_default_types.id != ?", 1)
 
-	fmt.Println("ewdfs", filters.QFilter, "Q")
 	if filters.QFilter != "" {
 		filters.QFilter = "%" + filters.QFilter + "%"
 		tx = tx.Where("ticket_default_types.ticket_type iLike ?", filters.QFilter)

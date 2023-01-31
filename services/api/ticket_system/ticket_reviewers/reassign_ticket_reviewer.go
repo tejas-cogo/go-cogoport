@@ -2,14 +2,13 @@ package ticket_system
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 )
 
-func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivity,error) {
+func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivity, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -41,8 +40,6 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		tx.Rollback()
 		return body, errors.New("Error Occurred!")
 	}
-
-	fmt.Println("edcs", body, "rfd")
 
 	if err := tx.Where("ticket_id = ? AND ticket_user_id = ?", body.TicketID, body.ReviewerUserID).Find(&ticket_reviewer_old).Error; err != nil {
 		tx.Rollback()

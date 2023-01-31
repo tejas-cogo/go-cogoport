@@ -1,14 +1,14 @@
 package ticket_system
 
 import (
-	"fmt"
-	"time"
 	"errors"
+	"time"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph,error) {
+func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -34,8 +34,6 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph,error) {
 			tx.Rollback()
 			return graph, errors.New("Error Occurred!")
 		}
-
-		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
 
 		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
 			tx.Rollback()
@@ -112,13 +110,10 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph,error) {
 	}
 
 	weekday := time.Now().Weekday()
-	fmt.Println(weekday)
 
 	y, _ = time.Parse(DateTime, t)
-	fmt.Println(y)
 
 	t1 := int(weekday)
-	fmt.Println(t1)
 
 	t1 = -t1 + 1
 
@@ -137,8 +132,6 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph,error) {
 			tx.Rollback()
 			return graph, errors.New("Error Occurred!")
 		}
-
-		fmt.Println("x", x)
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
 

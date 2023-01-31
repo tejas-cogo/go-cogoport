@@ -2,8 +2,8 @@ package ticket_system
 
 import (
 	"errors"
-	"fmt"
 	"time"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
@@ -47,17 +47,6 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 			return ticket, errors.New("Default Timing had issue!")
 		}
 	}
-
-	// fmt.Println("hjfxfghv")
-	// filters.TicketDefaultTiming.TicketType = "default"
-	// ticket_default_timing, err = timings.ListTicketDefaultTiming(filters.TicketDefaultTiming
-	// filters.TicketDefaultTiming.TicketType = ticket.Type
-	// // filters.TicketDefaultTiming.TicketPriority =
-	// filters.TicketDefaultTiming.Status = "active"
-
-	// ticket_default_timing, err := timings.ListTicketDefaultTiming(filters.TicketDefaultTiming)
-
-	fmt.Println("rfcds", ticket_default_timing, "gfvdc")
 
 	ticket.Priority = ticket_default_timing.TicketPriority
 	ticket.Tat = ticket_default_timing.Tat

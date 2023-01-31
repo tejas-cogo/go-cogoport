@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -13,13 +11,11 @@ func ListGroup(c *gin.Context) {
 	var filters models.FilterGroup
 	err := c.Bind(&filters)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
 
 	ser, db, err := service.ListGroup(filters)
 	if c.Writer.Status() == 400 {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
@@ -32,7 +28,6 @@ func ListGroupTag(c *gin.Context) {
 	Tag = c.Request.URL.Query().Get("Tag")
 	ser, db, err := service.ListGroupTag(Tag)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
@@ -68,7 +63,7 @@ func UpdateGroup(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateGroup(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

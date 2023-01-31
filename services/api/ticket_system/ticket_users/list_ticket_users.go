@@ -1,8 +1,8 @@
 package ticket_system
 
 import (
-	"fmt"
 	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -22,7 +22,7 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 			tx.Rollback()
 			return ticket_user, tx, errors.New("Error Occurred!")
 		}
-		fmt.Println("dnck", ticket_users)
+
 		if len(ticket_users) != 0 {
 			tx = tx.Not("id IN ?", ticket_users)
 		}
@@ -45,7 +45,6 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 			tx.Rollback()
 			return ticket_user, tx, errors.New("Error Occurred!")
 		}
-		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
 
 		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
 			tx.Rollback()

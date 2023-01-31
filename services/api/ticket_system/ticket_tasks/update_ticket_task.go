@@ -2,19 +2,17 @@ package ticket_system
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func UpdateTicketTask(id uint, body models.TicketTask) (models.TicketTask,error) {
+func UpdateTicketTask(id uint, body models.TicketTask) (models.TicketTask, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
 
 	var ticket_task models.TicketTask
-	fmt.Print("Body", body)
 
 	if err := tx.Where("id = ?", id).First(&ticket_task).Error; err != nil {
 		tx.Rollback()

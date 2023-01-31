@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -14,13 +12,11 @@ func ListTicketUser(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
 
 	ser, db, err := service.ListTicketUser(filters)
 	if c.Writer.Status() == 400 {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
@@ -33,7 +29,7 @@ func CreateTicketUser(c *gin.Context) {
 	c.BindJSON(&ticket_user)
 	ser, err := service.CreateTicketUser(ticket_user)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

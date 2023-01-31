@@ -1,14 +1,13 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
 	"gorm.io/gorm"
-	"errors"
 )
 
 type TicketActivityService struct {
@@ -31,7 +30,6 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 		ticket_user, _, _ := user.ListTicketUser(ticket_user)
 		for _, u := range ticket_user {
-			fmt.Println("Fdv", u.ID, "vs")
 			body.TicketActivity.UserType = u.Type
 			body.TicketActivity.TicketUserID = u.ID
 			break
@@ -186,14 +184,11 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {
 		return group_member, err
 	}
 
-	fmt.Println("ticket_reviewer", ticket_reviewer)
-
 	if err := tx.Where("ticket_user_id = ? and status = ?", ticket_reviewer.TicketUserID, "active").First(&group_member).Error; err != nil {
 		tx.Rollback()
 		return group_member, err
 	}
 
-	fmt.Println("group_member", &group_member)
 	group_member.ActiveTicketCount = group_member.ActiveTicketCount - 1
 
 	if err := tx.Save(&group_member).Error; err != nil {

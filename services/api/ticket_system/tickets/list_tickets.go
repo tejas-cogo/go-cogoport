@@ -1,10 +1,10 @@
 package ticket_system
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 	"time"
-	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -72,7 +72,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB, er
 	if filters.IsExpiringSoon == "true" {
 		x := time.Now()
 		y := x.AddDate(0, 0, 10)
-		fmt.Println(x, ", ", y)
 		tx = tx.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 

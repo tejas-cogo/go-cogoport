@@ -1,9 +1,9 @@
 package ticket_system
 
 import (
-	"fmt"
-	"strings"
 	"errors"
+	"strings"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -50,8 +50,6 @@ func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB, 
 		tx.Rollback()
 		return groups, tx, errors.New("Error Occurred!")
 	}
-
-	fmt.Println("group", groups)
 
 	tx.Commit()
 	return groups, tx, err

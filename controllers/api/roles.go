@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -14,13 +12,11 @@ func ListRole(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(400, "Not Found")
 	}
 
 	ser, db, err := service.ListRole(filters)
 	if c.Writer.Status() == 400 {
-		fmt.Println("status", c.Writer.Status(), "status")
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
@@ -45,7 +41,7 @@ func DeleteRole(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteRole(id)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -56,7 +52,7 @@ func UpdateRole(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateRole(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(400, err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

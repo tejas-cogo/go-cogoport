@@ -1,9 +1,9 @@
 package ticket_system
 
 import (
-	"fmt"
-	"time"
 	"errors"
+	"time"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
@@ -12,7 +12,7 @@ const (
 	YYYYMMDD = "2006-01-02"
 )
 
-func GetTicketStats(stats models.TicketStat) (models.TicketStat,error) {
+func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -29,12 +29,11 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat,error) {
 		tx2 := db2.Begin()
 		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
-		
+
 		if err := tx2.Where("reporting_manager_id = ? and status = ?", stats.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
 			tx.Rollback()
 			return stats, errors.New("Error Occurred!")
 		}
-		fmt.Println("partner_user_rm_ids", partner_user_rm_ids)
 
 		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
 			tx.Rollback()
@@ -163,5 +162,5 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat,error) {
 	}
 
 	tx.Commit()
-	return stats,err
+	return stats, err
 }
