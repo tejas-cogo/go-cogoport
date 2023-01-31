@@ -26,12 +26,11 @@ func ListGroup(c *gin.Context) {
 func ListGroupTag(c *gin.Context) {
 	var Tag string
 	Tag = c.Request.URL.Query().Get("Tag")
-	ser, db, err := service.ListGroupTag(Tag)
+	ser, err := service.ListGroupTag(Tag)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
-		pg := paginate.New()
-		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+		c.JSON(c.Writer.Status(), ser)
 	}
 }
 

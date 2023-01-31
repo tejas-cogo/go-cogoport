@@ -8,12 +8,13 @@ import (
 
 func ListTokenTicketDetail(c *gin.Context) {
 	var filters models.TokenFilter
-	err := c.Bind(&filters)
+	c.Bind(&filters)
+	ser,err := service.ListTokenTicketDetail(filters)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		c.JSON(c.Writer.Status(), ser)
 	}
-
-	c.JSON(c.Writer.Status(), service.ListTokenTicketDetail(filters))
 }
 
 func CreateTicketToken(c *gin.Context) {

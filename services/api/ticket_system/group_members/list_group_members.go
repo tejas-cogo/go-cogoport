@@ -1,8 +1,6 @@
 package ticket_system
 
 import (
-	"errors"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -42,10 +40,6 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 	tx = tx.Preload("TicketUser")
 
 	tx = tx.Preload("Group").Find(&group_members)
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return group_members, tx, errors.New("Error Occurred!")
-	}
 
 	tx.Commit()
 	return group_members, tx, err
