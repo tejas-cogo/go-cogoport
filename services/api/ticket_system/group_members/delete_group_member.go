@@ -7,7 +7,10 @@ import (
 )
 
 
+
 func DeleteGroupMember(id uint) (uint,error){
+
+
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -20,7 +23,7 @@ func DeleteGroupMember(id uint) (uint,error){
 
 	tx.Where("group_id = ? and id != ? and status = ?", group_member.GroupID, id, "active").Find(&member)
 
-	if member.ID != 0 {
+	if member.ID == 0 {
 		return id, errors.New("Last remaining member cannot be deleted.")
 	
   }
@@ -29,7 +32,6 @@ func DeleteGroupMember(id uint) (uint,error){
 	if err := tx.Model(&group_member).Where("id = ?", id).Update("status","inactive").Error; err != nil {
 		tx.Rollback()
 		return id, errors.New("Error Occurred!")
-	}
 
 
 
@@ -41,5 +43,6 @@ func DeleteGroupMember(id uint) (uint,error){
 	tx.Commit()
 
 	return id, err
+
 }
 
