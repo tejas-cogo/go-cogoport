@@ -94,6 +94,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("create_token_ticket", controllers.CreateTokenTicket)
 	ticket_system.GET("list_token_ticket_details", controllers.ListTokenTicketDetail)
 	ticket_system.DELETE("delete_ticket_token", controllers.DeleteTicketToken)
+	ticket_system.PUT("update_token_ticket", controllers.UpdateTokenTicket)
 
 	return r
 

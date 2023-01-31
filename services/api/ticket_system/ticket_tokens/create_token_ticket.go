@@ -22,13 +22,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		var ticket models.Ticket
 
 		ticket.Source = token_filter.Source
-		ticket.Type = token_filter.Type
-		ticket.Category = token_filter.Category
-		ticket.Subcategory = token_filter.Subcategory
-		ticket.Description = token_filter.Description
-		ticket.IsUrgent = token_filter.IsUrgent
-		ticket.Data = token_filter.Data
-		ticket.NotificationPreferences = token_filter.NotificationPreferences
+		ticket.Type = token_filter.Type	
 		ticket.TicketUserID = ticket_token.TicketUserID
 		ticket_data, err := tickets.CreateTicket(ticket)
 

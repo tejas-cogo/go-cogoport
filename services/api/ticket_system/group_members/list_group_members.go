@@ -1,10 +1,11 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
-	"errors"
 )
 
 func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *gorm.DB, error) {
@@ -26,6 +27,7 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 
 		tx = tx.Where("group_members.status = ?", filters.Status)
 
+	}
 
 	if filters.NotPresentTicketUserID > 0 {
 		tx = tx.Where("ticket_user_id != ?", filters.NotPresentTicketUserID)
@@ -35,17 +37,15 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 
 	if filters.GroupMemberName != "" {
 
-   tx = tx.Joins("Inner Join ticket_users on ticket_users.id = group_members.ticket_user_id and ticket_users.name iLike ?", filters.GroupMemberName)
-	} 
-		tx = tx.Preload("TicketUser")
-	
+		tx = tx.Joins("Inner Join ticket_users on ticket_users.id = group_members.ticket_user_id and ticket_users.name iLike ?", filters.GroupMemberName)
+	}
+	tx = tx.Preload("TicketUser")
 
 	tx = tx.Preload("Group").Find(&group_members)
 	if err := tx.Error; err != nil {
 		tx.Rollback()
 		return group_members, tx, errors.New("Error Occurred!")
 	}
-
 
 	tx.Commit()
 	return group_members, tx, err

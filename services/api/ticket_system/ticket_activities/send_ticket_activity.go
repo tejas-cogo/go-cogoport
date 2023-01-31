@@ -23,10 +23,12 @@ func SendTicketActivity(ticket_activity models.TicketActivity) {
 
 		var body models.Post
 
+		// ticket_user.SystemUserID
+
 		body.Recipient = ticket_user.Email
 		body.Type = "email"
 		body.Service = "user"
-		body.ServiceID = ticket_user.SystemUserID
+		body.ServiceID = "f06b29c0-b443-4f71-bf64-b61106dcaaf8"
 		body.TemplateName = "Ticket System"
 
 		reqBody, err := json.Marshal(body)

@@ -50,3 +50,14 @@ func DeleteTicketToken(c *gin.Context) {
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
+
+func UpdateTokenTicket(c *gin.Context) {
+	var body models.TokenFilter
+	c.BindJSON(&body)
+	ser, err := service.UpdateTokenTicket(body)
+	if err != nil {
+		c.JSON(400, err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
+}

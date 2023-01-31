@@ -34,7 +34,7 @@ type Post struct {
 	Recipient    string         `json:"recipient"`
 	Type         string         `json:"type"`
 	Service      string         `json:"service"`
-	ServiceID    uuid.UUID      `json:"service_id"`
+	ServiceID    string         `json:"service_id"`
 	TemplateName string         `json:"template_name"`
 	Sender       string         `json:"sender"`
 	CcEmails     pq.StringArray `gorm:"type:json[]"`
