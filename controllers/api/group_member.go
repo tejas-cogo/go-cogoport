@@ -49,7 +49,12 @@ func DeleteGroupMember(c *gin.Context) {
 	var body models.GroupMember
 	c.BindJSON(&body)
 	id := body.ID
-	c.JSON(200, service.DeleteGroupMember(id))
+	err, ser := service.DeleteGroupMember(id)
+	if err != "Successfully Deleted!" {
+		c.JSON(400, ser)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
 }
 
 func UpdateGroupMember(c *gin.Context) {
