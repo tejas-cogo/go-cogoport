@@ -57,7 +57,8 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	}
 
 	if filters.QFilter != "" {
-		db = db.Where("id = ? or type ilike ?", filters.QFilter, filters.QFilter)
+
+		db = db.Where("id::text ilike ? OR type ilike ?", filters.QFilter, "%"+filters.QFilter+"%")
 	}
 
 	if filters.Priority != "" {
