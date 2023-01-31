@@ -43,8 +43,9 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	}
 
-	if filters.MyTicket > 0 {
-		db = db.Where("ticket_user_id = ?", filters.MyTicket)
+	if filters.MyTicket != "" {
+		db.Where("system_user_id = ?", filters.MyTicket).First(&ticket_user)
+		db = db.Where("ticket_user_id = ?", ticket_user.ID)
 	}
 
 	if filters.ID > 0 {
@@ -52,11 +53,12 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	}
 
 	if filters.Type != "" {
-		db = db.Where("type = ?", filters.Type)
+		db = db.Where("type ilike ?", filters.Type)
 	}
 
 	if filters.QFilter != "" {
-		db = db.Where("name ilike ? or type ilike ?", filters.QFilter, filters.QFilter)
+
+		db = db.Where("id::text ilike ? OR type ilike ?", filters.QFilter, "%"+filters.QFilter+"%")
 	}
 
 	if filters.Priority != "" {

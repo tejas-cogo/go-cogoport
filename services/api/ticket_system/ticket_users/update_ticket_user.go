@@ -21,7 +21,7 @@ func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, string, 
 			u.Type = body.Type
 		}
 
-		if body.RoleID > 1 {
+		if body.RoleID > 0 {
 			u.RoleID = body.RoleID
 		}
 		if body.Source != "" {

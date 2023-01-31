@@ -20,6 +20,7 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 	var ticket models.Ticket
 	var ticket_reviewer models.TicketReviewer
 	var ticket_reviewer_new models.TicketReviewer
+	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
 	var group_member models.GroupMember
 	var group_head models.GroupMember
@@ -33,13 +34,18 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 
 	if ticket.Status == "unresolved" {
 
-		if err := tx.Where("ticket_type = ?", ticket.Type).First(&ticket_default_timing).Error; err != nil {
+		if err := tx.Where("ticket_type = ?", ticket.Type).First(&ticket_default_type).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		if err := tx.Where("ticket_default_type_id = ?", ticket_default_type.ID).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
 
 		if ticket_default_timing.ID == 0 {
-			if err := tx.Where("ticket_type = ?", "default").First(&ticket_default_timing).Error; err != nil {
+			if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
 				tx.Rollback()
 				return err
 			}

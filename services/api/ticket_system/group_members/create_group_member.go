@@ -42,6 +42,7 @@ func CreateGroupMember(group_members models.CreateGroupMember) (string, error) {
 }
 
 func validate(group_member models.GroupMember) string {
+
 	if group_member.HierarchyLevel == 0 {
 		return ("Hierarchy Level Is Required!")
 	}

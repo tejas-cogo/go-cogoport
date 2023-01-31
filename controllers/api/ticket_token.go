@@ -14,9 +14,9 @@ func CreateTicketToken(c *gin.Context) {
 
 func CreateTokenTicket(c *gin.Context) {
 
-	var token_ticket models.TicketToken
-	c.BindJSON(&token_ticket)
-	c.JSON(200, service.CreateTokenTicket(token_ticket))
+	var token_filter models.TokenFilter
+	c.BindJSON(&token_filter)
+	c.JSON(200, service.CreateTokenTicket(token_filter))
 }
 
 func DeleteTicketToken(c *gin.Context) {

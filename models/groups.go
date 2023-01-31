@@ -29,4 +29,5 @@ type FilterGroup struct {
 	Tags          pq.StringArray
 	Status        string
 	PerformedByID uuid.UUID
+	GroupMemberID uint
 }

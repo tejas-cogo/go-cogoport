@@ -25,7 +25,8 @@ type Ticket struct {
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Tat                     string          `gorm:"not null"`
 	ExpiryDate              time.Time       `gorm:"not null"`
-	Status                  string          `gorm:"not null:default:'active'"`
+	IsUrgent                bool
+	Status                  string `gorm:"not null:default:'active'"`
 }
 
 type TicketDetail struct {
@@ -98,7 +99,7 @@ type TicketExtraFilter struct {
 	TicketUserID            uint
 	QFilter                 string
 	PerformedByID           string
-	MyTicket                uint
+	MyTicket                string
 	AgentID                 string
 	AgentRmID               string
 	TicketUser              TicketUser
