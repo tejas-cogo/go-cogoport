@@ -3,9 +3,10 @@ package ticket_system
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	"gorm.io/gorm"
 )
 
-func ListTicketType(filters models.TicketDefaultType) []models.TicketDefaultType {
+func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultType, *gorm.DB) {
 
 	db := config.GetDB()
 
@@ -21,5 +22,5 @@ func ListTicketType(filters models.TicketDefaultType) []models.TicketDefaultType
 	db = db.Where("id != ?", 1)
 	db = db.Order("created_at desc").Find(&ticket_default_type)
 
-	return ticket_default_type
+	return ticket_default_type, db
 }
