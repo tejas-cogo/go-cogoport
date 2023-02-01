@@ -102,6 +102,5 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 
 	db = db.Preload("Role").Find(&ticket_user)
 
-
 	return ticket_user, db, err
 }

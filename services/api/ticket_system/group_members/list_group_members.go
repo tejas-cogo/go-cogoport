@@ -12,6 +12,25 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 	var err error
 
 	var group_members []models.GroupMember
+	var ticket_user []models.TicketUser
+
+	if filters.AgentRmID != "" || filters.AgentID != "" {
+		if filters.AgentRmID != "" {
+			var ticket_users []uint
+
+			db2 := config.GetCDB()
+			var partner_user_rm_mapping []models.PartnerUserRmMapping
+			var partner_user_rm_ids []string
+
+			db2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
+
+			db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
+
+		} else if filters.AgentID != "" {
+			db.Where("system_user_id = ?", filters.AgentID).Find(&ticket_user)
+		}
+		db = db.Where("ticket_user_id IN ?", ticket_user)
+	}
 
 	if filters.GroupID > 0 {
 		db = db.Where("group_id = ?", filters.GroupID)
