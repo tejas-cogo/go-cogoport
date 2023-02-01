@@ -7,8 +7,8 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
-	"gorm.io/gorm"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	"gorm.io/gorm"
 )
 
 type TicketActivityService struct {
@@ -26,7 +26,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 		if body.TicketActivity.TicketUserID == 0 {
 			ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
 		} else {
-			ticket_user.ID = body.TicketUserFilter.ID
+			ticket_user.ID = body.TicketActivity.TicketUserID
 		}
 
 		ticket_user, _, _ := user.ListTicketUser(ticket_user)

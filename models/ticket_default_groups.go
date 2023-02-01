@@ -13,5 +13,6 @@ type TicketDefaultGroup struct {
 	GroupID             uint              `gorm:"not null"`
 	Group               Group             `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	GroupMemberID       uint
+	Level               uint
 	Status              string `gorm:"not null:default:'active'"`
 }
