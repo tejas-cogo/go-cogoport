@@ -7,8 +7,8 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
 	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_users"
-	"gorm.io/gorm"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	"gorm.io/gorm"
 )
 
 type TicketActivityService struct {
