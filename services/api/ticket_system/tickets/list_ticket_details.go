@@ -14,6 +14,10 @@ func ListTicketDetail(filters models.TicketExtraFilter) models.TicketDetail {
 	ticket_data, _ := ListTicket(filters)
 	for _, u := range ticket_data {
 		ticket_detail.Ticket = u
+
+		// Duration := helpers.GetDuration(u.Tat)
+		// u.Tat = time.Now()
+		// ticket_detail.Ticket.Tat = Tat.Add(time.Hour * time.Duration(Duration))
 	}
 
 	var ticket_reviewer models.TicketReviewer
