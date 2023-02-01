@@ -14,13 +14,21 @@ func DeleteGroupMember(id uint) (uint, error) {
 	var err error
 
 	var group_member models.GroupMember
-	var member models.GroupMember
+	var member []models.GroupMember
 
-	tx.Where("id != ? and status = ?", id, "active").Find(&group_member)
+	if err := tx.Where("id = ? and status = ?", id, "active").Find(&group_member).Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Not found existed member!")
 
-	tx.Where("group_id = ? and id != ? and status = ?", group_member.GroupID, id, "active").Find(&member)
+	}
 
-	if member.ID == 0 {
+	if err := tx.Where("group_id = ? and id != ? and status = ?", group_member.GroupID, id, "active").Find(&member).Error; err != nil {
+		tx.Rollback()
+		return id, errors.New("Error Occurred!")
+
+	}
+
+	if len(member) == 0 {
 		return id, errors.New("Last remaining member cannot be deleted.")
 
 	}
