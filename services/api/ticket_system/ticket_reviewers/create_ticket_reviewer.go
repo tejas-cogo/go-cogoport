@@ -54,6 +54,10 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	if stmt != "validated" {
 		return body, errors.New(stmt)
 	}
+	stmt2 := activity.validate_ticket_activity(ticket_activity)
+	if stmt2 != "validated" {
+		return body, errors.New(stmt)
+	}
 	if err := txt.Create(&ticket_reviewer).Error; err != nil {
 		txt.Rollback()
 		return body, errors.New("TicketReviewer couldn't be created")
@@ -69,6 +73,10 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
 
+	stmt3 := activity.validate_ticket_activity(ticket_activity)
+	if stmt3 != "validated" {
+		return body, errors.New(stmt)
+	}
 	if err := txt.Create(&ticket_activity).Error; err != nil {
 		txt.Rollback()
 		return body, errors.New("Reviewer Assigned Activity couldn't be created")

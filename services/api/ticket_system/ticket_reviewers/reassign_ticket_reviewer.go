@@ -71,6 +71,10 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		ticket_reviewer.GroupID = body.GroupID
 		ticket_reviewer.GroupMemberID = body.GroupMemberID
 
+		stmt := activities.validate_ticket_activity(ticket_activity)
+		if stmt != "validated" {
+			return body, errors.New(stmt)
+		}
 		if err := tx.Create(&ticket_reviewer).Error; err != nil {
 			tx.Rollback()
 			return body, errors.New("Error Occurred!")

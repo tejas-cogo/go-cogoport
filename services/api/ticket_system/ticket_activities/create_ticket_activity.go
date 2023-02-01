@@ -57,6 +57,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			DeactivateReviewer(u, tx)
 
 			audits.CreateAuditTicket(ticket, tx)
+			stmt := validate_ticket_activity(ticket_activity)
+			if stmt != "validated" {
+				return ticket_activity, errors.New(stmt)
+			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, errors.New("Activity couldn't be created")
@@ -85,6 +89,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			DeactivateReviewer(u, tx)
 
 			audits.CreateAuditTicket(ticket, tx)
+			stmt := validate_ticket_activity(ticket_activity)
+			if stmt != "validated" {
+				return ticket_activity, errors.New(stmt)
+			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, errors.New("Activity couldn't be created")
@@ -125,6 +133,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket_reviewer.GroupMemberID = group_head.ID
 			ticket_reviewer.Status = "active"
 
+			stmt := validate_ticket_activity(ticket_activity)
+			if stmt != "validated" {
+				return ticket_activity, errors.New(stmt)
+			}
 			if err = tx.Create(&ticket_reviewer).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, errors.New("Reviewer couldn't be created")
@@ -133,6 +145,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket.Status = "escalated"
 			audits.CreateAuditTicket(ticket, tx)
 
+			stmt2 := validate_ticket_activity(ticket_activity)
+			if stmt2 != "validated" {
+				return ticket_activity, errors.New(stmt)
+			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, errors.New("Activity couldn't be created")
@@ -144,6 +160,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 			audits.CreateAuditTicket(ticket, tx)
+			stmt := validate_ticket_activity(ticket_activity)
+			if stmt != "validated" {
+				return ticket_activity, errors.New(stmt)
+			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, errors.New("Activity couldn't be created")
@@ -156,6 +176,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	} else {
 		var ticket models.Ticket
 		audits.CreateAuditTicket(ticket, tx)
+		stmt := validate_ticket_activity(ticket_activity)
+		if stmt != "validated" {
+			return ticket_activity, errors.New(stmt)
+		}
 		if err = tx.Create(&ticket_activity).Error; err != nil {
 			tx.Rollback()
 			return ticket_activity, errors.New("Activity couldn't be created")
@@ -197,4 +221,26 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {
 	}
 
 	return group_member, err
+}
+
+func validate_ticket_activity(ticket_activity models.TicketActivity) string {
+	if ticket_activity.Status == "" {
+		return ("Status is Required!")
+	}
+	if ticket_activity.TicketID <= 0 {
+		return ("TicketID is Required!")
+	}
+	if ticket_activity.TicketUserID <= 0 {
+		return ("TicketUserID is Required!")
+	}
+	if ticket_activity.UserType == "" {
+		return ("UserType is Required!")
+	}
+	if ticket_activity.Status == "activity" {
+		if ticket_activity.Description == "" {
+			return ("Description is Required!")
+		}
+	}
+
+	return ("validated")
 }
