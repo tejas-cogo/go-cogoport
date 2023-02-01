@@ -17,11 +17,11 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	var filters models.TicketExtraFilter
 
 	db := config.GetDB()
-	tx := db.Begin()
+
 	var err error
 
-	if err := tx.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token).Error; err != nil {
-		tx.Rollback()
+	if err := db.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token).Error; err != nil {
+		db.Rollback()
 		return ticket_detail, errors.New("Error Occurred!")
 	}
 
@@ -52,6 +52,6 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	ticket_activity.TicketID = filters.ID
 	ticket_detail.TicketActivity, _, _ = activities.ListTicketActivity(ticket_activity)
 
-	tx.Commit()
+
 	return ticket_detail, err
 }

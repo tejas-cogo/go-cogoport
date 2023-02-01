@@ -8,23 +8,23 @@ import (
 
 func ListTicketTag(Tag string) ([]string, error) {
 	db := config.GetDB()
-	tx := db.Begin()
+
 	var err error
 
 	var t []string
 
-	tx = tx.Table("(?) as u", tx.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag")
+	db = db.Table("(?) as u", db.Model(&models.Ticket{}).Select("unnest(tags) as tag")).Distinct("u.tag")
 
 	if Tag != "" {
 		Tag = "%" + Tag + "%"
-		tx = tx.Where("u.tag = ?", Tag)
+		db = db.Where("u.tag = ?", Tag)
 	}
 
-	if err := tx.Pluck("tag", &t).Error; err != nil {
-		tx.Rollback()
+	if err := db.Pluck("tag", &t).Error; err != nil {
+		db.Rollback()
 		return t, errors.New("Error Occurred!")
 	}
 
-	tx.Commit()
+
 	return t, err
 }

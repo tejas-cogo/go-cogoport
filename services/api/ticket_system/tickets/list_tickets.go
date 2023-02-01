@@ -12,7 +12,7 @@ import (
 
 func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB, error) {
 	db := config.GetDB()
-	tx := db.Begin()
+
 	var err error
 
 	var ticket_user models.TicketUser
@@ -53,62 +53,62 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB, er
 	}
 
 	if filters.ID > 0 {
-		tx = tx.Where("id = ?", filters.ID)
+		db = db.Where("id = ?", filters.ID)
 	}
 
 	if filters.Type != "" {
-		tx = tx.Where("type ilike ?", filters.Type)
+		db = db.Where("type ilike ?", filters.Type)
 	}
 
 	if filters.QFilter != "" {
 
-		tx = tx.Where("id::text ilike ? OR type ilike ?", filters.QFilter, "%"+filters.QFilter+"%")
+		db = db.Where("id::text ilike ? OR type ilike ?", filters.QFilter, "%"+filters.QFilter+"%")
 	}
 
 	if filters.Priority != "" {
-		tx = tx.Where("priority = ?", filters.Priority)
+		db = db.Where("priority = ?", filters.Priority)
 	}
 
 	if filters.IsExpiringSoon == "true" {
 		x := time.Now()
 		y := x.AddDate(0, 0, 10)
-		tx = tx.Where("expiry_date BETWEEN ? AND ?", x, y)
+		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
 	if filters.TicketUserID != 0 {
-		tx = tx.Where("ticket_user_id = ?", filters.TicketUserID)
+		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
 	}
 
 	if filters.TicketCreatedAt != "" {
 		CreatedAt, _ := time.Parse(YYYYMMDD, filters.TicketCreatedAt)
 		x := CreatedAt
 		y := x.AddDate(0, 0, 1)
-		tx = tx.Where("created_at BETWEEN ? AND ?", x, y)
+		db = db.Where("created_at BETWEEN ? AND ?", x, y)
 	}
 
 	if filters.ExpiryDate != "" {
 		ExpiryDate, _ := time.Parse(YYYYMMDD, filters.ExpiryDate)
 		x := ExpiryDate
 		y := x.AddDate(0, 0, 1)
-		tx = tx.Where("expiry_date BETWEEN ? AND ?", x, y)
+		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
 	if len(filters.Tags) != 0 {
-		tx = tx.Where("tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
+		db = db.Where("tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
 	}
 
 	if filters.Status != "" {
-		tx = tx.Where("status = ?", filters.Status)
+		db = db.Where("status = ?", filters.Status)
 	}
 
 	db = db.Order("created_at desc").Order("expiry_date desc")
 
-	tx = tx.Preload("TicketUser").Find(&ticket)
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return ticket, tx, errors.New("Error Occurred!")
+	db = db.Preload("TicketUser").Find(&ticket)
+	if err := db.Error; err != nil {
+		db.Rollback()
+		return ticket, db, errors.New("Error Occurred!")
 	}
 
-	tx.Commit()
-	return ticket, tx, err
+
+	return ticket, db, err
 }

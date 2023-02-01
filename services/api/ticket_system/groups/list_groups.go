@@ -10,40 +10,40 @@ import (
 
 func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB, error) {
 	db := config.GetDB()
-	tx := db.Begin()
+
 	var err error
 
 	var groups []models.GroupWithMember
 
-	tx = tx.Model(&models.Group{})
+	db = db.Model(&models.Group{})
 
-	tx = tx.Select("groups.id, groups.name,groups.status,groups.tags,Count( group_members.id) as count")
+	db = db.Select("groups.id, groups.name,groups.status,groups.tags,Count( group_members.id) as count")
 
-	tx = tx.Joins("left join group_members on group_members.group_id = groups.id and group_members.status = ?", "active")
+	db = db.Joins("left join group_members on group_members.group_id = groups.id and group_members.status = ?", "active")
 
 	if filters.GroupMemberID > 0 {
-		tx = tx.Where("group_members.id = ?", filters.GroupMemberID)
+		db = db.Where("group_members.id = ?", filters.GroupMemberID)
 	}
 
 	if filters.Name != "" {
 		filters.Name = "%" + filters.Name + "%"
-		tx = tx.Where("name iLike ?", filters.Name)
+		db = db.Where("name iLike ?", filters.Name)
 	}
 
 	if len(filters.Tags) != 0 {
-		tx = tx.Where("groups.tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
+		db = db.Where("groups.tags && ?", "{"+strings.Join(filters.Tags, ",")+"}")
 	}
 
 	if filters.Status != "" {
-		tx = tx.Where("groups.status = ?", filters.Status)
+		db = db.Where("groups.status = ?", filters.Status)
 	}
 
-	tx = tx.Order("groups.name desc")
+	db = db.Order("groups.name desc")
 
-	tx = tx.Group("1,2,3,4")
+	db = db.Group("1,2,3,4")
 
-	tx = tx.Scan(&groups)
+	db = db.Scan(&groups)
 
-	tx.Commit()
-	return groups, tx, err
+
+	return groups, db, err
 }
