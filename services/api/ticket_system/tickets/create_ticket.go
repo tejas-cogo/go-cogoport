@@ -70,16 +70,6 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	audits.CreateAuditTicket(ticket, db)
 
-	var ticket_activity models.TicketActivity
-	ticket_activity.TicketID = ticket.ID
-	ticket_activity.TicketUserID = ticket.TicketUserID
-	ticket_activity.Type = "ticket_created"
-	ticket_activity.Status = "unresolved"
-
-	if err := tx.Create(&ticket_activity).Error; err != nil {
-		tx.Rollback()
-		return ticket, errors.New("Activity couldn't be created")
-	}
 	ticket, err = reviewers.CreateTicketReviewer(ticket)
 	if err != nil {
 		return ticket, err
