@@ -1,11 +1,12 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
 	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
-	"errors"
 )
 
 type TicketReviewerService struct {
@@ -25,8 +26,10 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	var err error
 
 	if err := txt.Where("ticket_type = ? and status = ?", body.Type, "active").First(&ticket_default_type).Error; err != nil {
-		txt.Rollback()
-		return body, errors.New("Default type had issue!")
+		if err := txt.Where("id = ?", 1).First(&ticket_default_type).Error; err != nil {
+			txt.Rollback()
+			return body, errors.New("Default Type had issue!")
+		}
 	}
 
 	if erro := txt.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_group).Error; erro != nil {

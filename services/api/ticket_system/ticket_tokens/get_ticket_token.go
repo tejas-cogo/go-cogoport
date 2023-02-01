@@ -24,7 +24,7 @@ func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 
 	body.RoleID = 1
 
-	ticket_user, _ := ticketuser.CreateTicketUser(body)
+	ticket_user, err := ticketuser.CreateTicketUser(body)
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)
 
@@ -42,9 +42,9 @@ func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 	ticket_token.Status = "active"
 
 	stmt := validate(ticket_token)
-		if stmt != "validated" {
-			return ticket_token, errors.New(stmt)
-		}
+	if stmt != "validated" {
+		return ticket_token, errors.New(stmt)
+	}
 
 	if err := tx.Create(&ticket_token).Error; err != nil {
 		tx.Rollback()

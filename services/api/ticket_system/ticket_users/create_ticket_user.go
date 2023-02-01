@@ -1,16 +1,17 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	"errors"
 )
 
 type TicketUserService struct {
 	TicketUser models.TicketUser
 }
 
-func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser,error) {
+func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -23,8 +24,6 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser,error) {
 		return ticket_user, errors.New("Error Occurred!")
 	}
 
-	tx.Commit()
-
 	if exist_user.ID <= 0 {
 		stmt := validate(ticket_user)
 		if stmt != "validated" {
@@ -34,8 +33,10 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser,error) {
 			tx.Rollback()
 			return ticket_user, errors.New("Error Occurred!")
 		}
+		tx.Commit()
 		return ticket_user, err
 	} else {
+		tx.Commit()
 		return exist_user, err
 	}
 	// result := map[string]interface{}{}
