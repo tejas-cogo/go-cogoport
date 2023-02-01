@@ -29,7 +29,7 @@ func CreateTicketSpectator(c *gin.Context) {
 	c.BindJSON(&ticket_spectator)
 	ser, err := service.CreateTicketSpectator(ticket_spectator)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -41,7 +41,7 @@ func DeleteTicketSpectator(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketSpectator(id)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

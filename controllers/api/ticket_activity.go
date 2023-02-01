@@ -20,7 +20,7 @@ func CreateTicketActivity(c *gin.Context) {
 	ser, err := service.CreateTicketActivity(filters)
 
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

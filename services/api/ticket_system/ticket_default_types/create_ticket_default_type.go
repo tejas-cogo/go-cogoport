@@ -4,6 +4,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"errors"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketDefaultTypeService struct {
@@ -15,7 +16,7 @@ func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (mode
 	tx := db.Begin()
 	var err error
 
-	stmt := validate(ticket_default_type)
+	stmt := validations.validate_ticket_default_type(ticket_default_type)
 	if stmt != "validated" {
 		return ticket_default_type, errors.New(stmt)
 	}
@@ -31,12 +32,4 @@ func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (mode
 
 	return ticket_default_type, err
 
-}
-
-func validate(ticket_default_type models.TicketDefaultType) string {
-	if ticket_default_type.TicketType == "" {
-		return ("TicketType Is Required!")
-	}
-
-	return ("validated")
 }

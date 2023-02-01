@@ -37,7 +37,7 @@ func CreateGroup(c *gin.Context) {
 	c.BindJSON(&group)
 	ser, err := service.CreateGroup(group)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -49,7 +49,7 @@ func DeleteGroup(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteGroup(id)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -60,7 +60,7 @@ func UpdateGroup(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateGroup(body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

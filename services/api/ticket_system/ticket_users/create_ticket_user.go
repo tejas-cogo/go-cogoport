@@ -4,6 +4,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"errors"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketUserService struct {
@@ -26,7 +27,7 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser,error) {
 	tx.Commit()
 
 	if exist_user.ID <= 0 {
-		stmt := validate(ticket_user)
+		stmt := validations.validate_ticket_user(ticket_user)
 		if stmt != "validated" {
 			return ticket_user, errors.New(stmt)
 		}
@@ -39,24 +40,4 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser,error) {
 		return exist_user, err
 	}
 	// result := map[string]interface{}{}
-}
-
-func validate(ticket_user models.TicketUser) string {
-	if ticket_user.Name == "" {
-		return ("User name is Required!")
-	}
-	if ticket_user.Email == "" {
-		return ("Email is Required!")
-	}
-	if ticket_user.Type != "client" {
-		return ("Type should be client!")
-	}
-	if ticket_user.RoleID != 1 {
-		return ("RoleID should be 1!")
-	}
-	if ticket_user.Source == "" {
-		return ("Source is Required!")
-	}
-
-	return ("validated")
 }

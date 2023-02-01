@@ -22,7 +22,7 @@ func GetTicketToken(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.GetTicketToken(body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -34,7 +34,7 @@ func CreateTokenTicket(c *gin.Context) {
 	c.BindJSON(&token_filter)
 	ser, err := service.CreateTokenTicket(token_filter)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -46,7 +46,7 @@ func CreateTokenTicketActivity(c *gin.Context) {
 	c.BindJSON(&token_filter)
 	ser, err := service.CreateTokenTicketActivity(token_filter)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -69,7 +69,7 @@ func UpdateTokenTicket(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTokenTicket(body)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

@@ -29,7 +29,7 @@ func CreateRole(c *gin.Context) {
 	c.BindJSON(&role)
 	ser, err := service.CreateRole(role)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -41,7 +41,7 @@ func DeleteRole(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteRole(id)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -52,7 +52,7 @@ func UpdateRole(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateRole(body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

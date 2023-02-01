@@ -6,6 +6,7 @@ import (
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
 	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 	"errors"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketReviewerService struct {
@@ -50,8 +51,12 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	filters.GroupMember.ID = group_member.ID
 	ticket_reviewer.Status = "active"
 
-	stmt := validate(ticket_reviewer)
+	stmt := validations.validate_ticket_reviewer(ticket_reviewer)
 	if stmt != "validated" {
+		return body, errors.New(stmt)
+	}
+	stmt2 := validations.validate_ticket_activity(ticket_activity)
+	if stmt2 != "validated" {
 		return body, errors.New(stmt)
 	}
 	if err := txt.Create(&ticket_reviewer).Error; err != nil {
@@ -69,6 +74,10 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
 
+	stmt3 := validations.validate_ticket_activity(ticket_activity)
+	if stmt3 != "validated" {
+		return body, errors.New(stmt)
+	}
 	if err := txt.Create(&ticket_activity).Error; err != nil {
 		txt.Rollback()
 		return body, errors.New("Reviewer Assigned Activity couldn't be created")
@@ -80,24 +89,4 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 
 	txt.Commit()
 	return body, err
-}
-
-func validate(ticket_reviewer models.TicketReviewer) string {
-	if ticket_reviewer.GroupMemberID == 0 {
-		return ("Group Member Is Required!")
-	}
-
-	if ticket_reviewer.GroupID == 0 {
-		return ("Group Is Required!")
-	}
-
-	if ticket_reviewer.TicketID == 0 {
-		return ("Ticket Is Required!")
-	}
-
-	if ticket_reviewer.TicketUserID == 0 {
-		return ("Ticket User Is Required!")
-	}
-
-	return ("validated")
 }
