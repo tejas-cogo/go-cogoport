@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	controllers "github.com/tejas-cogo/go-cogoport/controllers/api"
+	controllers "github.com/tejas-cogo/go-cogoport/controllers"
 )
 
 func SetupRouter() *gin.Engine {
