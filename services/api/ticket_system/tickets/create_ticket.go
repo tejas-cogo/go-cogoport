@@ -38,8 +38,10 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	}
 
 	if err := tx.Where("ticket_type = ? and status = ? ", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
-		tx.Rollback()
-		return ticket, errors.New("ticket_default_type User Not Found")
+		if err := tx.Where("id = ?", 1).First(&ticket_default_type).Error; err != nil {
+			tx.Rollback()
+			return ticket, errors.New("Default Type had issue!")
+		}
 	}
 
 	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; erro != nil {
@@ -71,16 +73,6 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	audits.CreateAuditTicket(ticket, db)
 
-	var ticket_activity models.TicketActivity
-	ticket_activity.TicketID = ticket.ID
-	ticket_activity.TicketUserID = ticket.TicketUserID
-	ticket_activity.Type = "ticket_created"
-	ticket_activity.Status = "unresolved"
-
-	if err := tx.Create(&ticket_activity).Error; err != nil {
-		tx.Rollback()
-		return ticket, errors.New("Activity couldn't be created")
-	}
 	ticket, err = reviewers.CreateTicketReviewer(ticket)
 	if err != nil {
 		return ticket, err

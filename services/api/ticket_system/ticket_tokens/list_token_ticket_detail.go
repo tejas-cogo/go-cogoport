@@ -20,12 +20,16 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 
 	db := config.GetDB()
 
-	if err = db.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token).Error; err != nil {
-		db.Rollback()
-		return ticket_detail, errors.New("Error Occurred!")
+	tx := db.Begin()
+
+	if err = tx.Where("ticket_token = ? and status= ?", token_filter.TicketToken, "utilized").First(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return ticket_detail, errors.New("Token Not Found!")
 	}
 
-	if ticket_token.ID != 0 {
+	tx.Commit()
+
+	if ticket_token.ID > 0 {
 		filters.ID = ticket_token.TicketID
 	}
 

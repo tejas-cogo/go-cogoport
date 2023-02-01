@@ -24,6 +24,7 @@ func ListTicketUser(c *gin.Context) {
 	}
 }
 
+
 func CreateTicketUser(c *gin.Context) {
 	var ticket_user models.TicketUser
 	c.BindJSON(&ticket_user)
@@ -34,6 +35,7 @@ func CreateTicketUser(c *gin.Context) {
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
+
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUserRole

@@ -1,43 +1,52 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+
 	"errors"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+
 )
 
 type TicketUserService struct {
 	TicketUser models.TicketUser
 }
 
-func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser,error) {
+func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser, error) {
 	db := config.GetDB()
-	tx := db.Begin()
-	var err error
 
 	ticket_user.Status = "active"
 	var exist_user models.TicketUser
+	var err error
+	db.Where("system_user_id = ? and status = ?", ticket_user.SystemUserID, "active").First(&exist_user)
 
-	if err := tx.Where("system_user_id = ? and status = ?", ticket_user.SystemUserID, "active").First(&exist_user).Error; err != nil {
-		tx.Rollback()
-		return ticket_user, errors.New("Error Occurred!")
-	}
+	if exist_user.ID <= 0 {
 
-	tx.Commit()
+		ticket_user.RoleID = 1
+
 
 	if exist_user.ID <= 0 {
 		stmt := validations.validate_ticket_user(ticket_user)
+
 		if stmt != "validated" {
 			return ticket_user, errors.New(stmt)
 		}
+		tx := db.Begin()
 		if err := tx.Create(&ticket_user).Error; err != nil {
 			tx.Rollback()
 			return ticket_user, errors.New("Error Occurred!")
 		}
+		tx.Commit()
 		return ticket_user, err
+
 	} else {
+
 		return exist_user, err
 	}
+
 	// result := map[string]interface{}{}
 }
+
