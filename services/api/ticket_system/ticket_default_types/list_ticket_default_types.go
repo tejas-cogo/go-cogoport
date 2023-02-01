@@ -1,8 +1,6 @@
 package ticket_system
 
 import (
-	"errors"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -38,10 +36,6 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 	}
 
 	tx = tx.Group("ticket_default_types.id, ticket_default_types.ticket_type,ticket_default_types.status,ticket_default_timings.id,ticket_default_timings.status ,ticket_default_timings.expiry_duration ,ticket_default_timings.tat ,ticket_default_timings.conditions,ticket_default_timings.ticket_priority ,ticket_default_timings.status ,ticket_default_groups.id ,groups.name ,groups.tags, ticket_default_groups.status,ticket_users.name,gpm.id,groups.id,ticket_users.email")
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return ticket_default, tx, errors.New("Error Occurred!")
-	}
 
 	tx.Commit()
 	return ticket_default, tx, err

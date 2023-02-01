@@ -1,7 +1,6 @@
 package ticket_system
 
 import (
-	"errors"
 	"strings"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -39,18 +38,11 @@ func ListGroup(filters models.FilterGroup) ([]models.GroupWithMember, *gorm.DB, 
 		tx = tx.Where("groups.status = ?", filters.Status)
 	}
 
-
-
 	tx = tx.Order("groups.name desc")
-
 
 	tx = tx.Group("1,2,3,4")
 
 	tx = tx.Scan(&groups)
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return groups, tx, errors.New("Error Occurred!")
-	}
 
 	tx.Commit()
 	return groups, tx, err

@@ -7,17 +7,23 @@ import (
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
 	spectators "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_spectators"
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
+	"errors"
 )
 
-func ListTokenTicketDetail(token_filter models.TokenFilter) models.TicketDetail {
+func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail,error) {
 
 	var ticket_detail models.TicketDetail
 	var ticket_token models.TicketToken
 	var filters models.TicketExtraFilter
 
 	db := config.GetDB()
+	tx := db.Begin()
+	var err error
 
-	db.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token)
+	if err := tx.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return ticket_detail, errors.New("Error Occurred!")
+	}
 
 	if ticket_token.ID != 0 {
 		filters.ID = ticket_token.TicketID
@@ -46,5 +52,6 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) models.TicketDetail 
 	ticket_activity.TicketID = filters.ID
 	ticket_detail.TicketActivity, _, _ = activities.ListTicketActivity(ticket_activity)
 
-	return ticket_detail
+	tx.Commit()
+	return ticket_detail, err
 }

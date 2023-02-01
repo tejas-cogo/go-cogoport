@@ -15,13 +15,13 @@ func ListGroupMember(c *gin.Context) {
 	var filters models.FilterGroupMember
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, db, _ := service.ListGroupMember(filters)
 
 	if c.Writer.Status() == 400 {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
 		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
@@ -33,7 +33,7 @@ func CreateGroupMember(c *gin.Context) {
 	c.BindJSON(&group_member)
 	ser, err := service.CreateGroupMember(group_member)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -46,7 +46,7 @@ func DeleteGroupMember(c *gin.Context) {
 
 	ser, err := service.DeleteGroupMember(id)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 
 	} else {
 		c.JSON(c.Writer.Status(), ser)
@@ -58,7 +58,7 @@ func UpdateGroupMember(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateGroupMember(body)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

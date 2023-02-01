@@ -4,7 +4,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
-	"errors"
 )
 
 func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer, *gorm.DB, error) {
@@ -27,10 +26,6 @@ func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,
 	}
 
 	tx = tx.Preload("TicketUser").Find(&ticket_reviewer)
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return ticket_reviewer, tx, errors.New("Error Occurred!")
-	}
 
 	tx.Commit()
 	return ticket_reviewer, tx, err

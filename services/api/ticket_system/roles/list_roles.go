@@ -4,7 +4,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
-	"errors"
 )
 
 func ListRole(filters models.Role) ([]models.Role, *gorm.DB, error) {
@@ -27,13 +26,7 @@ func ListRole(filters models.Role) ([]models.Role, *gorm.DB, error) {
 		tx = tx.Where("status = ?", filters.Status)
 	}
 
-
 	tx = tx.Order("created_at desc").Find(&role)
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return role, tx, errors.New("Error Occurred!")
-	}
-
 
 	tx.Commit()
 	return role, tx, err

@@ -101,10 +101,6 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 	}
 
 	tx = tx.Preload("Role").Find(&ticket_user)
-	if err := tx.Error; err != nil {
-		tx.Rollback()
-		return ticket_user, tx, errors.New("Error Occurred!")
-	}
 
 	tx.Commit()
 	return ticket_user, tx, err

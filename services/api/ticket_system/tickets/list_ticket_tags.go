@@ -2,7 +2,6 @@ package ticket_system
 
 import (
 	"errors"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )

@@ -24,7 +24,7 @@ func DeleteTicketDefaultTiming(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketDefaultTiming(id)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(c.Writer.Status(),err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -35,7 +35,7 @@ func UpdateTicketDefaultTiming(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicketDefaultTiming(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(c.Writer.Status(),err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

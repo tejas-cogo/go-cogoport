@@ -5,10 +5,9 @@ import (
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	"gorm.io/gorm"
 )
 
-func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultType, *gorm.DB, error) {
+func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultType, error) {
 
 	db := config.GetDB()
 	tx := db.Begin()
@@ -28,9 +27,9 @@ func ListTicketType(filters models.TicketDefaultType) ([]models.TicketDefaultTyp
 
 	if err := tx.Error; err != nil {
 		tx.Rollback()
-		return ticket_default_type, tx, errors.New("Error Occurred!")
+		return ticket_default_type, errors.New("Error Occurred!")
 	}
 
 	tx.Commit()
-	return ticket_default_type, tx, err
+	return ticket_default_type, err
 }

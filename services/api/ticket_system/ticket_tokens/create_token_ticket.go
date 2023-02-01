@@ -5,6 +5,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
+	"errors"
 )
 
 func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, error) {
@@ -13,7 +14,10 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 	var err error
 	var ticket_token models.TicketToken
 
-	db.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "used").Find(&ticket_token)
+	if err := tx.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "used").Find(&ticket_token).Error; err != nil {
+		tx.Rollback()
+		return ticket_token, errors.New("Error Occurred!")
+	}
 
 	today := time.Now()
 
@@ -32,7 +36,11 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 
 		ticket_token.TicketID = ticket_data.ID
 		ticket_token.Status = "utilized"
-		db.Save(&ticket_token)
+
+		if err := tx.Save(&ticket_token).Error; err != nil {
+			tx.Rollback()
+			return ticket_token, errors.New("Error Occurred!")
+		}
 
 	} else {
 		DeleteTicketToken(ticket_token.ID)

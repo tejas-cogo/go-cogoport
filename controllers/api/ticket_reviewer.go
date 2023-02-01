@@ -11,7 +11,7 @@ func ReassignTicketReviewer(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.ReassignTicketReviewer(body)
 	if err != nil {
-		c.JSON(400,err)
+		c.JSON(c.Writer.Status(),err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

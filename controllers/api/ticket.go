@@ -11,7 +11,7 @@ func ListTicket(c *gin.Context) {
 	var filters models.TicketExtraFilter
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 		return
 	}
 
@@ -29,7 +29,7 @@ func ListTicketTag(c *gin.Context) {
 	Tag = c.Request.URL.Query().Get("Tag")
 	ser, err := service.ListTicketTag(Tag)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -40,12 +40,12 @@ func GetTicketStats(c *gin.Context) {
 
 	err := c.Bind(&stats)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, err := service.GetTicketStats(stats)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -56,12 +56,12 @@ func GetTicketGraph(c *gin.Context) {
 
 	err := c.Bind(&graph)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
 	ser, err := service.GetTicketGraph(graph)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -72,10 +72,10 @@ func ListTicketDetail(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(400, "Not Found")
+		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
-	c.JSON(200, service.ListTicketDetail(filters))
+	c.JSON(c.Writer.Status(), service.ListTicketDetail(filters))
 }
 
 func CreateTicket(c *gin.Context) {
@@ -95,7 +95,7 @@ func UpdateTicket(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicket(body)
 	if err != nil {
-		c.JSON(400, err)
+		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
