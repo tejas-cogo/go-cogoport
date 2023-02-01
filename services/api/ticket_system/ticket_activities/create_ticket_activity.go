@@ -58,7 +58,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			DeactivateReviewer(u, tx)
 
 			audits.CreateAuditTicket(ticket, tx)
-			stmt := validations.validate_ticket_activity(ticket_activity)
+			stmt := validations.ValidateTicketActivity(ticket_activity)
 			if stmt != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
@@ -90,7 +90,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			DeactivateReviewer(u, tx)
 
 			audits.CreateAuditTicket(ticket, tx)
-			stmt := validations.validate_ticket_activity(ticket_activity)
+			stmt := validations.ValidateTicketActivity(ticket_activity)
 			if stmt != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
@@ -134,7 +134,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket_reviewer.GroupMemberID = group_head.ID
 			ticket_reviewer.Status = "active"
 
-			stmt := validations.validate_ticket_activity(ticket_activity)
+			stmt := validations.ValidateTicketActivity(ticket_activity)
 			if stmt != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
@@ -146,7 +146,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket.Status = "escalated"
 			audits.CreateAuditTicket(ticket, tx)
 
-			stmt2 := validations.validate_ticket_activity(ticket_activity)
+			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
@@ -161,7 +161,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 			audits.CreateAuditTicket(ticket, tx)
-			stmt := validations.validate_ticket_activity(ticket_activity)
+			stmt := validations.ValidateTicketActivity(ticket_activity)
 			if stmt != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
@@ -177,7 +177,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	} else {
 		var ticket models.Ticket
 		audits.CreateAuditTicket(ticket, tx)
-		stmt := validations.validate_ticket_activity(ticket_activity)
+		stmt := validations.ValidateTicketActivity(ticket_activity)
 		if stmt != "validated" {
 			return ticket_activity, errors.New(stmt)
 		}

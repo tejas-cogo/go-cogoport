@@ -7,10 +7,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 	groupmember "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/group_members"
 	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
-
-	"errors"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
-
 )
 
 type TicketReviewerService struct {
@@ -57,12 +54,8 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	filters.GroupMember.ID = group_member.ID
 	ticket_reviewer.Status = "active"
 
-	stmt := validations.validate_ticket_reviewer(ticket_reviewer)
+	stmt := validations.ValidateTicketReviewer(ticket_reviewer)
 	if stmt != "validated" {
-		return body, errors.New(stmt)
-	}
-	stmt2 := validations.validate_ticket_activity(ticket_activity)
-	if stmt2 != "validated" {
 		return body, errors.New(stmt)
 	}
 	if err := txt.Create(&ticket_reviewer).Error; err != nil {
@@ -80,7 +73,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
 
-	stmt3 := validations.validate_ticket_activity(ticket_activity)
+	stmt3 := validations.ValidateTicketActivity(ticket_activity)
 	if stmt3 != "validated" {
 		return body, errors.New(stmt)
 	}

@@ -24,7 +24,7 @@ func CreateGroupMember(group_members models.CreateGroupMember) (models.GroupMemb
 			group_member.GroupID = group_members.GroupID
 			group_member.Status = "active"
 			group_member.TicketUserID = u
-			stmt := validations.validate_group_member(group_member)
+			stmt := validations.ValidateGroupMember(group_member)
 			if stmt != "validated" {
 
 				return group_member, errors.New(stmt)

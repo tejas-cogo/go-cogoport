@@ -18,7 +18,7 @@ func CreateGroup(group models.Group) (models.Group,error) {
 
 	group.Status = "active"
 
-	stmt := validations.validate_group(group)
+	stmt := validations.ValidateGroup(group)
 	if stmt != "validated" {
 		return group, errors.New(stmt)
 	}

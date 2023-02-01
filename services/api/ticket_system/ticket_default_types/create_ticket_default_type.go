@@ -16,7 +16,7 @@ func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (mode
 	tx := db.Begin()
 	var err error
 
-	stmt := validations.validate_ticket_default_type(ticket_default_type)
+	stmt := validations.ValidateTicketDefaultType(ticket_default_type)
 	if stmt != "validated" {
 		return ticket_default_type, errors.New(stmt)
 	}

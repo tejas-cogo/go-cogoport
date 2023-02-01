@@ -16,7 +16,7 @@ func CreateRole(role models.Role) (models.Role,error) {
 	tx := db.Begin()
 	var err error
 
-	stmt := validations.validate_role(role)
+	stmt := validations.ValidateRole(role)
 	if stmt != "validated" {
 		return role, errors.New(stmt)
 	}

@@ -7,7 +7,7 @@ import (
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
-func validate_group_member(group_member models.GroupMember) string {
+func ValidateGroupMember(group_member models.GroupMember) string {
 
 	if group_member.HierarchyLevel == 0 {
 		return ("Hierarchy Level Is Required!")
@@ -19,7 +19,7 @@ func validate_group_member(group_member models.GroupMember) string {
 	return ("validated")
 }
 
-func validate_group(group models.Group) string {
+func ValidateGroup(group models.Group) string {
 	if group.Name == "" {
 		return ("Group Name Is Required!")
 	}
@@ -31,7 +31,7 @@ func validate_group(group models.Group) string {
 	return ("validated")
 }
 
-func validate_role(role models.Role) string {
+func ValidateRole(role models.Role) string {
 	if role.Name == "" {
 		return ("Role Name Is Required!")
 	}
@@ -51,7 +51,7 @@ func validate_role(role models.Role) string {
 	return ("validated")
 }
 
-func validate_ticket_default_group(ticket_default_group models.TicketDefaultGroup) string {
+func ValidateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) string {
 
 	if ticket_default_group.GroupID == 0 {
 		return ("Group Is Required!")
@@ -64,7 +64,7 @@ func validate_ticket_default_group(ticket_default_group models.TicketDefaultGrou
 	return ("validated")
 }
 
-func validate_ticket_default_timing(ticket_default_timing models.TicketDefaultTiming) string {
+func ValidateTicketDefaultTiming(ticket_default_timing models.TicketDefaultTiming) string {
 
 	if ticket_default_timing.TicketPriority == "" {
 		return ("Ticket Priority Is Required!")
@@ -92,7 +92,7 @@ func validate_ticket_default_timing(ticket_default_timing models.TicketDefaultTi
 	return ("validated")
 }
 
-func validate_ticket_default_type(ticket_default_type models.TicketDefaultType) string {
+func ValidateTicketDefaultType(ticket_default_type models.TicketDefaultType) string {
 	if ticket_default_type.TicketType == "" {
 		return ("TicketType Is Required!")
 	}
@@ -100,7 +100,7 @@ func validate_ticket_default_type(ticket_default_type models.TicketDefaultType) 
 	return ("validated")
 }
 
-func validate_ticket_reviewer(ticket_reviewer models.TicketReviewer) string {
+func ValidateTicketReviewer(ticket_reviewer models.TicketReviewer) string {
 	if ticket_reviewer.GroupMemberID == 0 {
 		return ("Group Member Is Required!")
 	}
@@ -120,7 +120,7 @@ func validate_ticket_reviewer(ticket_reviewer models.TicketReviewer) string {
 	return ("validated")
 }
 
-func validate_token_ticket(ticket models.Ticket) string {
+func ValidateTokenTicket(ticket models.Ticket) string {
 	if ticket.Source == "" {
 		return ("Source is Required!")
 	}
@@ -134,7 +134,7 @@ func validate_token_ticket(ticket models.Ticket) string {
 	return ("validated")
 }
 
-func validate_ticket_user(ticket_user models.TicketUser) string {
+func ValidateTicketUser(ticket_user models.TicketUser) string {
 	if ticket_user.Name == "" {
 		return ("User name is Required!")
 	}
@@ -154,7 +154,7 @@ func validate_ticket_user(ticket_user models.TicketUser) string {
 	return ("validated")
 }
 
-func validate_ticket(ticket models.Ticket) string {
+func ValidateTicket(ticket models.Ticket) string {
 	if ticket.Type == "" {
 		return ("Ticket Type Is Required!")
 	}
@@ -168,7 +168,7 @@ func validate_ticket(ticket models.Ticket) string {
 	return ("validated")
 }
 
-func validate_ticket_activity(ticket_activity models.TicketActivity) string {
+func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 	if ticket_activity.Status == "" {
 		return ("Status is Required!")
 	}

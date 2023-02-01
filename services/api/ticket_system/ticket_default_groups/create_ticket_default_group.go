@@ -16,7 +16,7 @@ func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (m
 	tx := db.Begin()
 	var err error
 
-	stmt := validations.validate_ticket_default_group(ticket_default_group)
+	stmt := validations.ValidateTicketDefaultGroup(ticket_default_group)
 	if stmt != "validated" {
 		return ticket_default_group, errors.New(stmt)
 	}

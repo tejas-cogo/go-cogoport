@@ -72,7 +72,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		ticket_reviewer.GroupID = body.GroupID
 		ticket_reviewer.GroupMemberID = body.GroupMemberID
 
-		stmt := validations.validate_ticket_activity(ticket_activity)
+		stmt := validations.ValidateTicketReviewer(ticket_reviewer)
 		if stmt != "validated" {
 			return body, errors.New(stmt)
 		}

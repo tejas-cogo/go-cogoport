@@ -61,7 +61,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	ticket.Status = "unresolved"
 
-	stmt := validations.validate_ticket(ticket)
+	stmt := validations.ValidateTicket(ticket)
 	if stmt != "validated" {
 		return ticket, errors.New(stmt)
 	}

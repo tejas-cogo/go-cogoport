@@ -5,7 +5,6 @@ import (
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
@@ -18,7 +17,7 @@ func CreateTicketDefaultTiming(ticket_default_timing models.TicketDefaultTiming)
 	tx := db.Begin()
 	var err error
 
-	stmt := validations.validate_ticket_default_timing(ticket_default_timing)
+	stmt := validations.ValidateTicketDefaultTiming(ticket_default_timing)
 	if stmt != "validated" {
 		return ticket_default_timing, errors.New(stmt)
 	}
