@@ -94,6 +94,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	ticket_reviewer.TicketID = ticket.ID
 	ticket_reviewer.GroupID = ticket_default_group.GroupID
+	ticket_reviewer.Status = "active"
 
 	if ticket_default_group.GroupMemberID > 0 {
 		tx.Where("id = ? and status = ?", ticket_default_group.GroupMemberID, "active").First(&group_member)
