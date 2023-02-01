@@ -15,7 +15,7 @@ type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(body models.TicketUser) (models.TicketToken,error) {
+func CreateTicketToken(body models.TicketUser) (models.TicketToken, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -41,6 +41,11 @@ func CreateTicketToken(body models.TicketUser) (models.TicketToken,error) {
 	ticket_token.TicketUserID = ticket_user.ID
 	ticket_token.Status = "active"
 
+	stmt := validate(ticket_token)
+		if stmt != "validated" {
+			return ticket_token, errors.New(stmt)
+		}
+
 	if err := tx.Create(&ticket_token).Error; err != nil {
 		tx.Rollback()
 		return ticket_token, errors.New("Error Occured!")
@@ -48,4 +53,12 @@ func CreateTicketToken(body models.TicketUser) (models.TicketToken,error) {
 
 	tx.Commit()
 	return ticket_token, err
+}
+
+func validate(ticket_token models.TicketToken) string {
+	if ticket_token.TicketUserID <= 0 {
+		return ("UserID is Invalid!")
+	}
+
+	return ("validated")
 }
