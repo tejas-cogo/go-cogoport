@@ -11,7 +11,7 @@ func ListTokenTicketDetail(c *gin.Context) {
 	c.Bind(&filters)
 	ser, err := service.ListTokenTicketDetail(filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
