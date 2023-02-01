@@ -38,4 +38,6 @@ type FilterGroupMember struct {
 	HierarchyLevel         uint
 	GroupMemberName        string
 	Status                 string
+	AgentID                string
+	AgentRmID              string
 }
