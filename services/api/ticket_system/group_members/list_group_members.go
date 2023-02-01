@@ -51,6 +51,7 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 	db = db.Order("hierarchy_level desc").Order("active_ticket_count asc")
 
 	if filters.GroupMemberName != "" {
+		filters.GroupMemberName = "%" + filters.GroupMemberName + "%"
 
 		db = db.Joins("Inner Join ticket_users on ticket_users.id = group_members.ticket_user_id and ticket_users.name iLike ?", filters.GroupMemberName)
 	}
