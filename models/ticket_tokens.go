@@ -30,3 +30,11 @@ type TokenFilter struct {
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 }
+
+type TokenActivity struct {
+	TicketToken string
+	Description string
+	Data        gormjsonb.JSONB `gorm:"type:json"`
+	Type        string
+	Status      string
+}

@@ -9,7 +9,7 @@ import (
 func ListTokenTicketDetail(c *gin.Context) {
 	var filters models.TokenFilter
 	c.Bind(&filters)
-	ser,err := service.ListTokenTicketDetail(filters)
+	ser, err := service.ListTokenTicketDetail(filters)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
@@ -40,17 +40,29 @@ func CreateTokenTicket(c *gin.Context) {
 	}
 }
 
-func DeleteTicketToken(c *gin.Context) {
-	var body models.TicketToken
-	c.BindJSON(&body)
-	id := body.ID
-	ser, err := service.DeleteTicketToken(id)
+func CreateTokenTicketActivity(c *gin.Context) {
+
+	var token_filter models.TokenActivity
+	c.BindJSON(&token_filter)
+	ser, err := service.CreateTokenTicketActivity(token_filter)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
+
+// func DeleteTicketToken(c *gin.Context) {
+// 	var body models.TicketToken
+// 	c.BindJSON(&body)
+// 	id := body.ID
+// 	ser, err := service.DeleteTicketToken(id)
+// 	if err != nil {
+// 		c.JSON(c.Writer.Status(), err)
+// 	} else {
+// 		c.JSON(c.Writer.Status(), ser)
+// 	}
+// }
 
 func UpdateTokenTicket(c *gin.Context) {
 	var body models.TokenFilter
