@@ -113,7 +113,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			group_member, err := DeactivateReviewer(u, tx)
 			if err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Escalated Group Member not found")
+				return ticket_activity, errors.New("Reviewer could not be deactivated")
 			}
 
 			if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)+1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {

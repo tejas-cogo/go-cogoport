@@ -115,7 +115,7 @@ type TicketExtraFilter struct {
 	Tat                     string
 	Status                  string
 	TicketCreatedAt         string
-	IsExpiringSoon          string
+	ExpiringSoon            string
 	ExpiryDate              string
 	ID                      uint
 }

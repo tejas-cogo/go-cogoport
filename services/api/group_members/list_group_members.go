@@ -13,8 +13,8 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 	var ticket_user []models.TicketUser
 
 	if filters.AgentRmID != "" || filters.AgentID != "" {
+		var ticket_users []uint
 		if filters.AgentRmID != "" {
-			var ticket_users []uint
 
 			db2 := config.GetCDB()
 			var partner_user_rm_mapping []models.PartnerUserRmMapping
@@ -25,9 +25,9 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 			db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
 		} else if filters.AgentID != "" {
-			db.Where("system_user_id = ?", filters.AgentID).Find(&ticket_user)
+			db.Where("system_user_id = ?", filters.AgentID).Find(&ticket_user).Pluck("id", &ticket_users)
 		}
-		db = db.Where("ticket_user_id IN ?", ticket_user)
+		db = db.Where("ticket_user_id IN ?", ticket_users)
 	}
 
 	if filters.GroupID > 0 {
@@ -51,6 +51,7 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 	db = db.Order("hierarchy_level desc").Order("active_ticket_count asc")
 
 	if filters.GroupMemberName != "" {
+		filters.GroupMemberName = "%" + filters.GroupMemberName + "%"
 
 		db = db.Joins("Inner Join ticket_users on ticket_users.id = group_members.ticket_user_id and ticket_users.name iLike ?", filters.GroupMemberName)
 	}

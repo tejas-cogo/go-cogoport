@@ -15,8 +15,13 @@ func ListTicketType(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
-	ser := service.ListTicketType(filters)
-	c.JSON(c.Writer.Status(), ser)
+	ser, db := service.ListTicketType(filters)
+	if c.Writer.Status() == 400 {
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
 }
 
 func ListTicketDefaultType(c *gin.Context) {
