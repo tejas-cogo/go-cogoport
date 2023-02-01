@@ -189,3 +189,11 @@ func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 
 	return ("validated")
 }
+
+func ValidateTicketToken(ticket_token models.TicketToken) string {
+	if ticket_token.TicketUserID <= 0 {
+		return ("UserID is Invalid!")
+	}
+
+	return ("validated")
+}

@@ -9,6 +9,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	ticketuser "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_users"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketTokenService struct {
@@ -41,7 +42,7 @@ func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 	ticket_token.TicketUserID = ticket_user.ID
 	ticket_token.Status = "active"
 
-	stmt := validate(ticket_token)
+	stmt := validations.ValidateTicketToken(ticket_token)
 	if stmt != "validated" {
 		return ticket_token, errors.New(stmt)
 	}
@@ -53,12 +54,4 @@ func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 
 	tx.Commit()
 	return ticket_token, err
-}
-
-func validate(ticket_token models.TicketToken) string {
-	if ticket_token.TicketUserID <= 0 {
-		return ("UserID is Invalid!")
-	}
-
-	return ("validated")
 }
