@@ -16,12 +16,11 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	var ticket_detail models.TicketDetail
 	var ticket_token models.TicketToken
 	var filters models.TicketExtraFilter
+	var err error
 
 	db := config.GetDB()
 
-	var err error
-
-	if err := db.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token).Error; err != nil {
+	if err = db.Where("ticket_token = ? and status= ?", token_filter, "utilized").Find(&ticket_token).Error; err != nil {
 		db.Rollback()
 		return ticket_detail, errors.New("Error Occurred!")
 	}
@@ -30,14 +29,14 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 		filters.ID = ticket_token.TicketID
 	}
 
-	ticket_data, _, _ := tickets.ListTicket(filters)
+	ticket_data, _ := tickets.ListTicket(filters)
 	for _, u := range ticket_data {
 		ticket_detail.Ticket = u
 	}
 
 	var ticket_reviewer models.TicketReviewer
 	ticket_reviewer.TicketID = filters.ID
-	ticket_reviewer_data, _, _ := reviewers.ListTicketReviewer(ticket_reviewer)
+	ticket_reviewer_data, _ := reviewers.ListTicketReviewer(ticket_reviewer)
 	for _, u := range ticket_reviewer_data {
 		ticket_detail.TicketReviewer = u
 	}

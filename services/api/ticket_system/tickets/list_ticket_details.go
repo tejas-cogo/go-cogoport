@@ -11,14 +11,14 @@ func ListTicketDetail(filters models.TicketExtraFilter) models.TicketDetail {
 
 	var ticket_detail models.TicketDetail
 
-	ticket_data, _, _ := ListTicket(filters)
+	ticket_data, _ := ListTicket(filters)
 	for _, u := range ticket_data {
 		ticket_detail.Ticket = u
 	}
 
 	var ticket_reviewer models.TicketReviewer
 	ticket_reviewer.TicketID = filters.ID
-	ticket_reviewer_data, _, _ := reviewers.ListTicketReviewer(ticket_reviewer)
+	ticket_reviewer_data, _ := reviewers.ListTicketReviewer(ticket_reviewer)
 	for _, u := range ticket_reviewer_data {
 		ticket_detail.TicketReviewer = u
 	}

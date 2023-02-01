@@ -84,7 +84,10 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 			return graph, errors.New("Error Occurred!")
 		}
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open)
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
 		switch i {
 		case 1:
@@ -133,7 +136,10 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 			return graph, errors.New("Error Occurred!")
 		}
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Where("status = ?", "unresolved").Count(&stats.Open)
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Where("status = ?", "unresolved").Count(&stats.Open).Error; err != nil {
+			tx.Rollback()
+			return graph, errors.New("Error Occurred!")
+		}
 
 		switch x.Weekday() {
 		case 1:

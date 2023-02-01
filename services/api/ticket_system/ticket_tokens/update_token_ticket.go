@@ -30,6 +30,12 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	if body.Type != "" {
 		ticket.Type = body.Type
 	}
+	if body.Category != "" {
+		ticket.Category = body.Category
+	}
+	if body.Subcategory != "" {
+		ticket.Category = body.Category
+	}
 	if body.NotificationPreferences != nil {
 		ticket.NotificationPreferences = body.NotificationPreferences
 	}

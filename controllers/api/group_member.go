@@ -18,7 +18,7 @@ func ListGroupMember(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
-	ser, db, _ := service.ListGroupMember(filters)
+	ser, db := service.ListGroupMember(filters)
 
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), "Not Found")
@@ -46,8 +46,7 @@ func DeleteGroupMember(c *gin.Context) {
 
 	ser, err := service.DeleteGroupMember(id)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
-
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

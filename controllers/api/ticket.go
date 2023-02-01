@@ -15,7 +15,7 @@ func ListTicket(c *gin.Context) {
 		return
 	}
 
-	ser, db, err := service.ListTicket(filters)
+	ser, db := service.ListTicket(filters)
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
@@ -27,12 +27,10 @@ func ListTicket(c *gin.Context) {
 func ListTicketTag(c *gin.Context) {
 	var Tag string
 	Tag = c.Request.URL.Query().Get("Tag")
-	ser, err := service.ListTicketTag(Tag)
-	if err != nil {
-		c.JSON(c.Writer.Status(), err)
-	} else {
-		c.JSON(c.Writer.Status(), ser)
-	}
+	ser := service.ListTicketTag(Tag)
+
+	c.JSON(c.Writer.Status(), ser)
+
 }
 
 func GetTicketStats(c *gin.Context) {

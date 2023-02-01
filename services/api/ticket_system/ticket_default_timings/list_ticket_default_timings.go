@@ -8,7 +8,7 @@ import (
 
 func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.TicketDefaultTiming, *gorm.DB, error) {
 	db := config.GetDB()
-	
+
 	var err error
 
 	var ticket_default_timings []models.TicketDefaultTiming
@@ -26,12 +26,7 @@ func ListTicketDefaultTiming(filters models.TicketDefaultTiming) ([]models.Ticke
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	if err := db.Order("created_at desc").Find(&ticket_default_timings).Error; err != nil {
-		db.Rollback()
-		return ticket_default_timings, db, err
-	}
-
-
+	db = db.Order("created_at desc").Find(&ticket_default_timings)
 
 	return ticket_default_timings, db, err
 }

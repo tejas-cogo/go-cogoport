@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
 
@@ -53,7 +52,7 @@ type Sort struct {
 
 func Init() {
 
-	db := config.GetDB()
+	// db := config.GetDB()
 	//Printing query
 	// db.LogMode(true)
 
@@ -65,7 +64,7 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&Ticket{})
+	// db.Migrator().AutoMigrate(&Ticket{})
 
 	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
 }

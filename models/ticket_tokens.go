@@ -19,10 +19,10 @@ type TicketToken struct {
 }
 
 type TokenFilter struct {
-	TicketToken             string `gorm:"not null:unique"`
-	Source                  string `gorm:"not null"`
-	Type                    string `gorm:"not null"`
-	Category                string `gorm:"not null"`
+	TicketToken             string
+	Source                  string
+	Type                    string
+	Category                string
 	Subcategory             string
 	Description             string
 	IsUrgent                bool

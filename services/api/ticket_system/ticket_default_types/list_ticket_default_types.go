@@ -6,10 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketDefault, *gorm.DB, error) {
+func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketDefault, *gorm.DB) {
 	db := config.GetDB()
-
-	var err error
 
 	var ticket_default []models.TicketDefault
 
@@ -37,5 +35,5 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 
 	db = db.Group("ticket_default_types.id, ticket_default_types.ticket_type,ticket_default_types.status,ticket_default_timings.id,ticket_default_timings.status ,ticket_default_timings.expiry_duration ,ticket_default_timings.tat ,ticket_default_timings.conditions,ticket_default_timings.ticket_priority ,ticket_default_timings.status ,ticket_default_groups.id ,groups.name ,groups.tags, ticket_default_groups.status,ticket_users.name,gpm.id,groups.id,ticket_users.email")
 
-	return ticket_default, db, err
+	return ticket_default, db
 }

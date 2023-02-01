@@ -1,7 +1,6 @@
 package ticket_system
 
 import (
-	"errors"
 	"strings"
 	"time"
 
@@ -10,10 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB, error) {
+func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	db := config.GetDB()
-
-	var err error
 
 	var ticket_user models.TicketUser
 	var ticket_reviewer models.TicketReviewer
@@ -104,11 +101,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB, er
 	db = db.Order("created_at desc").Order("expiry_date desc")
 
 	db = db.Preload("TicketUser").Find(&ticket)
-	if err := db.Error; err != nil {
-		db.Rollback()
-		return ticket, db, errors.New("Error Occurred!")
-	}
 
-
-	return ticket, db, err
+	return ticket, db
 }

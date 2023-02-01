@@ -1,15 +1,12 @@
 package ticket_system
 
 import (
-	"errors"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicketTag(Tag string) ([]string, error) {
+func ListTicketTag(Tag string) []string {
 	db := config.GetDB()
-
-	var err error
 
 	var t []string
 
@@ -20,11 +17,7 @@ func ListTicketTag(Tag string) ([]string, error) {
 		db = db.Where("u.tag = ?", Tag)
 	}
 
-	if err := db.Pluck("tag", &t).Error; err != nil {
-		db.Rollback()
-		return t, errors.New("Error Occurred!")
-	}
+	db.Pluck("tag", &t)
 
-
-	return t, err
+	return t
 }

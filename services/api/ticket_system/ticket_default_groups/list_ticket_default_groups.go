@@ -24,12 +24,7 @@ func ListTicketDefaultGroup(filters models.TicketDefaultGroup) ([]models.TicketD
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	if err := db.Order("created_at desc").Find(&ticket_default_groups).Error; err != nil {
-		db.Rollback()
-		return ticket_default_groups, err
-	}
-
-
+	db = db.Order("created_at desc").Find(&ticket_default_groups)
 
 	db = db.Order("created_at desc").Find(&ticket_default_groups)
 

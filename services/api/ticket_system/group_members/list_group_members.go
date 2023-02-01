@@ -6,10 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *gorm.DB, error) {
+func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *gorm.DB) {
 	db := config.GetDB()
-
-	var err error
 
 	var group_members []models.GroupMember
 	var ticket_user []models.TicketUser
@@ -60,5 +58,5 @@ func ListGroupMember(filters models.FilterGroupMember) ([]models.GroupMember, *g
 
 	db = db.Preload("Group").Find(&group_members)
 
-	return group_members, db, err
+	return group_members, db
 }
