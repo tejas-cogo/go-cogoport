@@ -15,7 +15,7 @@ type TicketTokenService struct {
 	TicketToken models.TicketToken
 }
 
-func CreateTicketToken(body models.TicketUser) (models.TicketToken, error) {
+func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error

@@ -17,10 +17,10 @@ func ListTokenTicketDetail(c *gin.Context) {
 	}
 }
 
-func CreateTicketToken(c *gin.Context) {
+func GetTicketToken(c *gin.Context) {
 	var body models.TicketUser
 	c.BindJSON(&body)
-	ser, err := service.CreateTicketToken(body)
+	ser, err := service.GetTicketToken(body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {

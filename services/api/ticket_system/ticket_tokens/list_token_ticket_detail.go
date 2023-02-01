@@ -1,16 +1,17 @@
 package ticket_system
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
 	spectators "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_spectators"
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
-	"errors"
 )
 
-func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail,error) {
+func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail, error) {
 
 	var ticket_detail models.TicketDetail
 	var ticket_token models.TicketToken
@@ -51,7 +52,6 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = filters.ID
 	ticket_detail.TicketActivity, _, _ = activities.ListTicketActivity(ticket_activity)
-
 
 	return ticket_detail, err
 }
