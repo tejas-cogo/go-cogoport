@@ -8,6 +8,10 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/tickets"
+
+	"errors"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+
 )
 
 func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, error) {
@@ -31,7 +35,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		ticket.Type = token_filter.Type
 		ticket.TicketUserID = ticket_token.TicketUserID
 
-		stmt := validate_token_ticket(ticket)
+		stmt := validations.validate_token_ticket(ticket)
 		if stmt != "validated" {
 			fmt.Println("changes")
 			return ticket_token, errors.New(stmt)
@@ -59,16 +63,3 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 	return ticket_token, err
 }
 
-func validate_token_ticket(ticket models.Ticket) string {
-	if ticket.Source == "" {
-		return ("Source is Required!")
-	}
-	if ticket.Type == "" {
-		return ("Type is Required!")
-	}
-	if ticket.TicketUserID <= 0 {
-		return ("TicketUserID is Required!")
-	}
-
-	return ("validated")
-}

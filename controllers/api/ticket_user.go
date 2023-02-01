@@ -24,23 +24,25 @@ func ListTicketUser(c *gin.Context) {
 	}
 }
 
-// func CreateTicketUser(c *gin.Context) {
-// 	var ticket_user models.TicketUser
-// 	c.BindJSON(&ticket_user)
-// 	ser, err := service.CreateTicketUser(ticket_user)
-// 	if err != nil {
-// 		c.JSON(c.Writer.Status(), err)
-// 	} else {
-// 		c.JSON(c.Writer.Status(), ser)
-// 	}
-// }
+
+func CreateTicketUser(c *gin.Context) {
+	var ticket_user models.TicketUser
+	c.BindJSON(&ticket_user)
+	ser, err := service.CreateTicketUser(ticket_user)
+	if err != nil {
+		c.JSON(400, err.Error())
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
+}
+
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUserRole
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicketUser(body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

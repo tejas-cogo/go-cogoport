@@ -4,6 +4,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"errors"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketDefaultGroupService struct {
@@ -15,7 +16,7 @@ func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (m
 	tx := db.Begin()
 	var err error
 
-	stmt := validate(ticket_default_group)
+	stmt := validations.validate_ticket_default_group(ticket_default_group)
 	if stmt != "validated" {
 		return ticket_default_group, errors.New(stmt)
 	}
@@ -30,17 +31,4 @@ func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (m
 	tx.Commit()
 
 	return ticket_default_group, err
-}
-
-func validate(ticket_default_group models.TicketDefaultGroup) string {
-
-	if ticket_default_group.GroupID == 0 {
-		return ("Group Is Required!")
-	}
-
-	if ticket_default_group.TicketDefaultTypeID == 0 {
-		return ("TicketDefaultTypeID Is Required!")
-	}
-
-	return ("validated")
 }

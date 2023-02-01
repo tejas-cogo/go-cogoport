@@ -9,6 +9,7 @@ import (
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_audits"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_reviewers"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketService struct {
@@ -60,7 +61,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	ticket.Status = "unresolved"
 
-	stmt := validate(ticket)
+	stmt := validations.validate_ticket(ticket)
 	if stmt != "validated" {
 		return ticket, errors.New(stmt)
 	}
@@ -80,18 +81,4 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	return ticket, err
 
-}
-
-func validate(ticket models.Ticket) string {
-	if ticket.Type == "" {
-		return ("Ticket Type Is Required!")
-	}
-	if ticket.Tat == "" {
-		return ("Tat couldn't be set!")
-	}
-	if ticket.ExpiryDate == time.Now() {
-		return ("Expiry Date  couldn't be set!")
-	}
-
-	return ("validated")
 }

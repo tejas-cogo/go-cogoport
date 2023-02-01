@@ -33,7 +33,7 @@ func CreateGroupMember(c *gin.Context) {
 	c.BindJSON(&group_member)
 	ser, err := service.CreateGroupMember(group_member)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -57,7 +57,7 @@ func UpdateGroupMember(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateGroupMember(body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

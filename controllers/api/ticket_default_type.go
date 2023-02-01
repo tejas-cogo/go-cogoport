@@ -41,7 +41,7 @@ func CreateTicketDefaultType(c *gin.Context) {
 	c.BindJSON(&ticket_default_type)
 	ser, err := service.CreateTicketDefaultType(ticket_default_type)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -53,7 +53,7 @@ func DeleteTicketDefaultType(c *gin.Context) {
 	id := body.ID
 	ser, err := service.DeleteTicketDefaultType(id)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}
@@ -64,7 +64,7 @@ func UpdateTicketDefaultType(c *gin.Context) {
 	c.BindJSON(&body)
 	ser, err := service.UpdateTicketDefaultType(body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), err)
+		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
 	}

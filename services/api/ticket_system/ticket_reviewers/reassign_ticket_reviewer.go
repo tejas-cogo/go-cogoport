@@ -6,6 +6,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/ticket_activities"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivity, error) {
@@ -71,6 +72,10 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		ticket_reviewer.GroupID = body.GroupID
 		ticket_reviewer.GroupMemberID = body.GroupMemberID
 
+		stmt := validations.validate_ticket_activity(ticket_activity)
+		if stmt != "validated" {
+			return body, errors.New(stmt)
+		}
 		if err := tx.Create(&ticket_reviewer).Error; err != nil {
 			tx.Rollback()
 			return body, errors.New("Error Occurred!")
