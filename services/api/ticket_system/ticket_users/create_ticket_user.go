@@ -6,9 +6,9 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 
-	"errors"
-	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 
+
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketUserService struct {
@@ -27,9 +27,7 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser, error) 
 
 		ticket_user.RoleID = 1
 
-
-	if exist_user.ID <= 0 {
-		stmt := validations.validate_ticket_user(ticket_user)
+		stmt := validations.ValidateTicketUser(ticket_user)
 
 		if stmt != "validated" {
 			return ticket_user, errors.New(stmt)
@@ -49,4 +47,3 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser, error) 
 
 	// result := map[string]interface{}{}
 }
-
