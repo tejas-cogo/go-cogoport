@@ -25,7 +25,7 @@ func CreateTicketDefaultType(ticket_default_type models.TicketDefaultType) (mode
 
 	if err := tx.Create(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return ticket_default_type, errors.New("Error Occurred!")
+		return ticket_default_type, errors.New("Cannot create ticket default type!")
 	}
 
 	tx.Commit()

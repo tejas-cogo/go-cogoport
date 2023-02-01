@@ -24,7 +24,7 @@ func CreateTicketSpectator(ticket_spectator models.TicketSpectator) (models.Tick
 
 	if err := tx.Create(&ticket_spectator).Error; err != nil {
 		tx.Rollback()
-		return ticket_spectator, errors.New("Error Occurred!")
+		return ticket_spectator, errors.New("Cannot create ticket spectator!")
 	}
 
 	spectator_activity.TicketID = ticket_spectator.TicketID

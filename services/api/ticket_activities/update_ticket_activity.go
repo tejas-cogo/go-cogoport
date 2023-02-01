@@ -15,12 +15,12 @@ func UpdateTicketActivity(body models.TicketActivity) (models.TicketActivity,err
 	
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_activity).Error; err != nil {
 		tx.Rollback()
-		return ticket_activity, errors.New("Error Occurred!")
+		return ticket_activity, errors.New("Cannot find ticket activity with this id!")
 	}
 
 	if err := tx.Save(&ticket_activity).Error; err != nil {
 		tx.Rollback()
-		return ticket_activity, errors.New("Error Occurred!")
+		return ticket_activity, errors.New("Cannot update ticket activity!")
 	}
 
 	tx.Commit()

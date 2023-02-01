@@ -26,7 +26,7 @@ func CreateTicketDefaultTiming(ticket_default_timing models.TicketDefaultTiming)
 
 	if err := tx.Create(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return ticket_default_timing, errors.New("Error Occurred!")
+		return ticket_default_timing, errors.New("Cannot create ticket default time!")
 	}
 
 	tx.Commit()

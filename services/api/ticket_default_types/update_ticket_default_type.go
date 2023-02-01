@@ -15,7 +15,7 @@ func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaul
 
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot find ticket default type with this id!")
 	}
 
 	if body.TicketType != "" {
@@ -30,7 +30,7 @@ func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaul
 
 	if err := tx.Save(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot update ticket default type!")
 	}
 
 	tx.Commit()

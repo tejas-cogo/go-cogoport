@@ -15,7 +15,7 @@ func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) (models.TicketDefa
 
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_group).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot find ticket default group with this id!")
 	}
 
 	if body.TicketDefaultTypeID > 0 {
@@ -33,7 +33,7 @@ func UpdateTicketDefaultGroup(body models.TicketDefaultGroup) (models.TicketDefa
 
 	if err := tx.Save(&ticket_default_group).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot update ticket default group!")
 	}
 
 	tx.Commit()

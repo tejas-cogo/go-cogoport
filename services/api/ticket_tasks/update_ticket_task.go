@@ -16,12 +16,12 @@ func UpdateTicketTask(id uint, body models.TicketTask) (models.TicketTask, error
 
 	if err := tx.Where("id = ?", id).First(&ticket_task).Error; err != nil {
 		tx.Rollback()
-		return ticket_task, errors.New("Error Occured!")
+		return ticket_task, errors.New("Cannot find ticket task with this id!")
 	}
 
 	if err := tx.Save(&ticket_task).Error; err != nil {
 		tx.Rollback()
-		return ticket_task, errors.New("Error Occured!")
+		return ticket_task, errors.New("Cannot save ticket task!")
 	}
 	tx.Commit()
 	return ticket_task, err

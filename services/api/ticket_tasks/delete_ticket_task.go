@@ -16,12 +16,12 @@ func DeleteTicketTask(id uint) (uint, error) {
 
 	if err := tx.Model(&ticket_task).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Error Occurred!")
+		return id, errors.New("Cannot find ticket task with this id!")
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&ticket_task).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Error Occurred!")
+		return id, errors.New("Cannot delete ticket task!")
 	}
 
 	tx.Commit()

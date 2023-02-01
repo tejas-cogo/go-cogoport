@@ -18,7 +18,7 @@ func CreateTicketTask(ticket_task models.TicketTask) (models.TicketTask, error) 
 
 	if err := tx.Create(&ticket_task).Error; err != nil {
 		tx.Rollback()
-		return ticket_task, errors.New("Error Occurred!")
+		return ticket_task, errors.New("Cannot create ticket task!")
 	}
 
 	tx.Commit()

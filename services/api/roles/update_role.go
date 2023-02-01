@@ -15,7 +15,7 @@ func UpdateRole(body models.Role) (models.Role,error) {
 
 	if err := tx.Where("id = ?", body.ID).First(&role).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occured!")
+		return body, errors.New("Cannot find role with this id!")
 	}
 	
 	if body.Name != "" {
@@ -30,7 +30,7 @@ func UpdateRole(body models.Role) (models.Role,error) {
 
 	if err := tx.Save(&role).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occured!")
+		return body, errors.New("Cannot update role!")
 	}
 
 	tx.Commit()

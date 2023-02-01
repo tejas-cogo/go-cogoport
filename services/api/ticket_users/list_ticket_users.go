@@ -20,7 +20,7 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 
 		if err := db.Model(&models.GroupMember{}).Where("status = ?", "active").Where("id != ?", 2).Distinct("ticket_user_id").Pluck("TicketUserId", &ticket_users).Error; err != nil {
 			db.Rollback()
-			return ticket_user, db, errors.New("Error Occurred!")
+			return ticket_user, db, errors.New("Cannot find ticket users!")
 		}
 
 		if len(ticket_users) != 0 {
@@ -43,17 +43,17 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 
 		if err := tx2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
 			db.Rollback()
-			return ticket_user, db, errors.New("Error Occurred!")
+			return ticket_user, db, errors.New("Cannot create ticket user!")
 		}
 
 		if err := db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
 			db.Rollback()
-			return ticket_user, db, errors.New("Error Occurred!")
+			return ticket_user, db, errors.New("Cannot create ticket user!")
 		}
 
 		if err := db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_user_id").Order("ticket_user_id").Find(&ticket_reviewer).Pluck("ticket_user_id", &ticket_user_id).Error; err != nil {
 			db.Rollback()
-			return ticket_user, db, errors.New("Error Occurred!")
+			return ticket_user, db, errors.New("Cannot create ticket user!")
 		}
 
 	}

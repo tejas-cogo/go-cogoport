@@ -24,7 +24,7 @@ func DeleteGroupMember(id uint) (uint, error) {
 
 	if err := tx.Where("group_id = ? and id != ? and status = ?", group_member.GroupID, id, "active").Find(&member).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Error Occurred!")
+		return id, errors.New("Existing group member not found!")
 
 	}
 
@@ -35,13 +35,13 @@ func DeleteGroupMember(id uint) (uint, error) {
 
 	if err := tx.Model(&group_member).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Error Occurred!")
+		return id, errors.New("Cannot update group member status!")
 
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&group_member).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Error Occurred!")
+		return id, errors.New("Group member cannot be deleted!")
 	}
 
 	tx.Commit()

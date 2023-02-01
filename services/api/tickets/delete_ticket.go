@@ -16,12 +16,12 @@ func DeleteTicket(body models.Ticket) (models.Ticket, error) {
 
 	if err := tx.Model(&ticket).Where("id = ?", body.ID).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot find ticket with this id!")
 	}
 
 	if err := tx.Where("id = ?", body.ID).Delete(&ticket).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot delete ticket!")
 	}
 
 	tx.Commit()

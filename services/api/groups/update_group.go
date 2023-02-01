@@ -29,7 +29,7 @@ func UpdateGroup(body models.Group) (models.Group,error) {
 
 	if err := tx.Save(&group).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Cannot update group details!")
 	}
 
 	tx.Commit()

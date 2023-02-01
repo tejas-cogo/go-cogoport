@@ -19,7 +19,7 @@ func UpdateGroupMember(body models.GroupMember) (models.GroupMember,error) {
 
 	if err := tx.Find(&group_member).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Group member not found!")
 	}
 
 	if body.ActiveTicketCount != 0 {
@@ -37,7 +37,7 @@ func UpdateGroupMember(body models.GroupMember) (models.GroupMember,error) {
 
 	if err := tx.Save(&group_member).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Error Occurred!")
+		return body, errors.New("Can't save Group member details!")
 	}
 
 	tx.Commit()

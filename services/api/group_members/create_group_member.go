@@ -31,7 +31,7 @@ func CreateGroupMember(group_members models.CreateGroupMember) (models.GroupMemb
 			}
 			if err := tx.Create(&group_member).Error; err != nil {
 				tx.Rollback()
-				return group_member, errors.New("Error Occurred!")
+				return group_member, errors.New("Group Member cannot be created!")
 			}
 
 		}

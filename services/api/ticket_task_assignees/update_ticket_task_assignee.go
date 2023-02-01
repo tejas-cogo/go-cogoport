@@ -16,12 +16,12 @@ func UpdateTicketTaskAssignee(id uint, body models.TicketTaskAssignee) (models.T
 
 	if err := tx.Where("id = ?", id).First(&ticket_task_assignee).Error; err != nil {
 		tx.Rollback()
-		return ticket_task_assignee, errors.New("Error Occurred!")
+		return ticket_task_assignee, errors.New("Cannot find ticket task assignee!")
 	}
 
 	if err := tx.Save(&ticket_task_assignee).Error; err != nil {
 		tx.Rollback()
-		return ticket_task_assignee, errors.New("Error Occurred!")
+		return ticket_task_assignee, errors.New("Cannot save ticket task assignee!")
 	}
 
 	tx.Commit()

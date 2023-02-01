@@ -17,7 +17,7 @@ func CreateTicketTaskAssignee(ticket_task_assignee models.TicketTaskAssignee) (m
 
 	if err := tx.Create(&ticket_task_assignee).Error; err != nil {
 		tx.Rollback()
-		return ticket_task_assignee, errors.New("Error Occurred!")
+		return ticket_task_assignee, errors.New("Cannot create ticket task assignee!")
 	}
 
 	tx.Commit()
