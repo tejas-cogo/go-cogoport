@@ -8,7 +8,7 @@ import (
 
 	"github.com/hibiken/asynq"
 	"github.com/tejas-cogo/go-cogoport/models"
-	worker "github.com/tejas-cogo/go-cogoport/services/api/ticket_system/workers"
+	worker "github.com/tejas-cogo/go-cogoport/services/api/workers"
 )
 
 type TicketWorkerService struct {
