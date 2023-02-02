@@ -18,12 +18,12 @@ func DeleteTicketSpectator(id uint) (uint,error) {
 
 	if err := tx.Model(&ticket_spectator).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update ticket spectator status!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&ticket_spectator).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete ticket spectator!")
+		return id, errors.New(err.Error())
 	}
 
 	spectator_activity.TicketID = ticket_spectator.TicketID

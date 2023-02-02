@@ -16,7 +16,7 @@ func ListTicketTask() ([]models.TicketTask, error) {
 
 	if err := tx.Find(&ticket_task).Error; err != nil {
 		tx.Rollback()
-		return ticket_task, errors.New("Cannot find ticket task!")
+		return ticket_task, errors.New(err.Error())
 	}
 
 	return ticket_task, err

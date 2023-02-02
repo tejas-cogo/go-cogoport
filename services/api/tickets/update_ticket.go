@@ -17,7 +17,7 @@ func UpdateTicket(body models.Ticket) (models.Ticket, error) {
 
 	if err := tx.Where("id = ?", body.ID).First(&ticket).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Cannot find ticket!")
+		return body, errors.New(err.Error())
 	}
 
 	if body.Priority != ticket.Priority {
@@ -26,7 +26,7 @@ func UpdateTicket(body models.Ticket) (models.Ticket, error) {
 
 	if err := tx.Save(&ticket).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Cannot save ticket!")
+		return body, errors.New(err.Error())
 	}
 
 	audits.CreateAuditTicket(ticket, db)

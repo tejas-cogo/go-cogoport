@@ -29,7 +29,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	if ticket.TicketUserID == 0 {
 		if err := tx.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
-			return ticket, errors.New("System User Not Found")
+			return ticket, errors.New(err.Error())
 		}
 		if ticket_user == nil {
 			return ticket, errors.New("System User Not Found")
@@ -40,14 +40,14 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	if err := tx.Where("ticket_type = ? and status = ? ", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
 		if err := tx.Where("id = ?", 1).First(&ticket_default_type).Error; err != nil {
 			tx.Rollback()
-			return ticket, errors.New("Default Type had issue!")
+			return ticket, errors.New(err.Error())
 		}
 	}
 
 	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
-			return ticket, errors.New("Default Timing had issue!")
+			return ticket, errors.New(err.Error())
 		}
 	}
 
@@ -68,7 +68,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	if err := tx.Create(&ticket).Error; err != nil {
 		tx.Rollback()
-		return ticket, errors.New("Ticket couldn't be created")
+		return ticket, errors.New(err.Error())
 	}
 
 	audits.CreateAuditTicket(ticket, db)

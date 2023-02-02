@@ -32,34 +32,34 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 		if err := tx2.Where("reporting_manager_id = ? and status = ?", graph.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 	} else if graph.AgentID != "" {
 		if err := tx.Where("system_user_id = ?", graph.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 	} else {
 
 		if err := tx.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 	}
 
@@ -81,12 +81,12 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		switch i {
@@ -133,12 +133,12 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Where("status = ?", "unresolved").Count(&stats.Open).Error; err != nil {
 			tx.Rollback()
-			return graph, errors.New("Error Occurred!")
+			return graph, errors.New(err.Error())
 		}
 
 		switch x.Weekday() {

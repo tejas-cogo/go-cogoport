@@ -48,7 +48,7 @@ func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 
 	if err := tx.Create(&ticket_token).Error; err != nil {
 		tx.Rollback()
-		return ticket_token, errors.New("Cannot create ticket token!")
+		return ticket_token, errors.New(err.Error())
 	}
 
 	tx.Commit()

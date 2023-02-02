@@ -17,7 +17,7 @@ func CreateTokenTicketActivity(token_activity models.TokenActivity) (models.Tick
 
 	if err := tx.Where("ticket_token = ?", token_activity.TicketToken).First(&ticket_token).Error; err != nil {
 		tx.Rollback()
-		return ticket_token, errors.New("Token Not Found!")
+		return ticket_token, errors.New(err.Error())
 	}
 
 	var body models.Filter

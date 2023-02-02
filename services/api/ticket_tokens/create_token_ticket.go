@@ -20,7 +20,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 
 	if err := tx.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "utilized").First(&ticket_token).Error; err != nil {
 		tx.Rollback()
-		return ticket_token, errors.New("Cannot find ticket token!")
+		return ticket_token, errors.New(err.Error())
 	}
 
 	today := time.Now()
@@ -50,7 +50,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 
 		if err := tx.Save(&ticket_token).Error; err != nil {
 			tx.Rollback()
-			return ticket_token, errors.New("Cannot save ticket token!")
+			return ticket_token, errors.New(err.Error())
 		}
 
 		tx.Commit()

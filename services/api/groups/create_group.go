@@ -25,7 +25,7 @@ func CreateGroup(group models.Group) (models.Group,error) {
 
 	if err := tx.Create(&group).Error; err != nil {
 		tx.Rollback()
-		return group, errors.New("Cannot create group!")
+		return group, errors.New(err.Error())
 	}
 
 	tx.Commit()

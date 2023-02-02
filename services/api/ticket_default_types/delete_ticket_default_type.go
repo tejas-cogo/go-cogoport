@@ -17,32 +17,32 @@ func DeleteTicketDefaultType(id uint) (uint,error) {
 
 	if err := tx.Model(&ticket_default_type).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update ticket default type status!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Model(&ticket_default_group).Where("ticket_default_type_id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update ticket default group status!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("ticket_default_type_id = ?", id).Delete(&ticket_default_group).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete ticket default group!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Model(&ticket_default_timing).Where("ticket_default_type_id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update ticket default time status!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("ticket_default_type_id = ?", id).Delete(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete ticket default timing!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot deleted ticket default type!")
+		return id, errors.New(err.Error())
 	}
 
 	tx.Commit()

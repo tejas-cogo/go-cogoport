@@ -15,12 +15,12 @@ func DeleteTicketDefaultTiming(id uint) (uint,error){
 
 	if err := tx.Model(&ticket_default_timing).Where("id = ?", id).Update("status","inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update ticket default time status!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete ticket default time!")
+		return id, errors.New(err.Error())
 	}
 
 	tx.Commit()

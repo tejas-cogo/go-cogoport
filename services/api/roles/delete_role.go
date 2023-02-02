@@ -16,17 +16,17 @@ func DeleteRole(id uint) (uint,error) {
 
 	if err := tx.Model(&role).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update role!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Model(&ticket_user).Where("role_id = ?", id).Update("role_id", 1).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update ticket user details!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&role).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete role!")
+		return id, errors.New(err.Error())
 	}
 
 	tx.Commit()
