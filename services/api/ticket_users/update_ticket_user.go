@@ -16,7 +16,7 @@ func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, error) {
 	if len(body.ID) > 0 {
 		if err := tx.Where("id IN ?", body.ID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
-			return ticket_user, errors.New(err.Error())
+			return ticket_user, errors.New("System User Not Found")
 		}
 
 		for _, u := range ticket_user {
