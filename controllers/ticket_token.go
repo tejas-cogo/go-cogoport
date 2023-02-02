@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_tokens"
 )
@@ -14,6 +15,18 @@ func ListTokenTicketDetail(c *gin.Context) {
 		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
+	}
+}
+
+func ListTokenTicketActivity(c *gin.Context) {
+	var filters models.TokenFilter
+	c.Bind(&filters)
+	ser, db, err := service.ListTokenTicketActivity(filters)
+	if c.Writer.Status() == 400 {
+		c.JSON(c.Writer.Status(), err)
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
 	}
 }
 
