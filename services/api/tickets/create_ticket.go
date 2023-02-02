@@ -10,7 +10,6 @@ import (
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_reviewers"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
-	"github.com/tejas-cogo/go-cogoport/workers"
 )
 
 type TicketService struct {
@@ -79,7 +78,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 		return ticket, err
 	}
 
-	workers.StartTicketClient()
+	// workers.StartTicketClient()
 	tx.Commit()
 
 	return ticket, err
