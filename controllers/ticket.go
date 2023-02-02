@@ -74,6 +74,10 @@ func ListTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Bad Request")
 	}
+	if filters.ID <= 0{
+		c.JSON(c.Writer.Status(), "ID Required!")
+		return 
+	}
 
 	c.JSON(c.Writer.Status(), service.ListTicketDetail(filters))
 }
