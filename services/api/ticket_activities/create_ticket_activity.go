@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -17,7 +18,6 @@ type TicketActivityService struct {
 
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
-	tx := db.Begin()
 	var err error
 
 	var ticket_user models.TicketUserFilter
@@ -40,6 +40,8 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 	if ticket_activity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
+			db := config.GetDB()
+			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 
@@ -62,17 +64,21 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			if stmt != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
+			fmt.Println("kljdhbvfksn", ticket_activity)
 			if err = tx.Create(&ticket_activity).Error; err != nil {
+
 				tx.Rollback()
-				return ticket_activity, errors.New("Activity couldn't be created")
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			if ticket_activity.UserType == "internal" {
 				SendTicketActivity(ticket_activity)
 			}
+			tx.Commit()
 		}
 	} else if ticket_activity.Status == "rejected" {
 		for _, u := range body.Activity.TicketID {
+			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 
@@ -102,9 +108,11 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			if ticket_activity.UserType == "internal" {
 				SendTicketActivity(ticket_activity)
 			}
+			tx.Commit()
 		}
 	} else if ticket_activity.Status == "escalated" {
 		for _, u := range body.Activity.TicketID {
+			tx := db.Begin()
 			var group_head models.GroupMember
 			ticket_activity.TicketID = u
 			var ticket_reviewer models.TicketReviewer
@@ -154,10 +162,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				tx.Rollback()
 				return ticket_activity, errors.New("Activity couldn't be created")
 			}
+			tx.Commit()
 
 		}
 	} else if ticket_activity.Status == "activity" {
 		for _, u := range body.Activity.TicketID {
+			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 			audits.CreateAuditTicket(ticket, tx)
@@ -173,9 +183,11 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			if ticket_activity.UserType == "internal" {
 				SendTicketActivity(ticket_activity)
 			}
+			tx.Commit()
 		}
 	} else {
 		var ticket models.Ticket
+		tx := db.Begin()
 		audits.CreateAuditTicket(ticket, tx)
 		stmt := validations.ValidateTicketActivity(ticket_activity)
 		if stmt != "validated" {
@@ -185,9 +197,8 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			tx.Rollback()
 			return ticket_activity, errors.New("Activity couldn't be created")
 		}
+		tx.Commit()
 	}
-
-	tx.Commit()
 
 	return ticket_activity, err
 }

@@ -34,11 +34,8 @@ type TicketDetail struct {
 	TicketReviewer    TicketReviewer
 	TicketSpectatorID uint
 	TicketSpectator   TicketSpectator
-	TicketActivityID  uint
-	TicketActivity    []TicketActivity
 	TicketID          uint
 	Ticket            Ticket
-	Priority          string
 }
 
 type TicketStat struct {
