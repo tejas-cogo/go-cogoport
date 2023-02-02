@@ -16,7 +16,7 @@ type Ticket struct {
 	TicketUser              TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Source                  string     `gorm:"not null"`
 	Type                    string     `gorm:"not null"`
-	Category                string     `gorm:"not null"`
+	Category                string
 	Subcategory             string
 	Description             string
 	Priority                string          `gorm:"not null:default:'low'"`
