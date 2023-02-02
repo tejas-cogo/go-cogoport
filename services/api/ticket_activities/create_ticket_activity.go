@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -40,39 +39,40 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 	if ticket_activity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
+			ticketactivity := ticket_activity
 			db := config.GetDB()
 			tx := db.Begin()
 			var ticket models.Ticket
-			ticket_activity.TicketID = u
+			ticketactivity.TicketID = u
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Ticket not found")
+				return ticketactivity, errors.New("Ticket not found")
 			}
 
 			ticket.Status = "closed"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Ticket couldn't be saved")
+				return ticketactivity, errors.New("Ticket couldn't be saved")
 			}
 
 			DeactivateReviewer(u, tx)
 
 			audits.CreateAuditTicket(ticket, tx)
-			stmt := validations.ValidateTicketActivity(ticket_activity)
+			stmt := validations.ValidateTicketActivity(ticketactivity)
 			if stmt != "validated" {
-				return ticket_activity, errors.New(stmt)
+				return ticketactivity, errors.New(stmt)
 			}
-			fmt.Println("kljdhbvfksn", ticket_activity)
-			if err = tx.Create(&ticket_activity).Error; err != nil {
+
+			if err = tx.Create(&ticketactivity).Error; err != nil {
 
 				tx.Rollback()
-				return ticket_activity, errors.New(err.Error())
+				return ticketactivity, errors.New(err.Error())
 			}
 
-			if ticket_activity.UserType == "internal" {
-				SendTicketActivity(ticket_activity)
+			if ticketactivity.UserType == "internal" {
+				SendTicketActivity(ticketactivity)
 			}
 			tx.Commit()
 		}
