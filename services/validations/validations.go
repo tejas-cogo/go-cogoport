@@ -124,8 +124,8 @@ func ValidateTokenTicket(ticket models.Ticket) string {
 	if ticket.Source == "" {
 		return ("Source is Required!")
 	}
-	if ticket.Type != "client" {
-		return ("Type should be client!")
+	if ticket.Type == "" {
+		return ("Ticket Type is Required!")
 	}
 	if ticket.TicketUserID <= 0 {
 		return ("TicketUserID is Required!")
