@@ -9,7 +9,11 @@ import (
 
 func CreateTicketActivity(c *gin.Context) {
 	var body models.Activity
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	var filters models.Filter
 	filters.Activity.TicketID = body.TicketID
 	filters.Activity.PerformedByID = body.PerformedByID
@@ -32,7 +36,8 @@ func ListTicketActivity(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 
 	ser, db, err := service.ListTicketActivity(filters)

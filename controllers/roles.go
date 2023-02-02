@@ -12,7 +12,8 @@ func ListRole(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 
 	ser, db, err := service.ListRole(filters)
@@ -26,7 +27,11 @@ func ListRole(c *gin.Context) {
 
 func CreateRole(c *gin.Context) {
 	var role models.Role
-	c.BindJSON(&role)
+	err := c.Bind(&role)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.CreateRole(role)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -37,7 +42,11 @@ func CreateRole(c *gin.Context) {
 
 func DeleteRole(c *gin.Context) {
 	var body models.Role
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	id := body.ID
 	ser, err := service.DeleteRole(id)
 	if err != nil {
@@ -49,7 +58,11 @@ func DeleteRole(c *gin.Context) {
 
 func UpdateRole(c *gin.Context) {
 	var body models.Role
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.UpdateRole(body)
 	if err != nil {
 		c.JSON(400, err.Error())
