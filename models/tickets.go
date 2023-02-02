@@ -39,21 +39,26 @@ type TicketDetail struct {
 }
 
 type TicketStat struct {
-	AgentID      string
-	AgentRmID    string
-	TicketUsers  []uint
-	Overdue      int64
-	DueToday     int64
-	Open         int64
-	Escalated    int64
-	Rejected     int64
-	Closed       int64
-	Reassigned   int64
-	Unresolved   int64
-	ExpiringSoon int64
-	HighPriority int64
-	StartDate    string
-	EndDate      string
+	AgentID         string
+	AgentRmID       string
+	TicketUsers     []uint
+	Overdue         int64
+	DueToday        int64
+	Open            int64
+	Escalated       int64
+	Rejected        int64
+	Closed          int64
+	Reassigned      int64
+	Unresolved      int64
+	ExpiringSoon    int64
+	HighPriority    int64
+	StartDate       string
+	EndDate         string
+	TicketUserID    uint
+	QFilter         string
+	ExpiryDate      string
+	TicketCreatedAt string
+	Tags            pq.StringArray `gorm:"type:text[]"`
 }
 
 type TicketGraph struct {
