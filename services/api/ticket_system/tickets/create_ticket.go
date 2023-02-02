@@ -47,7 +47,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
-			return ticket, errors.New("Default Timing had issue!")
+			return ticket, errors.New(err.Error())
 		}
 	}
 

@@ -43,7 +43,11 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_reviewer.GroupID = ticket_default_group.GroupID
 	var group_member models.GroupMember
 	if ticket_default_group.GroupMemberID < 1 {
-		txt.Where("group_id = ? and status = ? and ticket_user_id != ?", ticket_default_group.GroupID, "active", body.TicketUserID).Order("active_ticket_count asc").Order("hierarchy_level desc").First(&group_member)
+
+		if err := txt.Where("group_id = ? and status = ? and ticket_user_id != ?", ticket_default_group.GroupID, "active", body.TicketUserID).Order("active_ticket_count asc").Order("hierarchy_level desc").First(&group_member).Error; err != nil {
+			txt.Rollback()
+			return body, errors.New(err.Error())
+		}
 	} else {
 		txt.Where("id = ?", ticket_default_group.GroupMemberID).First(&group_member)
 	}
