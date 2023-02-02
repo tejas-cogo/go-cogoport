@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -78,12 +80,17 @@ func ListTicketDetail(c *gin.Context) {
 
 func CreateTicket(c *gin.Context) {
 	var body models.Ticket
-	c.BindJSON(&body)
+	err := c.BindJSON(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+	}
 	ser, err := service.CreateTicket(body)
+	fmt.Println(ser, err)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {
-		c.JSON(c.Writer.Status(), ser)
+		fmt.Println(c.Writer.Status(), ser)
+		c.JSON(c.Writer.Status(), "ser")
 	}
 
 }
