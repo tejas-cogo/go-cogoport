@@ -120,6 +120,9 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			var group_head models.GroupMember
 			ticket_activity.TicketID = u
 			var ticket_reviewer models.TicketReviewer
+			var ticket_default_type models.TicketDefaultType
+			var ticket_default_group models.TicketDefaultGroup
+			var new_default_group models.TicketDefaultGroup
 			var ticket models.Ticket
 
 			group_member, err := DeactivateReviewer(u, tx)
@@ -128,9 +131,43 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				return ticket_activity, err
 			}
 
-			if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)+1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+			if err = tx.Where("id = ? and status = ?", u, "unresolved").First(&ticket).Error; err != nil {
 				tx.Rollback()
 				return ticket_activity, errors.New(err.Error())
+			}
+
+			if err = tx.Where("ticket_type = ? and status = ?", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
+				if err = tx.Where("id = ? and status = ?", 1, "active").First(&ticket_default_type).Error; err != nil {
+					tx.Rollback()
+					return ticket_activity, errors.New(err.Error())
+				}
+			}
+
+			if err = tx.Where("ticket_default_type_id = ? and status = ? and group_id = ?", ticket_default_type.ID, "active", group_member.GroupID).First(&ticket_default_group).Error; err != nil {
+				if err = tx.Where("ticket_default_type_id = ? and status = ? and group_id = ?", 1, "active", group_member.GroupID).First(&ticket_default_group).Error; err != nil {
+					tx.Rollback()
+					return ticket_activity, errors.New(err.Error())
+				}
+			} else {
+				if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", (ticket_default_group.Level - 1)).First(&new_default_group).Error; err != nil {
+					if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+						tx.Rollback()
+						return ticket_activity, errors.New(err.Error())
+					}
+				} else {
+					if new_default_group.GroupMemberID > 0 {
+						if err = tx.Where("id = ? and status = ?", new_default_group.GroupMemberID, "active").First(&group_head).Error; err != nil {
+							tx.Rollback()
+							return ticket_activity, errors.New(err.Error())
+						}
+					} else {
+						if err = tx.Where("group_id = ? and status = ?", new_default_group.GroupMemberID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+							tx.Rollback()
+							return ticket_activity, errors.New(err.Error())
+						}
+					}
+
+				}
 			}
 
 			group_head.ActiveTicketCount += 1

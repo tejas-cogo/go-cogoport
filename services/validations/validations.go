@@ -77,6 +77,10 @@ func ValidateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) 
 		return ("Group Is Required!")
 	}
 
+	if ticket_default_group.Level <= 0 || ticket_default_group.Level > 3 {
+		return ("Level Must be Present Between 1 and 3!")
+	}
+
 	if ticket_default_group.TicketDefaultTypeID == 0 {
 		return ("TicketDefaultTypeID Is Required!")
 	}
