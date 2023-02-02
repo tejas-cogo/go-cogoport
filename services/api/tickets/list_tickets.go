@@ -68,7 +68,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	if filters.ExpiringSoon == "true" {
 		x := time.Now()
-		y := x.AddDate(0, 0, 10)
+		y := x.AddDate(0, 0, 1)
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 

@@ -77,6 +77,8 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	if err != nil {
 		return ticket, err
 	}
+
+	// workers.StartTicketClient()
 	tx.Commit()
 
 	return ticket, err

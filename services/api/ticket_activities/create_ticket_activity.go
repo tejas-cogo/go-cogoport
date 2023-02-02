@@ -13,7 +13,7 @@ import (
 )
 
 type TicketActivityService struct {
-	TicketActivity models.TicketActivity
+	ticket_activity models.TicketActivity
 }
 
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
@@ -36,25 +36,27 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			break
 		}
 	}
-	ticket_activity := body.TicketActivity
 
-	if ticket_activity.Status == "resolved" {
+	if body.TicketActivity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
-			db := config.GetDB()
+
+			ticket_activity := body.TicketActivity
 			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 
+			fmt.Println("ticket_activity", ticket_activity.ID)
+
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			ticket.Status = "closed"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			DeactivateReviewer(u, tx)
@@ -64,7 +66,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			if stmt != "validated" {
 				return ticket_activity, errors.New(stmt)
 			}
-			fmt.Println("kljdhbvfksn", ticket_activity)
+
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 
 				tx.Rollback()
@@ -76,21 +78,22 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			tx.Commit()
 		}
-	} else if ticket_activity.Status == "rejected" {
+	} else if body.TicketActivity.Status == "rejected" {
 		for _, u := range body.Activity.TicketID {
 			tx := db.Begin()
+			ticket_activity := body.TicketActivity
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 			ticket.Status = "rejected"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			DeactivateReviewer(u, tx)
@@ -102,7 +105,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -110,12 +113,16 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			tx.Commit()
 		}
-	} else if ticket_activity.Status == "escalated" {
+	} else if body.TicketActivity.Status == "escalated" {
 		for _, u := range body.Activity.TicketID {
 			tx := db.Begin()
+			ticket_activity := body.TicketActivity
 			var group_head models.GroupMember
 			ticket_activity.TicketID = u
 			var ticket_reviewer models.TicketReviewer
+			var ticket_default_type models.TicketDefaultType
+			var ticket_default_group models.TicketDefaultGroup
+			var new_default_group models.TicketDefaultGroup
 			var ticket models.Ticket
 
 			group_member, err := DeactivateReviewer(u, tx)
@@ -124,16 +131,50 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				return ticket_activity, err
 			}
 
-			if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)+1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+			if err = tx.Where("id = ? and status = ?", u, "unresolved").First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
+			}
+
+			if err = tx.Where("ticket_type = ? and status = ?", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
+				if err = tx.Where("id = ? and status = ?", 1, "active").First(&ticket_default_type).Error; err != nil {
+					tx.Rollback()
+					return ticket_activity, errors.New(err.Error())
+				}
+			}
+
+			if err = tx.Where("ticket_default_type_id = ? and status = ? and group_id = ?", ticket_default_type.ID, "active", group_member.GroupID).First(&ticket_default_group).Error; err != nil {
+				if err = tx.Where("ticket_default_type_id = ? and status = ? and group_id = ?", 1, "active", group_member.GroupID).First(&ticket_default_group).Error; err != nil {
+					tx.Rollback()
+					return ticket_activity, errors.New(err.Error())
+				}
+			} else {
+				if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", (ticket_default_group.Level - 1)).First(&new_default_group).Error; err != nil {
+					if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+						tx.Rollback()
+						return ticket_activity, errors.New(err.Error())
+					}
+				} else {
+					if new_default_group.GroupMemberID > 0 {
+						if err = tx.Where("id = ? and status = ?", new_default_group.GroupMemberID, "active").First(&group_head).Error; err != nil {
+							tx.Rollback()
+							return ticket_activity, errors.New(err.Error())
+						}
+					} else {
+						if err = tx.Where("group_id = ? and status = ?", new_default_group.GroupMemberID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+							tx.Rollback()
+							return ticket_activity, errors.New(err.Error())
+						}
+					}
+
+				}
 			}
 
 			group_head.ActiveTicketCount += 1
 
 			if err = tx.Save(&group_head).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			ticket_reviewer.TicketID = u
@@ -148,7 +189,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_reviewer).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			ticket.Status = "escalated"
@@ -165,8 +206,9 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			tx.Commit()
 
 		}
-	} else if ticket_activity.Status == "activity" {
+	} else if body.TicketActivity.Status == "activity" {
 		for _, u := range body.Activity.TicketID {
+			ticket_activity := body.TicketActivity
 			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
@@ -177,7 +219,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity,  errors.New(err.Error())
+				return ticket_activity, errors.New(err.Error())
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -188,6 +230,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	} else {
 		var ticket models.Ticket
 		tx := db.Begin()
+		ticket_activity := body.TicketActivity
 		audits.CreateAuditTicket(ticket, tx)
 		stmt := validations.ValidateTicketActivity(ticket_activity)
 		if stmt != "validated" {
@@ -195,12 +238,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 		}
 		if err = tx.Create(&ticket_activity).Error; err != nil {
 			tx.Rollback()
-			return ticket_activity,  errors.New(err.Error())
+			return ticket_activity, errors.New(err.Error())
 		}
 		tx.Commit()
 	}
 
-	return ticket_activity, err
+	return body.TicketActivity, err
 }
 
 func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {

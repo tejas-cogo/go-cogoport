@@ -18,9 +18,6 @@ func ListGroupMember(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Bad Request")
 		return
 	}
-	if err != nil {
-		c.JSON(c.Writer.Status(), "Not Found")
-	}
 
 	ser, db := service.ListGroupMember(filters)
 

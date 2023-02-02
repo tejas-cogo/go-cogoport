@@ -3,6 +3,7 @@ package validation
 import (
 	"time"
 
+	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
@@ -20,6 +21,9 @@ func ValidateGroupMember(group_member models.GroupMember) string {
 }
 
 func ValidateGroup(group models.Group) string {
+
+	var existed_group models.Group
+
 	if group.Name == "" {
 		return ("Group Name Is Required!")
 	}
@@ -28,10 +32,19 @@ func ValidateGroup(group models.Group) string {
 		return ("Name field must be between 2-40 chars!")
 	}
 
+	db := config.GetDB()
+	db.Where("name = ?", group.Name).First(&existed_group)
+
+	if existed_group.ID != 0 {
+		return ("Name already exists!")
+	}
+
 	return ("validated")
 }
 
 func ValidateRole(role models.Role) string {
+
+	var existed_role models.Role
 	if role.Name == "" {
 		return ("Role Name Is Required!")
 	}
@@ -48,6 +61,13 @@ func ValidateRole(role models.Role) string {
 		return ("Role field must be between 2-30 chars!")
 	}
 
+	db := config.GetDB()
+	db.Where("name = ?", role.Name).First(&existed_role)
+
+	if existed_role.ID != 0 {
+		return ("Name already exists!")
+	}
+
 	return ("validated")
 }
 
@@ -55,6 +75,10 @@ func ValidateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) 
 
 	if ticket_default_group.GroupID == 0 {
 		return ("Group Is Required!")
+	}
+
+	if ticket_default_group.Level <= 0 || ticket_default_group.Level > 3 {
+		return ("Level Must be Present Between 1 and 3!")
 	}
 
 	if ticket_default_group.TicketDefaultTypeID == 0 {
@@ -125,7 +149,7 @@ func ValidateTokenTicket(ticket models.Ticket) string {
 		return ("Source is Required!")
 	}
 	if ticket.Type == "" {
-		return ("Ticket Type is Required!")
+		return ("TicketType is Required!")
 	}
 	if ticket.TicketUserID <= 0 {
 		return ("TicketUserID is Required!")
@@ -135,8 +159,13 @@ func ValidateTokenTicket(ticket models.Ticket) string {
 }
 
 func ValidateTicketUser(ticket_user models.TicketUser) string {
+
+	var existed_ticket_user models.TicketUser
 	if ticket_user.Name == "" {
 		return ("User name is Required!")
+	}
+	if len(ticket_user.Name) < 2 || len(ticket_user.Name) > 40 {
+		return ("Name field must be between 2-40 chars!")
 	}
 	if ticket_user.Email == "" {
 		return ("Email is Required!")
@@ -149,6 +178,13 @@ func ValidateTicketUser(ticket_user models.TicketUser) string {
 	}
 	if ticket_user.Source == "" {
 		return ("Source is Required!")
+	}
+
+	db := config.GetDB()
+	db.Where("name = ?", ticket_user.Name).First(&existed_ticket_user)
+
+	if ticket_user.ID != 0 {
+		return ("Name already exists!")
 	}
 
 	return ("validated")

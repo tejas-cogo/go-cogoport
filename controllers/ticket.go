@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
@@ -41,6 +39,7 @@ func GetTicketStats(c *gin.Context) {
 	err := c.Bind(&stats)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 
 	ser, err := service.GetTicketStats(stats)
@@ -57,6 +56,7 @@ func GetTicketGraph(c *gin.Context) {
 	err := c.Bind(&graph)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 
 	ser, err := service.GetTicketGraph(graph)
@@ -73,6 +73,7 @@ func ListTicketDetail(c *gin.Context) {
 	err := c.Bind(&filters)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 	if filters.ID <= 0{
 		c.JSON(c.Writer.Status(), "ID Required!")
@@ -87,14 +88,14 @@ func CreateTicket(c *gin.Context) {
 	err := c.BindJSON(&body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 	ser, err := service.CreateTicket(body)
-	fmt.Println(ser, err)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {
-		fmt.Println(c.Writer.Status(), ser)
-		c.JSON(c.Writer.Status(), "ser")
+
+		c.JSON(c.Writer.Status(), ser)
 	}
 
 }

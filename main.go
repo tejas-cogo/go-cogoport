@@ -54,7 +54,7 @@ func main() {
 	logger.Info("INFO log Inside main")
 	logger.Warn("Warn log level message")
 	logger.Error("Error log level message")
-	// workers.StartTicketClient()
+
 	// workers.StartTicketHandler()
 	r.Run(":" + port)
 
