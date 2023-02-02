@@ -47,14 +47,14 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Ticket not found")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			ticket.Status = "closed"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Ticket couldn't be saved")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			DeactivateReviewer(u, tx)
@@ -84,13 +84,13 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("ticket couldn't be find")
+				return ticket_activity,  errors.New(err.Error())
 			}
 			ticket.Status = "rejected"
 
 			if err = tx.Save(&ticket).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Ticket couldn't be saved")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			DeactivateReviewer(u, tx)
@@ -102,7 +102,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Activity couldn't be created")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -121,19 +121,19 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			group_member, err := DeactivateReviewer(u, tx)
 			if err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Reviewer could not be deactivated")
+				return ticket_activity, err
 			}
 
 			if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)+1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Escalated Group Member not found")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			group_head.ActiveTicketCount += 1
 
 			if err = tx.Save(&group_head).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Escalated Group Member couldn't be saved")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			ticket_reviewer.TicketID = u
@@ -148,7 +148,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_reviewer).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Reviewer couldn't be created")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			ticket.Status = "escalated"
@@ -160,7 +160,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Activity couldn't be created")
+				return ticket_activity, errors.New(err.Error())
 			}
 			tx.Commit()
 
@@ -177,7 +177,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 			if err = tx.Create(&ticket_activity).Error; err != nil {
 				tx.Rollback()
-				return ticket_activity, errors.New("Activity couldn't be created")
+				return ticket_activity,  errors.New(err.Error())
 			}
 
 			if ticket_activity.UserType == "internal" {
@@ -195,7 +195,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 		}
 		if err = tx.Create(&ticket_activity).Error; err != nil {
 			tx.Rollback()
-			return ticket_activity, errors.New("Activity couldn't be created")
+			return ticket_activity,  errors.New(err.Error())
 		}
 		tx.Commit()
 	}
