@@ -15,6 +15,10 @@ func ListGroupMember(c *gin.Context) {
 	var filters models.FilterGroupMember
 	err := c.Bind(&filters)
 	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
+	if err != nil {
 		c.JSON(c.Writer.Status(), "Not Found")
 	}
 
@@ -30,7 +34,11 @@ func ListGroupMember(c *gin.Context) {
 
 func CreateGroupMember(c *gin.Context) {
 	var group_member models.CreateGroupMember
-	c.BindJSON(&group_member)
+	err := c.Bind(&group_member)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.CreateGroupMember(group_member)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -41,7 +49,11 @@ func CreateGroupMember(c *gin.Context) {
 
 func DeleteGroupMember(c *gin.Context) {
 	var body models.GroupMember
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	id := body.ID
 
 	ser, err := service.DeleteGroupMember(id)
@@ -54,7 +66,11 @@ func DeleteGroupMember(c *gin.Context) {
 
 func UpdateGroupMember(c *gin.Context) {
 	var body models.GroupMember
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.UpdateGroupMember(body)
 	if err != nil {
 		c.JSON(400, err.Error())

@@ -25,7 +25,7 @@ func CreateRole(role models.Role) (models.Role,error) {
 
 	if err := tx.Create(&role).Error; err != nil {
 		tx.Rollback()
-		return role, errors.New("Cannot create role!")
+		return role, errors.New(err.Error())
 	}
 
 	tx.Commit()

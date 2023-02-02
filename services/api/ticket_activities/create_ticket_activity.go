@@ -210,26 +210,26 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {
 
 	if err := tx.Where("ticket_id = ? and status = ?", ID, "active").First(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
-		return group_member, err
+		return group_member, errors.New(err.Error())
 	}
 
 	ticket_reviewer.Status = "inactive"
 
 	if err := tx.Save(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
-		return group_member, err
+		return group_member, errors.New(err.Error())
 	}
 
 	if err := tx.Where("ticket_user_id = ? and status = ?", ticket_reviewer.TicketUserID, "active").First(&group_member).Error; err != nil {
 		tx.Rollback()
-		return group_member, err
+		return group_member, errors.New(err.Error())
 	}
 
 	group_member.ActiveTicketCount = group_member.ActiveTicketCount - 1
 
 	if err := tx.Save(&group_member).Error; err != nil {
 		tx.Rollback()
-		return group_member, err
+		return group_member, errors.New(err.Error())
 	}
 
 	return group_member, err

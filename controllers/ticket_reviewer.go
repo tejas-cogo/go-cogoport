@@ -8,7 +8,11 @@ import (
 
 func ReassignTicketReviewer(c *gin.Context) {
 	var body models.ReviewerActivity
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.ReassignTicketReviewer(body)
 	if err != nil {
 		c.JSON(400, err.Error())

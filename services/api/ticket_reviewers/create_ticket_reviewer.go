@@ -29,14 +29,14 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	if err := txt.Where("ticket_type = ? and status = ?", body.Type, "active").First(&ticket_default_type).Error; err != nil {
 		if err := txt.Where("id = ?", 1).First(&ticket_default_type).Error; err != nil {
 			txt.Rollback()
-			return body, errors.New("Default Type had issue!")
+			return body, errors.New(err.Error())
 		}
 	}
 
 	if erro := txt.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_group).Error; erro != nil {
 		if err := txt.Where("ticket_default_type_id = ? ", 1).First(&ticket_default_group).Error; err != nil {
 			txt.Rollback()
-			return body, errors.New("Default Group couldn't be found")
+			return body, errors.New(err.Error())
 		}
 	}
 
@@ -64,7 +64,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	}
 	if err := txt.Create(&ticket_reviewer).Error; err != nil {
 		txt.Rollback()
-		return body, errors.New("TicketReviewer couldn't be created")
+		return body, errors.New(err.Error())
 	}
 
 	filters.GroupMember.ActiveTicketCount = group_member.ActiveTicketCount + 1
@@ -83,7 +83,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	}
 	if err := txt.Create(&ticket_activity).Error; err != nil {
 		txt.Rollback()
-		return body, errors.New("Reviewer Assigned Activity couldn't be created")
+		return body, errors.New(err.Error())
 	}
 
 	if ticket_activity.UserType == "internal" {

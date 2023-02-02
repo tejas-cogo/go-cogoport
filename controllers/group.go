@@ -11,7 +11,8 @@ func ListGroup(c *gin.Context) {
 	var filters models.FilterGroup
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 
 	ser, db, err := service.ListGroup(filters)
@@ -34,7 +35,11 @@ func ListGroupTag(c *gin.Context) {
 
 func CreateGroup(c *gin.Context) {
 	var group models.Group
-	c.BindJSON(&group)
+	err := c.Bind(&group)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.CreateGroup(group)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -45,7 +50,11 @@ func CreateGroup(c *gin.Context) {
 
 func DeleteGroup(c *gin.Context) {
 	var body models.Group
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	id := body.ID
 	ser, err := service.DeleteGroup(id)
 	if err != nil {
@@ -57,7 +66,11 @@ func DeleteGroup(c *gin.Context) {
 
 func UpdateGroup(c *gin.Context) {
 	var body models.Group
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.UpdateGroup(body)
 	if err != nil {
 		c.JSON(400, err.Error())

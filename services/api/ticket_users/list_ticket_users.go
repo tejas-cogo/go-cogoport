@@ -1,8 +1,6 @@
 package api
 
 import (
-	"errors"
-
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -10,7 +8,6 @@ import (
 
 func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm.DB, error) {
 	db := config.GetDB()
-
 	var err error
 
 	var ticket_user []models.TicketUser
@@ -18,10 +15,7 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 	if filters.GroupUnassigned == true {
 		var ticket_users []uint
 
-		if err := db.Model(&models.GroupMember{}).Where("status = ?", "active").Where("id != ?", 2).Distinct("ticket_user_id").Pluck("TicketUserId", &ticket_users).Error; err != nil {
-			db.Rollback()
-			return ticket_user, db, errors.New("Cannot find ticket users!")
-		}
+		db.Model(&models.GroupMember{}).Where("status = ?", "active").Where("id != ?", 2).Distinct("ticket_user_id").Pluck("TicketUserId", &ticket_users)
 
 		if len(ticket_users) != 0 {
 			db = db.Not("id IN ?", ticket_users)
@@ -30,9 +24,7 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 
 	//Assignee
 	if filters.AgentRmID != "" {
-
 		db2 := config.GetCDB()
-		tx2 := db2.Begin()
 
 		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
@@ -41,21 +33,11 @@ func ListTicketUser(filters models.TicketUserFilter) ([]models.TicketUser, *gorm
 		var ticket_user_id []uint
 		var ticket_users []uint
 
-		if err := tx2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
-			db.Rollback()
-			return ticket_user, db, errors.New("Cannot create ticket user!")
-		}
+		db2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
 
-		if err := db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
-			db.Rollback()
-			return ticket_user, db, errors.New("Cannot create ticket user!")
-		}
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
-		if err := db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_user_id").Order("ticket_user_id").Find(&ticket_reviewer).Pluck("ticket_user_id", &ticket_user_id).Error; err != nil {
-			db.Rollback()
-			return ticket_user, db, errors.New("Cannot create ticket user!")
-		}
-
+		db.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_user_id").Order("ticket_user_id").Find(&ticket_reviewer).Pluck("ticket_user_id", &ticket_user_id)
 	}
 
 	if filters.ID != 0 {

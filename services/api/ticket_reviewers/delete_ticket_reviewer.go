@@ -17,24 +17,24 @@ func DeleteTicketReviewer(id uint) (uint,error) {
 
 	if err := tx.Model(&ticket_reviewer).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot find ticket reviewer with this id!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete ticket reviewer!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", ticket_reviewer.GroupMemberID).First(&group_member).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot find ticket reviewer group member with this id!")
+		return id, errors.New(err.Error())
 	}
 
 	group_member.ActiveTicketCount -= 1
 
 	if err := tx.Save(&group_member).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot save group member!")
+		return id, errors.New(err.Error())
 	}
 
 	tx.Commit()

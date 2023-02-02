@@ -16,22 +16,22 @@ func DeleteGroup(id uint) (uint,error) {
 
 	if err := tx.Model(&group).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update group details!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Model(&group_member).Where("group_id = ? ", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update group member details!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&group_member).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete group member details!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&group).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot update group details!")
+		return id, errors.New(err.Error())
 	}
 
 	tx.Commit()

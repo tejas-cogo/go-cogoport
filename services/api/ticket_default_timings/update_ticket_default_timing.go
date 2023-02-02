@@ -15,7 +15,7 @@ func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (models.TicketDe
 
 	if err := tx.Where("id = ?", body.ID).Find(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Cannot find ticket default time with this id!")
+		return body, errors.New(err.Error())
 	}
 
 	if body.TicketDefaultTypeID > 0 {
@@ -40,7 +40,7 @@ func UpdateTicketDefaultTiming(body models.TicketDefaultTiming) (models.TicketDe
 
 	if err := tx.Save(&ticket_default_timing).Error; err != nil {
 		tx.Rollback()
-		return body, errors.New("Cannot update ticket default timing!")
+		return body, errors.New(err.Error())
 	}
 
 	tx.Commit()

@@ -33,7 +33,7 @@ func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser, error) 
 		tx := db.Begin()
 		if err := tx.Create(&ticket_user).Error; err != nil {
 			tx.Rollback()
-			return ticket_user, errors.New("Cannot create ticket user!")
+			return ticket_user, errors.New(err.Error())
 		}
 		tx.Commit()
 		return ticket_user, err

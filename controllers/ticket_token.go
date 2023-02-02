@@ -9,7 +9,11 @@ import (
 
 func ListTokenTicketDetail(c *gin.Context) {
 	var filters models.TokenFilter
-	c.Bind(&filters)
+	err := c.Bind(&filters)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.ListTokenTicketDetail(filters)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -20,7 +24,11 @@ func ListTokenTicketDetail(c *gin.Context) {
 
 func ListTokenTicketActivity(c *gin.Context) {
 	var filters models.TokenFilter
-	c.Bind(&filters)
+	err := c.Bind(&filters)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, db, err := service.ListTokenTicketActivity(filters)
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), err)
@@ -32,7 +40,11 @@ func ListTokenTicketActivity(c *gin.Context) {
 
 func GetTicketToken(c *gin.Context) {
 	var body models.TicketUser
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.GetTicketToken(body)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -44,7 +56,11 @@ func GetTicketToken(c *gin.Context) {
 func CreateTokenTicket(c *gin.Context) {
 
 	var token_filter models.TokenFilter
-	c.BindJSON(&token_filter)
+	err := c.Bind(&token_filter)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.CreateTokenTicket(token_filter)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -56,7 +72,11 @@ func CreateTokenTicket(c *gin.Context) {
 func CreateTokenTicketActivity(c *gin.Context) {
 
 	var token_filter models.TokenActivity
-	c.BindJSON(&token_filter)
+	err := c.Bind(&token_filter)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.CreateTokenTicketActivity(token_filter)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -79,7 +99,11 @@ func CreateTokenTicketActivity(c *gin.Context) {
 
 func UpdateTokenTicket(c *gin.Context) {
 	var body models.TokenFilter
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.UpdateTokenTicket(body)
 	if err != nil {
 		c.JSON(400, err.Error())

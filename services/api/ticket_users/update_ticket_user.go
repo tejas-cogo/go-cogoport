@@ -33,7 +33,7 @@ func UpdateTicketUser(body models.TicketUserRole) ([]models.TicketUser, error) {
 
 			if err := tx.Save(&u).Error; err != nil {
 				tx.Rollback()
-				return ticket_user, errors.New("System User Not Found")
+				return ticket_user, errors.New(err.Error())
 			}
 		}
 

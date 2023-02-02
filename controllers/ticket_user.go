@@ -12,7 +12,8 @@ func ListTicketUser(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Not Found")
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
 	}
 
 	ser, db, err := service.ListTicketUser(filters)
@@ -27,7 +28,11 @@ func ListTicketUser(c *gin.Context) {
 
 func CreateTicketUser(c *gin.Context) {
 	var ticket_user models.TicketUser
-	c.BindJSON(&ticket_user)
+	err := c.Bind(&ticket_user)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.CreateTicketUser(ticket_user)
 	if err != nil {
 		c.JSON(400, err.Error())
@@ -39,7 +44,11 @@ func CreateTicketUser(c *gin.Context) {
 
 func UpdateTicketUser(c *gin.Context) {
 	var body models.TicketUserRole
-	c.BindJSON(&body)
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
 	ser, err := service.UpdateTicketUser(body)
 	if err != nil {
 		c.JSON(400, err.Error())

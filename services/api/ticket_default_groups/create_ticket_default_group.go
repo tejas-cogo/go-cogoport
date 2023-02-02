@@ -25,7 +25,7 @@ func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (m
 
 	if err := tx.Create(&ticket_default_group).Error; err != nil {
 		tx.Rollback()
-		return ticket_default_group, errors.New("Cannot create ticket default group!")
+		return ticket_default_group, errors.New(err.Error())
 	}
 
 	tx.Commit()

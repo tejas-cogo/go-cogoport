@@ -16,12 +16,12 @@ func DeleteTicketToken(id uint) (uint, error) {
 
 	if err := tx.Model(&ticket_token).Where("id = ?", id).Update("status", "inactive").Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot find ticket token with this id!")
+		return id, errors.New(err.Error())
 	}
 
 	if err := tx.Where("id = ?", id).Delete(&ticket_token).Error; err != nil {
 		tx.Rollback()
-		return id, errors.New("Cannot delete ticket token!")
+		return id, errors.New(err.Error())
 	}
 
 	tx.Commit()

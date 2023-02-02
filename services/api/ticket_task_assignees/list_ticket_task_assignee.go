@@ -16,7 +16,7 @@ func ListTicketTaskAssignee() ([]models.TicketTaskAssignee, error) {
 
 	if err := tx.Find(&ticket_task_assignee).Error; err != nil {
 		tx.Rollback()
-		return ticket_task_assignee, errors.New("Cannot find ticket task assignee!")
+		return ticket_task_assignee, errors.New(err.Error())
 	}
 
 	tx.Commit()

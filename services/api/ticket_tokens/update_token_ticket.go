@@ -51,13 +51,13 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	if err := tx.Where("ticket_type = ? and status = ? ", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
 		tx.Rollback()
-		return ticket, errors.New("ticket_default_type User Not Found")
+		return ticket, errors.New(err.Error())
 	}
 
 	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_timing).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_timing).Error; err != nil {
 			tx.Rollback()
-			return ticket, errors.New("Default Timing had issue!")
+			return ticket, errors.New(err.Error())
 		}
 	}
 
@@ -71,7 +71,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	if err := tx.Save(&ticket).Error; err != nil {
 		tx.Rollback()
-		return ticket, errors.New("Ticket couldn't be created")
+		return ticket, errors.New(err.Error())
 	}
 
 	audits.CreateAuditTicket(ticket, db)
@@ -79,7 +79,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_group).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_group).Error; err != nil {
 			tx.Rollback()
-			return ticket, errors.New("Default Group had issue!")
+			return ticket, errors.New(err.Error())
 		}
 	}
 
