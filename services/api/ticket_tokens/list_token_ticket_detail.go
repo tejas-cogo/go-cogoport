@@ -5,7 +5,6 @@ import (
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_reviewers"
 	spectators "github.com/tejas-cogo/go-cogoport/services/api/ticket_spectators"
 	tickets "github.com/tejas-cogo/go-cogoport/services/api/tickets"

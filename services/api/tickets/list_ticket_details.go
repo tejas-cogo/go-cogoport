@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/tejas-cogo/go-cogoport/models"
-	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_reviewers"
 	spectators "github.com/tejas-cogo/go-cogoport/services/api/ticket_spectators"
 )
