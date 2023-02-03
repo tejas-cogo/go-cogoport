@@ -17,7 +17,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	var ticket_id []string
 
 	const (
-		YYYYMMDD = "2006-01-24"
+		YYYYMMDD = "2006-01-02"
 	)
 
 	var ticket []models.Ticket
