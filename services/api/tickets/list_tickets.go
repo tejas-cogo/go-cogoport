@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
 )
@@ -15,10 +16,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	var ticket_user models.TicketUser
 	var ticket_reviewer models.TicketReviewer
 	var ticket_id []string
-
-	const (
-		YYYYMMDD = "2006-01-02"
-	)
 
 	var ticket []models.Ticket
 
@@ -77,14 +74,14 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	}
 
 	if filters.TicketCreatedAt != "" {
-		CreatedAt, _ := time.Parse(YYYYMMDD, filters.TicketCreatedAt)
+		CreatedAt, _ := time.Parse(constants.DateTimeFormat(), filters.TicketCreatedAt)
 		x := CreatedAt
 		y := x.AddDate(0, 0, 1)
 		db = db.Where("created_at BETWEEN ? AND ?", x, y)
 	}
 
 	if filters.ExpiryDate != "" {
-		ExpiryDate, _ := time.Parse(YYYYMMDD, filters.ExpiryDate)
+		ExpiryDate, _ := time.Parse(constants.DateTimeFormat(), filters.ExpiryDate)
 		x := ExpiryDate
 		y := x.AddDate(0, 0, 1)
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
