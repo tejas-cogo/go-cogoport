@@ -47,3 +47,25 @@ type Sort struct {
 	SortBy   string
 	SortType string
 }
+
+//Model is sample of common table structure
+
+func Init() {
+
+	//Printing query
+	// db.LogMode(true)
+
+	//Automatically create migration as per model
+
+	// db.Migrator().DropTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
+
+	// db.Migrator().CreateTable(&TicketToken{})
+
+	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
+
+	// db.Migrator().AutoMigrate(&Ticket{})
+
+	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
+}
+
+// GetDB function return the instance of db

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
@@ -24,7 +25,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 	if body.TicketActivity.UserType == "" {
 		if body.TicketActivity.TicketUserID == 0 {
-			ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
+			if body.Activity.PerformedByID != uuid.Nil {
+				ticket_user.SystemUserID = body.Activity.PerformedByID.String()
+			} else {
+				ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
+			}
+
 		} else {
 			ticket_user.ID = body.TicketUserFilter.ID
 		}
