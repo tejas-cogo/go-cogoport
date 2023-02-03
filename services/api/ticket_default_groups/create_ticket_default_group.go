@@ -27,12 +27,12 @@ func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (m
 	tx.Where("ticket_default_type_id = ? and group_id = ? and group_member_id = ? and level = ? and status = ?", ticket_default_group.TicketDefaultTypeID, ticket_default_group.GroupID, ticket_default_group.GroupMemberID, ticket_default_group.Level, "active").First(&existed_default_group)
 
 	if existed_default_group.ID > 0 {
-		if err := tx.Model(&ticket_default_group).Where("id = ?", ticket_default_group.ID).Update("status","inactive").Error; err != nil {
+		if err := tx.Model(&ticket_default_group).Where("id = ?", existed_default_group.ID).Update("status","inactive").Error; err != nil {
 			tx.Rollback()
 			return ticket_default_group, errors.New(err.Error())
 		}
 
-		if err := tx.Where("id = ?", ticket_default_group.ID).Delete(&ticket_default_group).Error; err != nil {
+		if err := tx.Where("id = ?", existed_default_group.ID).Delete(&ticket_default_group).Error; err != nil {
 			tx.Rollback()
 			return ticket_default_group, errors.New(err.Error())
 		}
