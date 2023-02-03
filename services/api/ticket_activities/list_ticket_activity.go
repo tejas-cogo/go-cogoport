@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
 )
@@ -28,9 +29,9 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	if filters.UserType != "" {
 
 		if filters.UserType == "internal" {
-			db = db.Where("type != ?", "ticket_created")
+			db = db.Where("type IN ?", constants.AdminActivityView())
 		} else if filters.UserType == "client" {
-
+			db = db.Where("type IN ?", constants.ClientActivityView())
 		}
 
 	}

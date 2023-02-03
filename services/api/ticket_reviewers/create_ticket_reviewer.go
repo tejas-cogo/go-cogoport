@@ -33,7 +33,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		}
 	}
 
-	if erro := txt.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_group).Error; erro != nil {
+	if erro := txt.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_type.ID, "active", 3).First(&ticket_default_group).Error; erro != nil {
 		if err := txt.Where("ticket_default_type_id = ? ", 1).First(&ticket_default_group).Error; err != nil {
 			txt.Rollback()
 			return body, errors.New(err.Error())

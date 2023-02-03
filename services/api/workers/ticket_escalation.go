@@ -86,9 +86,41 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 			return err
 		}
 
-		if err := tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", group_member.HierarchyLevel+1).Order("ActiveTicketCount asc").First(&group_head).Error; err != nil {
+		var ticket_default_group models.TicketDefaultGroup
+		if err := tx.Where("group_id = ? and status = ?", group_member.GroupID, "active").First(&ticket_default_group).Error; err != nil {
 			tx.Rollback()
 			return err
+		}
+
+		var escalated_ticket_default_group models.TicketDefaultGroup
+
+		if err := tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", ticket_default_group.Level-1).First(&escalated_ticket_default_group).Error; err != nil {
+			if err := tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", ticket_default_group.Level).First(&escalated_ticket_default_group).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+
+		if escalated_ticket_default_group.GroupMemberID == 0 {
+			if ticket_default_group.Level != escalated_ticket_default_group.Level {
+				if err := tx.Where("group_id = ?  and status = ?", escalated_ticket_default_group.GroupID, "active").Order("hierarchy_level desc").Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+					tx.Rollback()
+					return err
+				}
+			} else {
+				if err := tx.Where("group_id = ?  and status = ? and hierarchy_level = ?", escalated_ticket_default_group.GroupID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
+					tx.Rollback()
+					return err
+				}
+			}
+		} else {
+			if ticket_default_group.Level != escalated_ticket_default_group.Level {
+				if err := tx.Where("id = ?  and status = ?", escalated_ticket_default_group.GroupMemberID, "active").First(&group_head).Error; err != nil {
+					tx.Rollback()
+					return err
+				}
+			}
+
 		}
 
 		ticket_reviewer_new.TicketID = ticket.ID
@@ -105,6 +137,22 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 
 		if err := tx.Save(&group_head).Error; err != nil {
 			tx.Rollback()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
 			return err
 		}
 
