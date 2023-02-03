@@ -71,34 +71,34 @@ func Create(name string) error {
 	fmt.Println("Generated new migration files...", f.Name())
 	return nil
 }
-func Init(db *sql.DB) (*Migrator, error) {
-	migrator.db = db
-	// Create `schema_migrations` table to remember which migrations were executed.
-	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
-        version varchar(255)
-    );`); err != nil {
-		fmt.Println("Unable to create `schema_migrations` table", err)
-		return migrator, err
-	}
-	// Find out all the executed migrations
-	rows, err := db.Query("SELECT version FROM `schema_migrations`;")
-	if err != nil {
-		return migrator, err
-	}
-	defer rows.Close()
-	// Mark the migrations as Done if it is already executed
-	for rows.Next() {
-		var version string
-		err := rows.Scan(&version)
-		if err != nil {
-			return migrator, err
-		}
-		if migrator.Migrations[version] != nil {
-			migrator.Migrations[version].done = true
-		}
-	}
-	return migrator, err
-}
+// func Init(db *sql.DB) (*Migrator, error) {
+// 	migrator.db = db
+// 	// Create `schema_migrations` table to remember which migrations were executed.
+// 	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
+//         version varchar(255)
+//     );`); err != nil {
+// 		fmt.Println("Unable to create `schema_migrations` table", err)
+// 		return migrator, err
+// 	}
+// 	// Find out all the executed migrations
+// 	rows, err := db.Query("SELECT version FROM `schema_migrations`;")
+// 	if err != nil {
+// 		return migrator, err
+// 	}
+// 	defer rows.Close()
+// 	// Mark the migrations as Done if it is already executed
+// 	for rows.Next() {
+// 		var version string
+// 		err := rows.Scan(&version)
+// 		if err != nil {
+// 			return migrator, err
+// 		}
+// 		if migrator.Migrations[version] != nil {
+// 			migrator.Migrations[version].done = true
+// 		}
+// 	}
+// 	return migrator, err
+// }
 func (m *Migrator) Up(step int) error {
 	tx, err := m.db.BeginTx(context.TODO(), &sql.TxOptions{})
 	if err != nil {
