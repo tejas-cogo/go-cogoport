@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
 )
@@ -26,8 +27,13 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	}
 
 	if filters.UserType != "" {
-		filters.UserType = "%" + filters.UserType + "%"
-		db = db.Where("user_type iLike ?", filters.UserType)
+
+		if filters.UserType == "internal" {
+			db = db.Where("type IN ?", constants.AdminActivityView())
+		} else if filters.UserType == "client" {
+			db = db.Where("type IN ?", constants.ClientActivityView())
+		}
+
 	}
 
 	if filters.Status != "" {
@@ -35,7 +41,6 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	}
 
 	db = db.Order("created_at desc").Preload("TicketUser").Find(&ticket_activity)
-
 
 	return ticket_activity, db, err
 }

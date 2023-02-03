@@ -52,7 +52,6 @@ type Sort struct {
 
 func Init() {
 
-	// db := config.GetDB()
 	//Printing query
 	// db.LogMode(true)
 
