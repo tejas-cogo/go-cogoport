@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -17,10 +18,6 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 	var ticket_user models.TicketUser
 	var ticket_id []uint
 	var ticket_users []uint
-
-	const (
-		DateTime = "2006-01-02"
-	)
 
 	if graph.AgentRmID != "" {
 
@@ -68,8 +65,8 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 	var x time.Time
 	var y time.Time
-	t := time.Now().Format(DateTime)
-	y, _ = time.Parse(DateTime, t)
+	t := time.Now().Format(constants.DateTimeFormat())
+	y, _ = time.Parse(constants.DateTimeFormat(), t)
 
 	graph.TodayDate = time.Now()
 
@@ -114,7 +111,7 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 	weekday := time.Now().Weekday()
 
-	y, _ = time.Parse(DateTime, t)
+	y, _ = time.Parse(constants.DateTimeFormat(), t)
 
 	t1 := int(weekday)
 
