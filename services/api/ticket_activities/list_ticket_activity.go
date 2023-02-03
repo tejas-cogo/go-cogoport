@@ -26,8 +26,13 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	}
 
 	if filters.UserType != "" {
-		filters.UserType = "%" + filters.UserType + "%"
-		db = db.Where("user_type iLike ?", filters.UserType)
+
+		if filters.UserType == "internal" {
+			db = db.Where("type != ?", "ticket_created")
+		} else if filters.UserType == "client" {
+
+		}
+
 	}
 
 	if filters.Status != "" {
@@ -35,7 +40,6 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	}
 
 	db = db.Order("created_at desc").Preload("TicketUser").Find(&ticket_activity)
-
 
 	return ticket_activity, db, err
 }
