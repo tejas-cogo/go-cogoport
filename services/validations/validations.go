@@ -194,7 +194,7 @@ func ValidateTicket(ticket models.Ticket) string {
 	if ticket.Type == "" {
 		return ("Ticket Type Is Required!")
 	}
-	if ticket.Tat == "" {
+	if ticket.Tat == time.Now() {
 		return ("Tat couldn't be set!")
 	}
 	if ticket.ExpiryDate == time.Now() {

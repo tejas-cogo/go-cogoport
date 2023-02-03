@@ -62,7 +62,13 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
-	ticket.Tat = ticket_default_timing.Tat
+	// ticket.Tat = ticket_default_timing.Tat
+	ticket.Tat = time.Now()
+
+	Tat_Duration := helpers.GetDuration(ticket_default_timing.Tat)
+
+	ticket.Tat = ticket.ExpiryDate.Add(time.Hour * time.Duration(Tat_Duration))
+	
 	ticket.ExpiryDate = time.Now()
 
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
