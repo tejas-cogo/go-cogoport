@@ -1,9 +1,13 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
+	group_service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_groups"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_types"
 )
 
@@ -35,11 +39,33 @@ func ListTicketDefaultType(c *gin.Context) {
 	}
 
 	ser, db := service.ListTicketDefaultType(filters)
+
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
-		pg := paginate.New()
-		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+		data := paginate.New().Response(db, c.Request, &ser)
+		items, _ := json.Marshal(data.Items)
+		var output []models.TicketDefault
+
+		err := json.Unmarshal([]byte(items), &output)
+		if err != nil {
+			print(err)
+		}
+
+		list := make([]interface{}, 0)
+		for _, value := range output {
+			fmt.Println(value)
+			var f models.TicketDefaultGroup
+			f.TicketDefaultTypeID = value.ID
+
+			value.TicketDefaultGroupTypeQuery, _ = group_service.ListTicketDefaultGroup(f)
+			list = append(list, value)
+
+		}
+
+		data.Items = list
+
+		c.JSON(c.Writer.Status(), data)
 	}
 }
 
