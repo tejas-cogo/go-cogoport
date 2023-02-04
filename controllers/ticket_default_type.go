@@ -55,10 +55,8 @@ func ListTicketDefaultType(c *gin.Context) {
 		for _, value := range output {
 			var f models.TicketDefaultGroup
 			f.TicketDefaultTypeID = value.ID
-
 			value.TicketDefaultGroupTypeQuery, _ = group_service.ListTicketDefaultGroup(f)
 			list = append(list, value)
-
 		}
 
 		data.Items = list
