@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -16,52 +17,31 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 	var err error
 
 	var ticket_reviewer []models.TicketReviewer
-	var ticket_user []models.TicketUser
-	var ticket_id []uint
+	var ticket_user models.TicketUser
 	var ticket_users []uint
+	var ticket_id []uint
 	t := time.Now()
 
 	if stats.AgentRmID != "" {
 
 		db2 := config.GetCDB()
-		tx2 := db2.Begin()
 		var partner_user_rm_mapping []models.PartnerUserRmMapping
 		var partner_user_rm_ids []string
 
-		if err := tx2.Where("reporting_manager_id = ? and status = ?", stats.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
+		db2.Where("reporting_manager_id = ? and status = ?", stats.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
 
-		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
+		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
-		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
+		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	}
+	} else if stats.AgentID != "" {
+		db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
 
-	if stats.AgentID != "" {
-		if err := tx.Where("system_user_id = ?", stats.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
-
-		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
+		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	} else {
-
-		if err := tx.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
+		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 	}
+
 
 	db = config.GetDB()
 
@@ -175,6 +155,8 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 			tx.Rollback()
 			return stats, errors.New(err.Error())
 		}
+
+		fmt.Println("no stats", ticket_id)
 
 		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon).Error; err != nil {
 			tx.Rollback()
