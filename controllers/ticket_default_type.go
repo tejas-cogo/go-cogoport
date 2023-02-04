@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
@@ -54,7 +53,6 @@ func ListTicketDefaultType(c *gin.Context) {
 
 		list := make([]interface{}, 0)
 		for _, value := range output {
-			fmt.Println(value)
 			var f models.TicketDefaultGroup
 			f.TicketDefaultTypeID = value.ID
 
