@@ -21,15 +21,15 @@ type TicketData struct {
 
 // const redisAddr = "login-apollo.dev.cogoport.io:6379"
 
-func StartTicketClient() {
+func StartTicketClient(ID uint) {
 	log.Print("Start of Ticket Client")
 	client := asynq.NewClient(asynq.RedisClientOpt{
 		Addr:     redisAddr,
 		Password: "f7d8279ad6ecaea58ccffd277a79b1cc4019da22713118805a9341d15a76c178",
 	})
 
-	task2, err := tasks.ScheduleTicketExpirationTask(174)
-	task1, err := tasks.ScheduleTicketEscalationTask(174)
+	task2, err := tasks.ScheduleTicketExpirationTask(ID)
+	task1, err := tasks.ScheduleTicketEscalationTask(ID)
 
 	tat := "00d:00h:05m"
 

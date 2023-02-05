@@ -20,7 +20,7 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 
 	tx := db.Begin()
 
-	if err := tx.Where("id = ?", p.TicketID).First(&ticket).Error; err != nil {
+	if err := tx.Where("id = ? ", p.TicketID).First(&ticket).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
