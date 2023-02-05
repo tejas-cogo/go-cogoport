@@ -16,31 +16,29 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 	tx := db.Begin()
 	var err error
 
-	var ticket_reviewer []models.TicketReviewer
-	var ticket_user models.TicketUser
-	var ticket_users []uint
+	// var ticket_reviewer []models.TicketReviewer
 	var ticket_id []uint
 	t := time.Now()
 
-	if stats.AgentRmID != "" {
+	// if stats.AgentRmID != "" {
 
-		db2 := config.GetCDB()
-		var partner_user_rm_mapping []models.PartnerUserRmMapping
-		var partner_user_rm_ids []string
+	// 	db2 := config.GetCDB()
+	// 	var partner_user_rm_mapping []models.PartnerUserRmMapping
+	// 	var partner_user_rm_ids []string
 
-		db2.Where("reporting_manager_id = ? and status = ?", stats.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
+	// 	db2.Where("reporting_manager_id = ? and status = ?", stats.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
 
-		db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
+	// 	db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
 
-		db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	// 	db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-	} else if stats.AgentID != "" {
-		db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
+	// } else if stats.AgentID != "" {
+	// 	db.Where("system_user_id = ?", stats.AgentID).First(&ticket_user)
 
-		db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
-	} else {
-		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
-	}
+	// 	db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	// } else {
+	// 	db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+	// }
 
 
 	db = config.GetDB()

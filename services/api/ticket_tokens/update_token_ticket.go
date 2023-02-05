@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
@@ -13,14 +14,16 @@ import (
 
 func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	db := config.GetDB()
+	db2 := config.GetCDB()
+
 	tx := db
+	tx2 := db2
 	var err error
 	var ticket models.Ticket
-	var group_member models.GroupMember
 	var ticket_token models.TicketToken
 	var ticket_reviewer models.TicketReviewer
 	var ticket_default_timing models.TicketDefaultTiming
-	var ticket_default_group models.TicketDefaultGroup
+	var ticket_default_role models.TicketDefaultRole
 	var ticket_default_type models.TicketDefaultType
 
 	tx.Where("ticket_token = ?", body.TicketToken).First(&ticket_token)
@@ -62,7 +65,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
-	ticket.Tat = ticket_default_timing.Tat
+	// ticket.Tat = ticket_default_timing.Tat
+	ticket.Tat = time.Now().UTC()
 	ticket.ExpiryDate = time.Now()
 
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
@@ -76,8 +80,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	audits.CreateAuditTicket(ticket, db)
 
-	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_group).Error; erro != nil {
-		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_group).Error; err != nil {
+	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_role).Error; erro != nil {
+		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_role).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())
 		}
@@ -88,28 +92,23 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	old_reviewer.Status = "inactive"
 	tx.Save(&old_reviewer)
 
-	tx.Where("id = ? and status = ?", old_reviewer.GroupMemberID, "active").First(&group_member)
-	group_member.ActiveTicketCount -= 1
-	tx.Save(&group_member)
-
 	ticket_reviewer.TicketID = ticket.ID
-	ticket_reviewer.GroupID = ticket_default_group.GroupID
+	ticket_reviewer.RoleID = ticket_default_role.RoleID
+	ticket_reviewer.UserID = ticket_default_role.UserID
 	ticket_reviewer.Status = "active"
 
-	if ticket_default_group.GroupMemberID > 0 {
-		tx.Where("id = ? and status = ?", ticket_default_group.GroupMemberID, "active").First(&group_member)
-		ticket_reviewer.GroupMemberID = group_member.ID
-	} else {
-		tx.Where("group_id = ? and status = ?", ticket_default_group.GroupID, "active").Order("hierarchy_level desc ").Order("active_ticket_count asc").First(&group_member)
-		ticket_reviewer.GroupMemberID = group_member.ID
+	if ticket_reviewer.UserID == uuid.Nil {
+		var partner_user models.PartnerUser
+		// TODO: circulation logic peding
+
+		if err := db2.Where("role_ids = '{?}'", ticket_default_role.RoleID).First(&partner_user).Error; err != nil {
+			tx2.Rollback()
+			return body, errors.New(err.Error())
+		}
+		ticket_reviewer.UserID = partner_user.UserID
+
 	}
-	ticket_reviewer.TicketUserID = group_member.TicketUserID
-
-	tx.Create(&ticket_reviewer)
-
-	group_member.ActiveTicketCount += 1
-
-	tx.Save(&group_member)
+	ticket_reviewer.Status = "active"
 
 	var filters models.Filter
 

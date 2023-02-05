@@ -9,21 +9,20 @@ import (
 
 type TicketActivity struct {
 	gorm.Model
-	TicketID     uint `gorm:"not null"`
-	TicketUserID uint
-	TicketUser   TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	UserType     string     `gorm:"not null"`
-	Description  string
-	Type         string          `gorm:"not null"`
-	Data         gormjsonb.JSONB `gorm:"type:json"`
-	IsRead       bool
-	Status       string
+	TicketID    uint      `gorm:"not null"`
+	UserID      uuid.UUID `gorm:"type:uuid"`
+	UserType    string    `gorm:"not null"`
+	Description string
+	Type        string          `gorm:"not null"`
+	Data        gormjsonb.JSONB `gorm:"type:json"`
+	IsRead      bool
+	Status      string
 }
 
 type Activity struct {
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
 	TicketID      []uint
-	TicketUserID  uint
+	UserID        string
 	Description   string
 	Data          gormjsonb.JSONB `gorm:"type:json"`
 	Type          string

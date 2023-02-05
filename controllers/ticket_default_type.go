@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	models "github.com/tejas-cogo/go-cogoport/models"
-	group_service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_groups"
+	role_service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_roles"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_types"
 )
 
@@ -53,9 +53,9 @@ func ListTicketDefaultType(c *gin.Context) {
 
 		list := make([]interface{}, 0)
 		for _, value := range output {
-			var f models.TicketDefaultGroup
+			var f models.TicketDefaultRole
 			f.TicketDefaultTypeID = value.ID
-			value.TicketDefaultGroupTypeQuery, _ = group_service.ListTicketDefaultGroup(f)
+			value.TicketDefaultRole, _ = role_service.ListTicketDefaultRole(f)
 			list = append(list, value)
 		}
 

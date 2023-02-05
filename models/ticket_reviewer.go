@@ -7,20 +7,18 @@ import (
 
 type TicketReviewer struct {
 	gorm.Model
-	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	TicketID      uint      `gorm:"not null"`
-	TicketUserID  uint      `gorm:"not null"`
-	TicketUser    TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	GroupID       uint   `gorm:"not null"`
-	GroupMemberID uint   `gorm:"not null"`
-	Status        string `gorm:"not null:default:'active'"`
+	PerformedByID       uuid.UUID `gorm:"type:uuid"`
+	TicketID uint      `gorm:"not null"`
+	UserID   uuid.UUID `gorm:"not null"`
+	RoleID   uuid.UUID `gorm:"not null"`
+	// TicketDefaultRoleID uint      `gorm:"not null"`
+	Status string `gorm:"not null:default:'active'"`
 }
 
 type ReviewerActivity struct {
 	TicketID       uint
-	ReviewerUserID uint
-	GroupID        uint
-	GroupMemberID  uint
+	ReviewerUserID uuid.UUID
+	RoleID         uuid.UUID
 	PerformedByID  uuid.UUID `gorm:"type:uuid"`
 	Description    string
 }

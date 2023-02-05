@@ -124,8 +124,8 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 		}
 
 		ticket_reviewer_new.TicketID = ticket.ID
-		ticket_reviewer_new.GroupID = group_head.GroupID
-		ticket_reviewer_new.GroupMemberID = group_head.ID
+		ticket_reviewer_new.RoleID = group_head.GroupID
+		ticket_reviewer_new.UserID = group_head.ID
 		ticket_reviewer_new.TicketUserID = group_head.TicketUserID
 
 		if err := tx.Create(&ticket_reviewer_new).Error; err != nil {
@@ -137,22 +137,6 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 
 		if err := tx.Save(&group_head).Error; err != nil {
 			tx.Rollback()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
 			return err
 		}
 

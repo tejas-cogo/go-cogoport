@@ -11,11 +11,11 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint `gorm:"not null"`
-	PerformedByID           uuid.UUID
-	TicketUser              TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Source                  string     `gorm:"not null"`
-	Type                    string     `gorm:"not null"`
+	TicketUserID            uint      `gorm:"not null"`
+	UserID                  uuid.UUID `gorm:"not null"`
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
 	Category                string
 	Subcategory             string
 	Description             string
@@ -23,7 +23,7 @@ type Ticket struct {
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
-	Tat                     string          `gorm:"not null"`
+	Tat                     time.Time       `gorm:"not null"`
 	ExpiryDate              time.Time       `gorm:"not null"`
 	IsUrgent                bool
 	Status                  string `gorm:"not null:default:'active'"`
@@ -104,7 +104,7 @@ type TicketExtraFilter struct {
 	MyTicket                string
 	AgentID                 string
 	AgentRmID               string
-	TicketUser              TicketUser
+	UserID                  string
 	Source                  string
 	Type                    string
 	Category                string

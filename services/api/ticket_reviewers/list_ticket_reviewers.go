@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
@@ -15,8 +16,8 @@ func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,
 		db = db.Where("ticket_id = ?", filters.TicketID)
 	}
 
-	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	if filters.UserID != uuid.Nil {
+		db = db.Where("ticket_user_id = ?", filters.UserID)
 	}
 
 	if filters.Status != "" {
@@ -24,7 +25,6 @@ func ListTicketReviewer(filters models.TicketReviewer) ([]models.TicketReviewer,
 	}
 
 	db = db.Preload("TicketUser").Find(&ticket_reviewer)
-
 
 	return ticket_reviewer, db
 }

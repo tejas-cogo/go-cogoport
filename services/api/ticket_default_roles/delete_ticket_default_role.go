@@ -6,19 +6,19 @@ import (
 	"errors"
 )
 
-func DeleteTicketDefaultGroup(id uint) (uint,error){
+func DeleteTicketDefaultRole(id uint) (uint,error){
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
 
-	var ticket_default_group models.TicketDefaultGroup
+	var ticket_default_role models.TicketDefaultRole
 
-	if err := tx.Model(&ticket_default_group).Where("id = ?", id).Update("status","inactive").Error; err != nil {
+	if err := tx.Model(&ticket_default_role).Where("id = ?", id).Update("status","inactive").Error; err != nil {
 		tx.Rollback()
 		return id, errors.New(err.Error())
 	}
 
-	if err := tx.Where("id = ?", id).Delete(&ticket_default_group).Error; err != nil {
+	if err := tx.Where("id = ?", id).Delete(&ticket_default_role).Error; err != nil {
 		tx.Rollback()
 		return id, errors.New(err.Error())
 	}

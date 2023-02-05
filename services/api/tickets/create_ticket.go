@@ -10,6 +10,7 @@ import (
 	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_reviewers"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	"github.com/tejas-cogo/go-cogoport/workers"
 )
 
 type TicketService struct {
@@ -26,8 +27,8 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
 
-	if ticket.TicketUserID == 0 {
-		if err := tx.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user).Error; err != nil {
+	if ticket.UserID == 0 {
+		if err := tx.Where("system_user_id = ? ", ticket.UserID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())
 		}
@@ -52,7 +53,8 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
-	ticket.Tat = ticket_default_timing.Tat
+	// ticket.Tat = helpers.GetDuration(ticket_default_timing.Tat)
+
 	ticket.ExpiryDate = time.Now()
 
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
@@ -78,7 +80,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 		return ticket, err
 	}
 
-	// workers.StartTicketClient()
+	workers.StartTicketClient(ticket.ID)
 	tx.Commit()
 
 	return ticket, err

@@ -18,6 +18,7 @@ func CreateTicketActivity(c *gin.Context) {
 	filters.Activity.TicketID = body.TicketID
 	filters.Activity.PerformedByID = body.PerformedByID
 	filters.TicketActivity.Type = body.Type
+	filters.TicketActivity.UserType = body.UserType
 	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Data = body.Data
 	filters.TicketActivity.Status = body.Status
