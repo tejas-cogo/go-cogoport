@@ -16,11 +16,10 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	tx := db
 	var err error
 	var ticket models.Ticket
-	var group_member models.GroupMember
 	var ticket_token models.TicketToken
 	var ticket_reviewer models.TicketReviewer
 	var ticket_default_timing models.TicketDefaultTiming
-	var ticket_default_group models.TicketDefaultGroup
+	var ticket_default_role models.TicketDefaultRole
 	var ticket_default_type models.TicketDefaultType
 
 	tx.Where("ticket_token = ?", body.TicketToken).First(&ticket_token)

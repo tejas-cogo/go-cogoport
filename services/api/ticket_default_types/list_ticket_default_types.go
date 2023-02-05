@@ -10,10 +10,6 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 	db := config.GetDB()
 	var ticket_default []models.TicketDefault
 
-	group_member_query := db.Model(&models.GroupMember{}).Select("group_members.id as group_member_id,ticket_users.id as ticket_user_id,ticket_users.email as group_member_email,ticket_users.name as group_member_name").Joins("left join ticket_users on group_members.ticket_user_id = ticket_users.id and ticket_users.deleted_at is null").Where("group_members.deleted_at is null")
-
-	group_query := db.Model(&models.Group{}).Select("groups.name as group_name,groups.id as group_id,Count(distinct group_members.id) as count").Joins("left join group_members on group_members.group_id = groups.id and group_members.deleted_at is null").Where("groups.deleted_at is null").Group("groups.name,groups.id")
-
 	ticket_default_group_query := db.Model(&models.TicketDefaultGroup{}).Select("ticket_default_groups.id as ticket_default_group_id,ticket_default_groups.level as group_level,ticket_default_groups.status as status ,ticket_default_groups.ticket_default_type_id as ticket_default_type_id,json_agg(groups.*) as groups ,json_agg(group_members.*) as group_members").Joins("left join (?) groups on groups.group_id = ticket_default_groups.group_id", group_query).Joins("left join (?) group_members on group_members.group_member_id = ticket_default_groups.group_member_id", group_member_query).Where("ticket_default_groups.deleted_at is null").Group("ticket_default_groups.id,ticket_default_groups.level,ticket_default_groups.ticket_default_type_id")
 
 	ticket_default_group_type_query := db.Model(&models.TicketDefaultType{}).Select("ticket_default_types.id as ticket_default_type_id,json_agg(default_groups.*) ticket_default_groups").Joins("left join (?) default_groups on default_groups.ticket_default_type_id = ticket_default_types.id", ticket_default_group_query).Group("ticket_default_types.id")

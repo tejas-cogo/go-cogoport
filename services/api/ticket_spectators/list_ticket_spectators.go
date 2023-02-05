@@ -17,8 +17,8 @@ func ListTicketSpectator(filters models.TicketSpectator) ([]models.TicketSpectat
 		db = db.Where("ticket_id = ?", filters.TicketID)
 	}
 
-	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	if filters.UserID != "" {
+		db = db.Where("ticket_user_id = ?", filters.UserID)
 	}
 
 	if filters.Status != "" {

@@ -18,8 +18,8 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 		db = db.Where("ticket_id = ?", filters.TicketID)
 	}
 
-	if filters.TicketUserID > 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	if filters.UserID != "" {
+		db = db.Where("user_id = ?", filters.UserID)
 	}
 
 	if filters.IsRead != false {

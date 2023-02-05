@@ -25,22 +25,16 @@ type PartnerUser struct {
 type Filter struct {
 	gorm.Model
 	Ticket              Ticket
-	TicketUser          TicketUser
-	Group               Group
-	GroupMember         GroupMember
-	Role                Role
 	TicketActivity      TicketActivity
 	Activity            Activity
 	TicketAudit         TicketAudit
-	TicketDefaultGroup  TicketDefaultGroup
+	TicketDefaultRole   TicketDefaultRole
 	TicketDefaultTiming TicketDefaultTiming
 	TicketDefaultType   TicketDefaultType
 	TicketReviewer      TicketReviewer
 	TicketSpectator     TicketSpectator
 	TicketTask          TicketTask
 	TicketToken         TicketToken
-	TicketUserFilter    TicketUserFilter
-	FilterGroupMember   FilterGroupMember
 }
 
 type Sort struct {

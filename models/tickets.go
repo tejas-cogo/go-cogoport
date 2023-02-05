@@ -4,18 +4,16 @@ import (
 	"time"
 
 	gormjsonb "github.com/dariubs/gorm-jsonb"
-	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint `gorm:"not null"`
-	PerformedByID           uuid.UUID
-	TicketUser              TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Source                  string     `gorm:"not null"`
-	Type                    string     `gorm:"not null"`
+	TicketUserID            uint   `gorm:"not null"`
+	UserID                  string `gorm:"not null"`
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
 	Category                string
 	Subcategory             string
 	Description             string
@@ -104,7 +102,7 @@ type TicketExtraFilter struct {
 	MyTicket                string
 	AgentID                 string
 	AgentRmID               string
-	TicketUser              TicketUser
+	UserID                  string
 	Source                  string
 	Type                    string
 	Category                string

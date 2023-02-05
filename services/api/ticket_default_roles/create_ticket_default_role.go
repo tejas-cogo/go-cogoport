@@ -1,49 +1,50 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	"errors"
-	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	// validations _"github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
-type TicketDefaultGroupService struct {
-	TicketDefaultGroup models.TicketDefaultGroup
+type TicketDefaultRoleService struct {
+	TicketDefaultRole models.TicketDefaultRole
 }
 
-func CreateTicketDefaultGroup(ticket_default_group models.TicketDefaultGroup) (models.TicketDefaultGroup,error) {
+func CreateTicketDefaultRole(ticket_default_role models.TicketDefaultRole) (models.TicketDefaultRole, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
-	var existed_default_group models.TicketDefaultGroup
+	var existed_default_role models.TicketDefaultRole
 
-	stmt := validations.ValidateTicketDefaultGroup(ticket_default_group)
-	if stmt != "validated" {
-		return ticket_default_group, errors.New(stmt)
+	// stmt := validations.ValidateTicketDefaultRole(ticket_default_role)
+	// if stmt != "validated" {
+	// 	return ticket_default_role, errors.New(stmt)
+	// }
+
+	ticket_default_role.Status = "active"
+
+	tx.Where("ticket_default_type_id = ? and role_id = ? and user_id = ? and level = ? and status = ?", ticket_default_role.TicketDefaultTypeID, ticket_default_role.RoleID, ticket_default_role.UserID, ticket_default_role.Level, "active").First(&existed_default_role)
+
+	if existed_default_role.ID > 0 {
+		if err := tx.Model(&ticket_default_role).Where("id = ?", existed_default_role.ID).Update("status", "inactive").Error; err != nil {
+			tx.Rollback()
+			return ticket_default_role, errors.New(err.Error())
+		}
+
+		if err := tx.Where("id = ?", existed_default_role.ID).Delete(&ticket_default_role).Error; err != nil {
+			tx.Rollback()
+			return ticket_default_role, errors.New(err.Error())
+		}
 	}
-	
-	ticket_default_group.Status = "active"
 
-	tx.Where("ticket_default_type_id = ? and group_id = ? and group_member_id = ? and level = ? and status = ?", ticket_default_group.TicketDefaultTypeID, ticket_default_group.GroupID, ticket_default_group.GroupMemberID, ticket_default_group.Level, "active").First(&existed_default_group)
-
-	if existed_default_group.ID > 0 {
-		if err := tx.Model(&ticket_default_group).Where("id = ?", existed_default_group.ID).Update("status","inactive").Error; err != nil {
-			tx.Rollback()
-			return ticket_default_group, errors.New(err.Error())
-		}
-
-		if err := tx.Where("id = ?", existed_default_group.ID).Delete(&ticket_default_group).Error; err != nil {
-			tx.Rollback()
-			return ticket_default_group, errors.New(err.Error())
-		}
-	} 
-
-	if err := tx.Create(&ticket_default_group).Error; err != nil {
+	if err := tx.Create(&ticket_default_role).Error; err != nil {
 		tx.Rollback()
-		return ticket_default_group, errors.New(err.Error())
+		return ticket_default_role, errors.New(err.Error())
 	}
 
 	tx.Commit()
 
-	return ticket_default_group, err
+	return ticket_default_role, err
 }

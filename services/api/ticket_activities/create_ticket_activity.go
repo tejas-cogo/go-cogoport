@@ -21,8 +21,6 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	var err error
 
-	var ticket_user models.TicketUserFilter
-
 	if body.TicketActivity.UserType == "" {
 		if body.TicketActivity.TicketUserID == 0 {
 			if body.Activity.PerformedByID != uuid.Nil {
