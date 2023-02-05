@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
-	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 	"gorm.io/gorm"
 )
 

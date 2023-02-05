@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
@@ -99,11 +99,13 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	if ticket_reviewer.UserID == uuid.Nil {
 		var partner_user models.PartnerUser
+
+		helpers.GetRoleIdUser(ticket_default_role.RoleID)
 		// TODO: circulation logic peding
 
 		if err := db2.Where("role_ids = '{?}'", ticket_default_role.RoleID).First(&partner_user).Error; err != nil {
 			tx2.Rollback()
-			return body, errors.New(err.Error())
+			return ticket, errors.New(err.Error())
 		}
 		ticket_reviewer.UserID = partner_user.UserID
 

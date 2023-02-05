@@ -8,32 +8,32 @@ import (
 	// validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
-type TokenUserService struct {
-	TokenUser models.TicketUser
+type TicketUserService struct {
+	TicketUser models.TicketUser
 }
 
-func CreateTokenUser(token_user models.TicketUser) (models.TicketUser, error) {
+func CreateTicketUser(ticket_user models.TicketUser) (models.TicketUser, error) {
 	db := config.GetDB()
 
-	token_user.Status = "active"
+	ticket_user.Status = "active"
 	var exist_user models.TicketUser
 	var err error
-	db.Where("system_user_id = ? and status = ?", token_user.SystemUserID, "active").First(&exist_user)
+	db.Where("system_user_id = ? and status = ?", ticket_user.SystemUserID, "active").First(&exist_user)
 
 	if exist_user.ID <= 0 {
 
-		// stmt := validations.ValidateTokenUser(token_user)
+		// stmt := validations.ValidateTicketUser(ticket_user)
 
 		// if stmt != "validated" {
-		// 	return token_user, errors.New(stmt)
+		// 	return ticket_user, errors.New(stmt)
 		// }
 		tx := db.Begin()
-		if err := tx.Create(&token_user).Error; err != nil {
+		if err := tx.Create(&ticket_user).Error; err != nil {
 			tx.Rollback()
-			return token_user, errors.New(err.Error())
+			return ticket_user, errors.New(err.Error())
 		}
 		tx.Commit()
-		return token_user, err
+		return ticket_user, err
 
 	} else {
 

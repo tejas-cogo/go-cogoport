@@ -3,7 +3,7 @@ package api
 import (
 	"errors"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
@@ -23,10 +23,10 @@ func UpdateTicketDefaultRole(body models.TicketDefaultRole) (models.TicketDefaul
 	if body.TicketDefaultTypeID > 0 {
 		ticket_default_role.TicketDefaultTypeID = body.TicketDefaultTypeID
 	}
-	if body.RoleID != uuid.Nil() {
+	if body.RoleID != uuid.Nil {
 		ticket_default_role.RoleID = body.RoleID
 	}
-	if body.UserID != uuid.Nil() {
+	if body.UserID != uuid.Nil {
 		ticket_default_role.UserID = body.UserID
 	}
 	if body.Status != "" {

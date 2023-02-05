@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"strconv"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -24,11 +23,14 @@ func CreateTokenTicketActivity(token_activity models.TokenActivity) (models.Tick
 	var body models.Filter
 
 	var ticket []uint
+	var ticket_user models.TicketUser
 
 	ticket = append(ticket, ticket_token.TicketID)
 
+	db.Where("id = ?", ticket_token.TicketUserID).First(&ticket_user)
+
 	body.Activity.TicketID = ticket
-	body.TicketActivity.UserID = strconv.FormatUint(uint64(ticket_token.TicketUserID), 10)
+	body.TicketActivity.UserID = ticket_user.SystemUserID
 
 	body.TicketActivity.Description = token_activity.Description
 	body.TicketActivity.Data = token_activity.Data

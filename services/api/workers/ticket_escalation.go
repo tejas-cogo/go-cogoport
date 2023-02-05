@@ -22,8 +22,7 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 	var ticket_reviewer_new models.TicketReviewer
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
-	var group_member models.GroupMember
-	var group_head models.GroupMember
+
 
 	tx := db.Begin()
 
@@ -126,7 +125,6 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 		ticket_reviewer_new.TicketID = ticket.ID
 		ticket_reviewer_new.RoleID = group_head.GroupID
 		ticket_reviewer_new.UserID = group_head.ID
-		ticket_reviewer_new.TicketUserID = group_head.TicketUserID
 
 		if err := tx.Create(&ticket_reviewer_new).Error; err != nil {
 			tx.Rollback()

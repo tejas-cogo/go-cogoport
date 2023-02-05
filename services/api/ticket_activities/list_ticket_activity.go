@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"

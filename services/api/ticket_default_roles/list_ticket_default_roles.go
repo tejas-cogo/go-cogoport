@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
@@ -17,11 +17,11 @@ func ListTicketDefaultRole(filters models.TicketDefaultRole) ([]models.TicketDef
 		db = db.Where("ticket_default_type_id = ?", filters.TicketDefaultTypeID)
 	}
 
-	if filters.RoleID != uuid.Nil() {
+	if filters.RoleID != uuid.Nil {
 		db = db.Where("role_id = ?", filters.RoleID)
 	}
 
-	if filters.UserID != uuid.Nil() {
+	if filters.UserID != uuid.Nil {
 		db = db.Where("user_id = ?", filters.UserID)
 	}
 

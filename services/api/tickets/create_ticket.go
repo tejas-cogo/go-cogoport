@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
@@ -27,7 +28,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
 
-	if ticket.UserID == 0 {
+	if ticket.UserID != uuid.Nil {
 		if err := tx.Where("system_user_id = ? ", ticket.UserID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())
