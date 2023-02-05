@@ -211,8 +211,8 @@ func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 	if ticket_activity.TicketID <= 0 {
 		return ("TicketID is Required!")
 	}
-	if ticket_activity.TicketUserID <= 0 {
-		return ("TicketUserID is Required!")
+	if ticket_activity.UserID != "" {
+		return ("UserID is Required!")
 	}
 	if ticket_activity.UserType == "" {
 		return ("UserType is Required!")

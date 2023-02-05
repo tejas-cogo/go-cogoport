@@ -3,9 +3,9 @@ package api
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	groupmember "github.com/tejas-cogo/go-cogoport/services/api/group_members"
 	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
@@ -17,13 +17,13 @@ type TicketReviewerService struct {
 
 func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	db := config.GetDB()
+	db2 := config.GetCDB()
 
 	txt := db.Begin()
 
-	var filters models.Filter
 	var ticket_reviewer models.TicketReviewer
 	var ticket_default_type models.TicketDefaultType
-	var ticket_default_group models.TicketDefaultGroup
+	var ticket_default_role models.TicketDefaultRole
 	var err error
 
 	if err := txt.Where("ticket_type = ? and status = ?", body.Type, "active").First(&ticket_default_type).Error; err != nil {
@@ -33,29 +33,26 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		}
 	}
 
-	if erro := txt.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_type.ID, "active", 3).First(&ticket_default_group).Error; erro != nil {
-		if err := txt.Where("ticket_default_type_id = ? ", 1).First(&ticket_default_group).Error; err != nil {
+	if erro := txt.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_type.ID, "active", 3).First(&ticket_default_role).Error; erro != nil {
+		if err := txt.Where("ticket_default_type_id = ? ", 1).First(&ticket_default_role).Error; err != nil {
 			txt.Rollback()
 			return body, errors.New(err.Error())
 		}
 	}
 
-	ticket_reviewer.GroupID = ticket_default_group.GroupID
-	var group_member models.GroupMember
-	if ticket_default_group.GroupMemberID < 1 {
+	ticket_reviewer.RoleID = ticket_default_role.RoleID
+	ticket_reviewer.UserID = ticket_default_role.UserID
+	if ticket_reviewer.UserID == uuid.Nil {
+		var partner_user models.PartnerUser
+		// TODO: circulation logic peding
 
-		if err := txt.Where("group_id = ? and status = ? and ticket_user_id != ?", ticket_default_group.GroupID, "active", body.TicketUserID).Order("active_ticket_count asc").Order("hierarchy_level desc").First(&group_member).Error; err != nil {
+		if err := db2.Where("role_ids = '{?}'", ticket_default_role.RoleID).First(&partner_user).Error; err != nil {
 			txt.Rollback()
 			return body, errors.New(err.Error())
 		}
-	} else {
-		txt.Where("id = ?", ticket_default_group.GroupMemberID).First(&group_member)
-	}
+		ticket_reviewer.UserID = partner_user.UserID
 
-	ticket_reviewer.GroupMemberID = group_member.ID
-	ticket_reviewer.TicketUserID = group_member.TicketUserID
-	ticket_reviewer.TicketID = body.ID
-	filters.GroupMember.ID = group_member.ID
+	}
 	ticket_reviewer.Status = "active"
 
 	stmt := validations.ValidateTicketReviewer(ticket_reviewer)
@@ -67,12 +64,9 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		return body, errors.New(err.Error())
 	}
 
-	filters.GroupMember.ActiveTicketCount = group_member.ActiveTicketCount + 1
-	groupmember.UpdateGroupMember(filters.GroupMember)
-
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = ticket_reviewer.TicketID
-	ticket_activity.TicketUserID = ticket_reviewer.TicketUserID
+	ticket_activity.UserID = ticket_reviewer.UserID.String()
 	ticket_activity.UserType = "system"
 	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
