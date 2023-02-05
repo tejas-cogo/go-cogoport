@@ -27,7 +27,7 @@ type TicketDefault struct {
 	TicketPriority               string
 	AdditionalOptions            gormjsonb.JSONB `gorm:"type:json"`
 	TicketDefaultRoleTypeQueryID uint
-	TicketDefaultRoleTypeQuery   []TicketDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
+	TicketDefaultRole            []TicketDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
 }
 
 type TicketDefaultFilter struct {

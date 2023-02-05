@@ -22,8 +22,6 @@ func GetTicketToken(body models.TicketUser) (models.TicketToken, error) {
 
 	var ticket_token models.TicketToken
 
-	body.RoleID = 1
-
 	ticket_user, err := ticketuser.CreateTicketUser(body)
 
 	result := strconv.FormatUint(uint64(ticket_user.ID), 10)

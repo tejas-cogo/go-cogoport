@@ -14,9 +14,9 @@ func ListTokenTicketDetail(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Bad Request")
 		return
 	}
-	if filters.TicketToken == ""{
+	if filters.TicketToken == "" {
 		c.JSON(c.Writer.Status(), "Token Required!")
-		return 
+		return
 	}
 	ser, err := service.ListTokenTicketDetail(filters)
 	if err != nil {
@@ -33,9 +33,9 @@ func ListTokenTicketActivity(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Bad Request")
 		return
 	}
-	if filters.TicketToken == ""{
+	if filters.TicketToken == "" {
 		c.JSON(c.Writer.Status(), "Token Required!")
-		return 
+		return
 	}
 	ser, db, err := service.ListTokenTicketActivity(filters)
 	if c.Writer.Status() == 400 {
@@ -69,9 +69,9 @@ func CreateTokenTicket(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Bad Request")
 		return
 	}
-	if token_filter.TicketToken == ""{
+	if token_filter.TicketToken == "" {
 		c.JSON(c.Writer.Status(), "Token Required!")
-		return 
+		return
 	}
 	ser, err := service.CreateTokenTicket(token_filter)
 	if err != nil {
@@ -89,9 +89,9 @@ func CreateTokenTicketActivity(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Bad Request")
 		return
 	}
-	if token_filter.TicketToken == ""{
+	if token_filter.TicketToken == "" {
 		c.JSON(c.Writer.Status(), "Token Required!")
-		return 
+		return
 	}
 	ser, err := service.CreateTokenTicketActivity(token_filter)
 	if err != nil {
@@ -120,9 +120,9 @@ func UpdateTokenTicket(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Bad Request")
 		return
 	}
-	if body.TicketToken == ""{
+	if body.TicketToken == "" {
 		c.JSON(c.Writer.Status(), "Token Required!")
-		return 
+		return
 	}
 	ser, err := service.UpdateTokenTicket(body)
 	if err != nil {

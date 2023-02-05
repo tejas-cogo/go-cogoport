@@ -9,14 +9,14 @@ import (
 )
 
 type TokenUserService struct {
-	TokenUser models.TokenUser
+	TokenUser models.TicketUser
 }
 
-func CreateTokenUser(token_user models.TokenUser) (models.TokenUser, error) {
+func CreateTokenUser(token_user models.TicketUser) (models.TicketUser, error) {
 	db := config.GetDB()
 
 	token_user.Status = "active"
-	var exist_user models.TokenUser
+	var exist_user models.TicketUser
 	var err error
 	db.Where("system_user_id = ? and status = ?", token_user.SystemUserID, "active").First(&exist_user)
 

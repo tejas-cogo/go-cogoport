@@ -17,9 +17,8 @@ type TicketReviewer struct {
 
 type ReviewerActivity struct {
 	TicketID       uint
-	ReviewerUserID uint
-	GroupID        uint
-	GroupMemberID  uint
+	ReviewerUserID uuid.UUID
+	RoleID         uuid.UUID
 	PerformedByID  uuid.UUID `gorm:"type:uuid"`
 	Description    string
 }
