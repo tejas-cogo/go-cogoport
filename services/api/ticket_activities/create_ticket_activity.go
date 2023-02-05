@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
-	user "github.com/tejas-cogo/go-cogoport/services/api/ticket_users"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	"gorm.io/gorm"
 )
 
@@ -22,32 +22,15 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	var err error
 	var ticket_user models.TicketUser
 
-	if body.TicketActivity.UserType == "client" {
-		db.Where("system_user_id = ? ",body.Activity.PerformedByID).Find(&ticket_user)
+	//reviewer assigned
+	if body.TicketActivity.UserType == "system" {
+		db.Where("system_user_id = ? ", body.Activity.PerformedByID).Find(&ticket_user)
 
 		body.TicketActivity.UserID = body.Activity.PerformedByID
 
-	}else{
-		body.TicketActivity.UserID = body.TicketUserFilter.ID
+	} else if body.TicketActivity.Status == "resolved" || body.TicketActivity.Status == "rejected" || body.TicketActivity.Status == "escalated" || body.TicketActivity.Status == "reviewer_reassigned" {
+
 	}
-
-		// if body.TicketActivity.UserID != uuid.Nil {
-		// 	if body.Activity.PerformedByID != uuid.Nil {
-		// 		ticket_user.SystemUserID = body.Activity.PerformedByID
-		// 	} else {
-		// 		ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
-		// 	}
-
-		// } else {
-		// 	ticket_user.ID = body.TicketUserFilter.ID
-		// }
-
-		// ticket_user, _, _ := user.ListTicketUser(ticket_user)
-		// for _, u := range ticket_user {
-		// 	body.TicketActivity.UserType = u.Type
-		// 	body.TicketActivity.TicketUserID = u.ID
-		// 	break
-		// }
 
 	if body.TicketActivity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
@@ -129,15 +112,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 		for _, u := range body.Activity.TicketID {
 			tx := db.Begin()
 			ticket_activity := body.TicketActivity
-			var group_head models.GroupMember
 			ticket_activity.TicketID = u
 			var ticket_reviewer models.TicketReviewer
 			var ticket_default_type models.TicketDefaultType
-			var ticket_default_group models.TicketDefaultGroup
-			var new_default_group models.TicketDefaultGroup
 			var ticket models.Ticket
 
-			group_member, err := DeactivateReviewer(u, tx)
+			ticket_default_role, err := DeactivateReviewer(u, tx)
 			if err != nil {
 				tx.Rollback()
 				return ticket_activity, err
@@ -155,44 +135,23 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				}
 			}
 
-			if err = tx.Where("ticket_default_type_id = ? and status = ? and group_id = ?", ticket_default_type.ID, "active", group_member.GroupID).First(&ticket_default_group).Error; err != nil {
-				if err = tx.Where("ticket_default_type_id = ? and status = ? and group_id = ?", 1, "active", group_member.GroupID).First(&ticket_default_group).Error; err != nil {
+			if err = tx.Where("ticket_default_type_id = ? and status = ? and level<?", ticket_default_type.ID, "active", ticket_default_role.Level).Order(" level desc").First(&ticket_default_role).Error; err != nil {
+				if err = tx.Where("ticket_default_type_id = ? and status = ? and level<?", 1, "active", ticket_default_role.Level).Order(" level desc").First(&ticket_default_role).Error; err != nil {
 					tx.Rollback()
 					return ticket_activity, errors.New(err.Error())
 				}
-			} else {
-				if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", (ticket_default_group.Level - 1)).First(&new_default_group).Error; err != nil {
-					if err = tx.Where("group_id = ? and status = ? and hierarchy_level = ?", group_member.GroupID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
-						tx.Rollback()
-						return ticket_activity, errors.New(err.Error())
-					}
-				} else {
-					if new_default_group.GroupMemberID > 0 {
-						if err = tx.Where("id = ? and status = ?", new_default_group.GroupMemberID, "active").First(&group_head).Error; err != nil {
-							tx.Rollback()
-							return ticket_activity, errors.New(err.Error())
-						}
-					} else {
-						if err = tx.Where("group_id = ? and status = ?", new_default_group.GroupMemberID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
-							tx.Rollback()
-							return ticket_activity, errors.New(err.Error())
-						}
-					}
-
-				}
 			}
 
-			group_head.ActiveTicketCount += 1
+			if ticket_default_role.UserID == uuid.Nil {
 
-			if err = tx.Save(&group_head).Error; err != nil {
-				tx.Rollback()
-				return ticket_activity, errors.New(err.Error())
+				ticket_reviewer.RoleID = ticket_default_role.RoleID
+				ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
+			} else {
+				ticket_reviewer.RoleID = ticket_default_role.RoleID
+				ticket_reviewer.UserID = ticket_default_role.UserID
 			}
 
 			ticket_reviewer.TicketID = u
-			ticket_reviewer.TicketUserID = group_head.TicketUserID
-			ticket_reviewer.GroupID = group_head.GroupID
-			ticket_reviewer.GroupMemberID = group_head.ID
 			ticket_reviewer.Status = "active"
 
 			stmt := validations.ValidateTicketActivity(ticket_activity)
@@ -258,34 +217,27 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	return body.TicketActivity, err
 }
 
-func DeactivateReviewer(ID uint, tx *gorm.DB) (models.GroupMember, error) {
+func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketDefaultRole, error) {
 	var ticket_reviewer models.TicketReviewer
-	var group_member models.GroupMember
+	var ticket_default_role models.TicketDefaultRole
 	var err error
 
 	if err := tx.Where("ticket_id = ? and status = ?", ID, "active").First(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
-		return group_member, errors.New(err.Error())
+		return ticket_default_role, errors.New(err.Error())
 	}
 
 	ticket_reviewer.Status = "inactive"
 
 	if err := tx.Save(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
-		return group_member, errors.New(err.Error())
+		return ticket_default_role, errors.New(err.Error())
 	}
 
-	if err := tx.Where("ticket_user_id = ? and status = ?", ticket_reviewer.TicketUserID, "active").First(&group_member).Error; err != nil {
+	if err := tx.Where("user_id = ? and status = ? and role_id = ?", ticket_reviewer.UserID, "active", ticket_reviewer.RoleID).First(&ticket_default_role).Error; err != nil {
 		tx.Rollback()
-		return group_member, errors.New(err.Error())
+		return ticket_default_role, errors.New(err.Error())
 	}
 
-	group_member.ActiveTicketCount = group_member.ActiveTicketCount - 1
-
-	if err := tx.Save(&group_member).Error; err != nil {
-		tx.Rollback()
-		return group_member, errors.New(err.Error())
-	}
-
-	return group_member, err
+	return ticket_default_role, err
 }

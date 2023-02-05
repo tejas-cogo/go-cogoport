@@ -29,7 +29,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		return body, errors.New(err.Error())
 	}
 
-	if err := tx.Where("ticket_id = ? AND ticket_user_id = ?", body.TicketID, body.ReviewerUserID).Find(&ticket_reviewer_old).Error; err != nil {
+	if err := tx.Where("ticket_id = ? AND user_id = ? AND role_id = ?", body.TicketID, body.ReviewerUserID, body.RoleID).Find(&ticket_reviewer_old).Error; err != nil {
 		tx.Rollback()
 		return body, errors.New(err.Error())
 	}
@@ -61,7 +61,8 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	var filters models.Filter
 
 	filters.TicketActivity.TicketID = body.TicketID
-	// filters.TicketUser.SystemUserID = body.PerformedByID
+	filters.TicketActivity.UserID = body.PerformedByID
+	filters.TicketActivity.UserType = "internal"
 	filters.TicketActivity.Type = "reviewer_reassigned"
 	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Status = "reassigned"

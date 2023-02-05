@@ -7,7 +7,7 @@ import (
 
 type TicketReviewer struct {
 	gorm.Model
-	// PerformedByID       uuid.UUID `gorm:"type:uuid"`
+	PerformedByID       uuid.UUID `gorm:"type:uuid"`
 	TicketID uint      `gorm:"not null"`
 	UserID   uuid.UUID `gorm:"not null"`
 	RoleID   uuid.UUID `gorm:"not null"`
