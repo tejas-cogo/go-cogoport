@@ -14,25 +14,7 @@ func SetupRouter() *gin.Engine {
 
 	ticket_system := r.Group("")
 
-	ticket_system.GET("list_groups", controllers.ListGroup)
-	ticket_system.POST("create_group", controllers.CreateGroup)
-	ticket_system.DELETE("delete_group", controllers.DeleteGroup)
-	ticket_system.PUT("update_group", controllers.UpdateGroup)
-	ticket_system.GET("list_group_tags", controllers.ListGroupTag)
-
-	ticket_system.GET("list_group_members", controllers.ListGroupMember)
-	ticket_system.POST("create_group_member", controllers.CreateGroupMember)
-	ticket_system.DELETE("delete_group_member", controllers.DeleteGroupMember)
-	ticket_system.PUT("update_group_member", controllers.UpdateGroupMember)
-
-	ticket_system.GET("list_roles", controllers.ListRole)
-	ticket_system.POST("create_role", controllers.CreateRole)
-	ticket_system.DELETE("delete_role", controllers.DeleteRole)
-	ticket_system.PUT("update_role", controllers.UpdateRole)
-
-	ticket_system.GET("list_ticket_users", controllers.ListTicketUser)
-	// ticket_system.POST("create_ticket_user", controllers.CreateTicketUser)
-	ticket_system.PUT("update_ticket_user", controllers.UpdateTicketUser)
+	ticket_system.POST("create_ticket_user", controllers.CreateTicketUser)
 
 	ticket_system.GET("list_ticket_details", controllers.ListTicketDetail)
 	ticket_system.GET("list_tickets", controllers.ListTicket)
@@ -51,9 +33,9 @@ func SetupRouter() *gin.Engine {
 
 	ticket_system.POST("reassign_ticket_reviewer", controllers.ReassignTicketReviewer)
 
-	ticket_system.POST("create_ticket_default_group", controllers.CreateTicketDefaultGroup)
-	ticket_system.DELETE("delete_ticket_default_group", controllers.DeleteTicketDefaultGroup)
-	ticket_system.PUT("update_ticket_default_group", controllers.UpdateTicketDefaultGroup)
+	ticket_system.POST("create_ticket_default_role", controllers.CreateTicketDefaultRole)
+	ticket_system.DELETE("delete_ticket_default_role", controllers.DeleteTicketDefaultRole)
+	ticket_system.PUT("update_ticket_default_role", controllers.UpdateTicketDefaultRole)
 
 	ticket_system.POST("create_ticket_default_timing", controllers.CreateTicketDefaultTiming)
 
@@ -71,7 +53,6 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("create_token_ticket_activity", controllers.CreateTokenTicketActivity)
 	ticket_system.GET("list_token_ticket_details", controllers.ListTokenTicketDetail)
 	ticket_system.GET("list_token_ticket_activities", controllers.ListTokenTicketActivity)
-
 
 	ticket_system.PUT("update_token_ticket", controllers.UpdateTokenTicket)
 

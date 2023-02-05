@@ -9,7 +9,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/helpers"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"github.com/tejas-cogo/go-cogoport/routes"
-	"github.com/tejas-cogo/go-cogoport/workers"
 	// "github.com/tejas-cogo/go-cogoport/workers"
 )
 

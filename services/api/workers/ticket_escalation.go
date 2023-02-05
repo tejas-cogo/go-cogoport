@@ -22,7 +22,8 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 	var ticket_reviewer_new models.TicketReviewer
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
-
+	var ticket_default_role models.TicketDefaultRole
+	var new_ticket_default_role models.TicketDefaultRole
 
 	tx := db.Begin()
 
@@ -50,10 +51,12 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 			}
 		}
 
-		ticket.Tat = ticket_default_timing.Tat
+		ticket.Tat = time.Now()
+		Duration := helpers.GetDuration(ticket_default_timing.Tat)
+		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 
 		ticket.ExpiryDate = time.Now()
-		Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
+		Duration = helpers.GetDuration(ticket_default_timing.ExpiryDuration)
 		ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 
 		if err := tx.Save(&ticket).Error; err != nil {
@@ -73,74 +76,29 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 			return err
 		}
 
-		if err := tx.Where("ticket_user_id = ? and status = ?", ticket_reviewer.TicketUserID, "active").First(&group_member).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		group_member.ActiveTicketCount -= 1
-
-		if err := tx.Save(&group_member).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		var ticket_default_group models.TicketDefaultGroup
-		if err := tx.Where("group_id = ? and status = ?", group_member.GroupID, "active").First(&ticket_default_group).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		var escalated_ticket_default_group models.TicketDefaultGroup
-
-		if err := tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", ticket_default_group.Level-1).First(&escalated_ticket_default_group).Error; err != nil {
-			if err := tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_group.TicketDefaultTypeID, "active", ticket_default_group.Level).First(&escalated_ticket_default_group).Error; err != nil {
+		if err := tx.Where("ticket_default_type_id = ? and status = ? and role_id = ?", ticket_default_type.ID, "active", ticket_reviewer.RoleID).First(&ticket_default_role).Error; err != nil {
+			if err := tx.Where("ticket_default_type_id = ? and status = ? and role_id = ?", 1, "active", ticket_reviewer.RoleID).First(&ticket_default_role).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
 		}
 
-		if escalated_ticket_default_group.GroupMemberID == 0 {
-			if ticket_default_group.Level != escalated_ticket_default_group.Level {
-				if err := tx.Where("group_id = ?  and status = ?", escalated_ticket_default_group.GroupID, "active").Order("hierarchy_level desc").Order("active_ticket_count asc").First(&group_head).Error; err != nil {
-					tx.Rollback()
-					return err
-				}
-			} else {
-				if err := tx.Where("group_id = ?  and status = ? and hierarchy_level = ?", escalated_ticket_default_group.GroupID, "active", (group_member.HierarchyLevel)-1).Order("active_ticket_count asc").First(&group_head).Error; err != nil {
-					tx.Rollback()
-					return err
-				}
-			}
-		} else {
-			if ticket_default_group.Level != escalated_ticket_default_group.Level {
-				if err := tx.Where("id = ?  and status = ?", escalated_ticket_default_group.GroupMemberID, "active").First(&group_head).Error; err != nil {
-					tx.Rollback()
-					return err
-				}
-			}
-
+		if err := tx.Where("ticket_default_type_id = ? and status = ? and role_id = ? and level = ?", ticket_default_type.ID, "active", ticket_reviewer.RoleID, ticket_default_role.Level-1).First(&new_ticket_default_role).Error; err != nil {
+			new_ticket_default_role = ticket_default_role
 		}
 
 		ticket_reviewer_new.TicketID = ticket.ID
-		ticket_reviewer_new.RoleID = group_head.GroupID
-		ticket_reviewer_new.UserID = group_head.ID
+		ticket_reviewer_new.RoleID = new_ticket_default_role.RoleID
+		ticket_reviewer_new.UserID = helpers.GetRoleIdUser(new_ticket_default_role.RoleID)
 
 		if err := tx.Create(&ticket_reviewer_new).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
 
-		group_head.ActiveTicketCount += 1
-
-		if err := tx.Save(&group_head).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
 		var ticket_activity models.TicketActivity
 		ticket_activity.TicketID = ticket_reviewer_new.TicketID
-		ticket_activity.TicketUserID = ticket_reviewer_new.TicketUserID
+		ticket_activity.UserID = ticket_reviewer_new.UserID
 		ticket_activity.UserType = "worker"
 		ticket_activity.Type = "Automatically Reviewer Escalated"
 		ticket_activity.Status = "escalated"

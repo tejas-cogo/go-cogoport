@@ -6,7 +6,7 @@ import (
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_roles"
 )
 
-func CreateTicketDefaultGroup(c *gin.Context) {
+func CreateTicketDefaultRole(c *gin.Context) {
 	var ticket_default_role models.TicketDefaultRole
 	err := c.Bind(&ticket_default_role)
 	if err != nil {
@@ -21,7 +21,7 @@ func CreateTicketDefaultGroup(c *gin.Context) {
 	}
 }
 
-func DeleteTicketDefaultGroup(c *gin.Context) {
+func DeleteTicketDefaultRole(c *gin.Context) {
 	var body models.TicketDefaultRole
 	err := c.Bind(&body)
 	if err != nil {
@@ -37,7 +37,7 @@ func DeleteTicketDefaultGroup(c *gin.Context) {
 	}
 }
 
-func UpdateTicketDefaultGroup(c *gin.Context) {
+func UpdateTicketDefaultRole(c *gin.Context) {
 	var body models.TicketDefaultRole
 	err := c.Bind(&body)
 	if err != nil {
