@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type TokenUser struct {
+type TicketUser struct {
 	gorm.Model
 	Name         string    `gorm:"not null:json:name:unique"`
 	SystemUserID uuid.UUID `gorm:"type:uuid:unique"`

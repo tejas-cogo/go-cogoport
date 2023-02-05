@@ -28,7 +28,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	var ticket_default_timing models.TicketDefaultTiming
 
 	if ticket.TicketUserID == 0 {
-		if err := tx.Where("system_user_id = ? ", ticket.PerformedByID).Find(&ticket_user).Error; err != nil {
+		if err := tx.Where("system_user_id = ? ", ticket.UserID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())
 		}
@@ -53,7 +53,8 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
-	ticket.Tat = ticket_default_timing.Tat
+	// ticket.Tat = helpers.GetDuration(ticket_default_timing.Tat)
+
 	ticket.ExpiryDate = time.Now()
 
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
