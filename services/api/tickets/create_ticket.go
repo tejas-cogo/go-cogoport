@@ -27,7 +27,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
 
-	if ticket.TicketUserID == 0 {
+	if ticket.UserID == 0 {
 		if err := tx.Where("system_user_id = ? ", ticket.UserID).Find(&ticket_user).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())

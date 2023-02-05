@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/gofrs/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -18,7 +19,7 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 		db = db.Where("ticket_id = ?", filters.TicketID)
 	}
 
-	if filters.UserID != "" {
+	if filters.UserID != uuid.Nil {
 		db = db.Where("user_id = ?", filters.UserID)
 	}
 

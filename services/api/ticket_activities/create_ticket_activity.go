@@ -20,26 +20,34 @@ type TicketActivityService struct {
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	var err error
+	var ticket_user models.TicketUser
 
-	if body.TicketActivity.UserType == "" {
-		if body.TicketActivity.TicketUserID == 0 {
-			if body.Activity.PerformedByID != uuid.Nil {
-				ticket_user.SystemUserID = body.Activity.PerformedByID.String()
-			} else {
-				ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
-			}
+	if body.TicketActivity.UserType == "client" {
+		db.Where("system_user_id = ? ",body.Activity.PerformedByID).Find(&ticket_user)
 
-		} else {
-			ticket_user.ID = body.TicketUserFilter.ID
-		}
+		body.TicketActivity.UserID = body.Activity.PerformedByID
 
-		ticket_user, _, _ := user.ListTicketUser(ticket_user)
-		for _, u := range ticket_user {
-			body.TicketActivity.UserType = u.Type
-			body.TicketActivity.TicketUserID = u.ID
-			break
-		}
+	}else{
+		body.TicketActivity.UserID = body.TicketUserFilter.ID
 	}
+
+		// if body.TicketActivity.UserID != uuid.Nil {
+		// 	if body.Activity.PerformedByID != uuid.Nil {
+		// 		ticket_user.SystemUserID = body.Activity.PerformedByID
+		// 	} else {
+		// 		ticket_user.SystemUserID = body.TicketUserFilter.SystemUserID
+		// 	}
+
+		// } else {
+		// 	ticket_user.ID = body.TicketUserFilter.ID
+		// }
+
+		// ticket_user, _, _ := user.ListTicketUser(ticket_user)
+		// for _, u := range ticket_user {
+		// 	body.TicketActivity.UserType = u.Type
+		// 	body.TicketActivity.TicketUserID = u.ID
+		// 	break
+		// }
 
 	if body.TicketActivity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {

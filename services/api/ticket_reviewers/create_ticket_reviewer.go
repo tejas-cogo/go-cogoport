@@ -66,8 +66,8 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = ticket_reviewer.TicketID
-	ticket_activity.UserID = ticket_reviewer.UserID.String()
-	ticket_activity.UserType = "system"
+	ticket_activity.UserID = ticket_reviewer.UserID
+	ticket_activity.UserType = 
 	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
 

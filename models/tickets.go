@@ -13,8 +13,9 @@ type Ticket struct {
 	gorm.Model
 	TicketUserID            uint      `gorm:"not null"`
 	UserID                  uuid.UUID `gorm:"not null"`
-	Source                  string    `gorm:"not null"`
-	Type                    string    `gorm:"not null"`
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
 	Category                string
 	Subcategory             string
 	Description             string

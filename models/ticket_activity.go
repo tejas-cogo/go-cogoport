@@ -9,9 +9,9 @@ import (
 
 type TicketActivity struct {
 	gorm.Model
-	TicketID    uint `gorm:"not null"`
-	UserID      string
-	UserType    string `gorm:"not null"`
+	TicketID    uint      `gorm:"not null"`
+	UserID      uuid.UUID `gorm:"type:uuid"`
+	UserType    string    `gorm:"not null"`
 	Description string
 	Type        string          `gorm:"not null"`
 	Data        gormjsonb.JSONB `gorm:"type:json"`
@@ -22,7 +22,7 @@ type TicketActivity struct {
 type Activity struct {
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
 	TicketID      []uint
-	UserID      string
+	UserID        string
 	Description   string
 	Data          gormjsonb.JSONB `gorm:"type:json"`
 	Type          string
