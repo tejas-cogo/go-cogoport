@@ -115,7 +115,11 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 	t1 := int(weekday)
 
-	t1 = -t1 + 1
+	if t1 == 0 {
+		t1 = -6
+	} else {
+		t1 = -t1 + 1
+	}
 
 	y = y.AddDate(0, 0, t1)
 	graph.StartDate = y
