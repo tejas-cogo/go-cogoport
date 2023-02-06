@@ -13,7 +13,7 @@ type TicketReviewer struct {
 	UserID             uuid.UUID      `gorm:"not null"`
 	RoleID             uuid.UUID      `gorm:"not null"`
 	ReviewerManagerIDs pq.StringArray `gorm:"type:text[]"`
-	Status             string         `gorm:"not null:default:'active'"`
+	Status             string         `gorm:"not null;default:'active'"`
 }
 
 type ReviewerActivity struct {

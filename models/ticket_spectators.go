@@ -10,7 +10,7 @@ type TicketSpectator struct {
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
 	TicketID      uint      `gorm:"not null"`
 	UserID        string    `gorm:"not null"`
-	Status        string    `gorm:"not null:default:'active'"`
+	Status        string    `gorm:"not null;default:'active'"`
 }
 
 type SpectatorActivity struct {
