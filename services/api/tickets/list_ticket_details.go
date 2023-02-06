@@ -1,39 +1,40 @@
 package api
 
 import (
+	"errors"
+
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	reviewers "github.com/tejas-cogo/go-cogoport/services/api/ticket_reviewers"
-	spectators "github.com/tejas-cogo/go-cogoport/services/api/ticket_spectators"
 )
 
-func ListTicketDetail(filters models.TicketExtraFilter) models.TicketDetail {
+func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, error) {
 
 	var ticket_detail models.TicketDetail
-
-	ticket_data, _ := ListTicket(filters)
-	for _, u := range ticket_data {
-		ticket_detail.Ticket = u
-
-		// 	// Duration := helpers.GetDuration(u.Tat)
-		// 	// u.Tat = time.Now()
-		// 	// ticket_detail.Ticket.Tat = Tat.Add(time.Hour * time.Duration(Duration))
-	}
-
+	db := config.GetDB()
+	tx := db.Begin()
+	var err error
+	var ticket models.Ticket
 	var ticket_reviewer models.TicketReviewer
-	ticket_reviewer.TicketID = filters.ID
-	ticket_reviewer_data, _ := reviewers.ListTicketReviewer(ticket_reviewer)
-	for _, u := range ticket_reviewer_data {
-		ticket_detail.TicketReviewer = u
-		ticket_detail.TicketReviewerID = u.ID
-	}
+	// var ticket_spectator models.TicketSpectator
 
-	var ticket_spectator models.TicketSpectator
-	ticket_spectator.TicketID = filters.ID
-	ticket_spectator_data, _, _ := spectators.ListTicketSpectator(ticket_spectator)
-	for _, u := range ticket_spectator_data {
-		ticket_detail.TicketSpectator = u
-		ticket_detail.TicketSpectatorID = u.ID
+	if err := tx.Where("id = ? and status = ?", filters.ID, "active").First(&ticket).Error; err != nil {
+		tx.Rollback()
+		return ticket_detail, errors.New(err.Error())
 	}
+	ticket_detail.TicketID = ticket.ID
+	ticket_detail.Ticket = ticket
 
-	return ticket_detail
+	if err := tx.Where("ticket_id = ? and status = ?", filters.ID, "active").First(&ticket_reviewer).Error; err != nil {
+		tx.Rollback()
+		return ticket_detail, errors.New(err.Error())
+	}
+	ticket_detail.TicketReviewerID = ticket_reviewer.ID
+	ticket_detail.TicketReviewer = ticket_reviewer
+
+	// db.Where("ticket_id = ? and status = ?",filters.ID,"active").First(&ticket_spectator)
+	// ticket_detail.TicketSpectatorID = ticket_spectator.ID
+	// ticket_detail.TicketSpectator = ticket_spectator
+
+	tx.Commit()
+	return ticket_detail, err
 }

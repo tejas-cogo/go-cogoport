@@ -7,6 +7,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
@@ -17,7 +18,6 @@ type TicketReviewerService struct {
 
 func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	db := config.GetDB()
-	db2 := config.GetCDB()
 
 	txt := db.Begin()
 
@@ -43,15 +43,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_reviewer.RoleID = ticket_default_role.RoleID
 	ticket_reviewer.UserID = ticket_default_role.UserID
 	if ticket_reviewer.UserID == uuid.Nil {
-		var partner_user models.PartnerUser
-		// TODO: circulation logic peding
-
-		if err := db2.Where("role_ids = '{?}'", ticket_default_role.RoleID).First(&partner_user).Error; err != nil {
-			txt.Rollback()
-			return body, errors.New(err.Error())
-		}
-		ticket_reviewer.UserID = partner_user.UserID
-
+		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
 	}
 	ticket_reviewer.Status = "active"
 

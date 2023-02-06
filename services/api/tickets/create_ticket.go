@@ -27,15 +27,15 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
 
-	if ticket.UserID != "" {
-		if err := tx.Where("system_user_id = ? ", ticket.UserID).First(&ticket_user).Error; err != nil {
+	if ticket.TicketUserID != 0 {
+		if err := tx.Where("id = ? ", ticket.TicketUserID).First(&ticket_user).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())
 		}
 		if ticket_user.ID == 0 {
 			return ticket, errors.New("System User Not Found")
 		}
-		ticket.TicketUserID = ticket_user.ID
+		ticket.UserID = ticket_user.SystemUserID
 	}
 
 	if err := tx.Where("ticket_type = ? and status = ? ", ticket.Type, "active").First(&ticket_default_type).Error; err != nil {
@@ -53,12 +53,13 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
-	// ticket.Tat = helpers.GetDuration(ticket_default_timing.Tat)
+
+	ticket.Tat= time.Now()
+	tat := helpers.GetDuration(ticket_default_timing.Tat)
+	ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(tat))
 
 	ticket.ExpiryDate = time.Now()
-
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
-
 	ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(Duration))
 
 	ticket.Status = "unresolved"

@@ -39,11 +39,6 @@ type Filter struct {
 	TicketToken         TicketToken
 }
 
-type Sort struct {
-	SortBy   string
-	SortType string
-}
-
 //Model is sample of common table structure
 
 func Init() {
@@ -61,9 +56,9 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&TicketUser{},&TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
+	db.Migrator().AutoMigrate(&TicketUser{}, &TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketAudit{}, &TicketToken{})
 
-	// db.Migrator().AutoMigrate(&TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{}})
+	// db.Migrator().AutoMigrate(&TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{}, &TicketTask{}, &TicketTaskAssignee{})
 }
 
 // GetDB function return the instance of db

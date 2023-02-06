@@ -80,7 +80,13 @@ func ListTicketDetail(c *gin.Context) {
 		return
 	}
 
-	c.JSON(c.Writer.Status(), service.ListTicketDetail(filters))
+	ser, err := service.ListTicketDetail(filters)
+	if err != nil {
+		c.JSON(c.Writer.Status(), err)
+	} else {
+		c.JSON(c.Writer.Status(), ser)
+	}
+
 }
 
 func CreateTicket(c *gin.Context) {
