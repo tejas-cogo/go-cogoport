@@ -17,7 +17,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	var ticket_reviewer_old models.TicketReviewer
 	var ticket_reviewer_active models.TicketReviewer
 
-	if err := tx.Where("ticket_id = ? AND status = 'active'", body.TicketID).Find(&ticket_reviewer_active).Error; err != nil {
+	if err := tx.Where("ticket_id = ? AND status = 'active'", body.TicketID).First(&ticket_reviewer_active).Error; err != nil {
 		tx.Rollback()
 		return body, errors.New(err.Error())
 	}

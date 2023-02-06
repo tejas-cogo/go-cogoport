@@ -24,7 +24,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	//reviewer assigned
 	if body.TicketActivity.UserType == "system" || body.TicketActivity.UserType == "internal" {
 
-		fmt.Println("ticket_activity", body.TicketActivity)
+		
 
 	} // } else {
 	// }
@@ -191,6 +191,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				return ticket_activity, errors.New(err.Error())
 			}
 
+		
 			if ticket_activity.UserType == "internal" {
 				// SendTicketActivity(ticket_activity)
 			}
