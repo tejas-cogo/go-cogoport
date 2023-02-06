@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
+	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
 )
@@ -46,6 +49,23 @@ func ListTicketActivity(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		pg := paginate.New()
-		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+		data := pg.Response(db, c.Request, &ser)
+		items, _ := json.Marshal(data.Items)
+		var output []models.TicketActivityData
+
+		db2 := config.GetCDB()
+		err := json.Unmarshal([]byte(items), &output)
+		if err != nil {
+			print(err)
+			c.JSON(400, err)
+		}
+
+		for j := 0; j < len(output); j++ {
+			var user models.User
+			db2.Where("id = ?", output[j].UserID).First(&user)
+			output[j].TicketUser = user
+		}
+		data.Items = output
+		c.JSON(c.Writer.Status(), data)
 	}
 }
