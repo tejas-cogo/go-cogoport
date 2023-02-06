@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,24 @@ func ListTicket(c *gin.Context) {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
 		data := paginate.New().With(db).Request(c.Request).Response(&ser)
-		fmt.Println(data.MaxPage)
+
+		items, _ := json.Marshal(data.Items)
+		var output []models.TicketData
+
+		db2 := config.GetCDB()
+		err := json.Unmarshal([]byte(items), &output)
+		if err != nil {
+			print(err)
+			c.JSON(400, err)
+		}
+
+		for j := 0; j < len(output); j++ {
+			var user models.User
+			db2.Where("id = ?", output[j].UserID).First(&user)
+			output[j].User = user
+		}
+		data.Items = output
+
 		c.JSON(c.Writer.Status(), data)
 	}
 }
