@@ -12,7 +12,7 @@ import (
 func ValidateTicketDefaultRole(ticket_default_role models.TicketDefaultRole) string {
 
 	if ticket_default_role.RoleID == uuid.Nil {
-		return ("Group Is Required!")
+		return ("Role Is Required!")
 	}
 
 	if ticket_default_role.Level <= 0 || ticket_default_role.Level > 3 {
@@ -71,6 +71,10 @@ func ValidateTicketReviewer(ticket_reviewer models.TicketReviewer) string {
 		return ("User Is Required!")
 	}
 
+	// if len(ticket_reviewer.ReviewerManagerIDs) == 0 {
+	// 	return ("Invalid Manager Ids Is Required!")
+	// }
+
 	if ticket_reviewer.TicketID == 0 {
 		return ("Ticket Is Required!")
 	}
@@ -87,6 +91,9 @@ func ValidateTokenTicket(ticket models.Ticket) string {
 	}
 	if ticket.TicketUserID <= 0 {
 		return ("TicketUserID is Required!")
+	}
+	if ticket.UserType == "" {
+		return ("UserType is Required!")
 	}
 
 	return ("validated")
