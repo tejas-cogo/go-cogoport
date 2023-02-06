@@ -28,6 +28,10 @@ func ListTokenTicketDetail(c *gin.Context) {
 		var user models.User
 		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
 		ser.TicketReviewer.User = user
+		var ticket_user models.TicketUser
+		db.Where("system_user_id = ?", ser.Ticket.UserID).First(&ticket_user)
+		ser.TicketUser = ticket_user
+
 		var role models.AuthRole
 		db.Where("id = ?", ser.TicketReviewer.RoleID).First(&role)
 		ser.TicketReviewer.Role = role

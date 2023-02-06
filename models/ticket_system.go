@@ -25,9 +25,10 @@ type PartnerUser struct {
 	Status    string
 }
 type User struct {
-	ID    uuid.UUID
-	Name  string
-	Email string
+	ID           uuid.UUID
+	Name         string
+	Email        string
+	MobileNumber string
 }
 
 type Filter struct {
