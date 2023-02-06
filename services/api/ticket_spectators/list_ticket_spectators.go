@@ -27,7 +27,5 @@ func ListTicketSpectator(filters models.TicketSpectator) ([]models.TicketSpectat
 
 	db = db.Preload("TicketUser").Find(&ticket_spectator)
 
-
-
 	return ticket_spectator, db, err
 }

@@ -8,12 +8,12 @@ import (
 
 type TicketReviewer struct {
 	gorm.Model
-	PerformedByID uuid.UUID      `gorm:"type:uuid"`
-	TicketID      uint           `gorm:"not null"`
-	UserID        uuid.UUID      `gorm:"not null"`
-	RoleID        uuid.UUID      `gorm:"not null"`
-	ManagerIDs    pq.StringArray `gorm:"type:text[]"`
-	Status        string         `gorm:"not null:default:'active'"`
+	PerformedByID      uuid.UUID      `gorm:"type:uuid"`
+	TicketID           uint           `gorm:"not null"`
+	UserID             uuid.UUID      `gorm:"not null"`
+	RoleID             uuid.UUID      `gorm:"not null"`
+	ReviewerManagerIDs pq.StringArray `gorm:"type:text[]"`
+	Status             string         `gorm:"not null:default:'active'"`
 }
 
 type ReviewerActivity struct {
