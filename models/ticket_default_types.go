@@ -16,18 +16,17 @@ type TicketDefaultType struct {
 }
 
 type TicketDefault struct {
-	ID                           uint
-	TicketType                   string
-	TypeStatus                   string
-	TicketDefaultTimingID        uint
-	TimingStatus                 string
-	ExpiryDuration               string
-	Tat                          string
-	Conditions                   pq.StringArray `gorm:"type:text[]"`
-	TicketPriority               string
-	AdditionalOptions            gormjsonb.JSONB `gorm:"type:json"`
-	TicketDefaultRoleTypeQueryID uint
-	TicketDefaultRole            []TicketDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
+	ID                    uint
+	TicketType            string
+	TypeStatus            string
+	TicketDefaultTimingID uint
+	TimingStatus          string
+	ExpiryDuration        string
+	Tat                   string
+	Conditions            pq.StringArray `gorm:"type:text[]"`
+	TicketPriority        string
+	AdditionalOptions     gormjsonb.JSONB `gorm:"type:json"`
+	TicketDefaultRole     string
 }
 
 type TicketDefaultFilter struct {

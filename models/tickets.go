@@ -11,7 +11,7 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint      `gorm:"not null"`
+	TicketUserID            uint      
 	UserID                  uuid.UUID `gorm:"type:uuid"`
 	UserType                string
 	Source                  string `gorm:"not null"`
