@@ -13,7 +13,6 @@ import (
 
 func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 	db := config.GetDB()
-	tx := db.Begin()
 	var err error
 
 	var ticket_reviewer []models.TicketReviewer
@@ -39,38 +38,31 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 		end_date, _ := time.Parse(constants.DateTimeFormat(), stats.EndDate)
 		end_date = end_date.AddDate(0, 0, 1)
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Unresolved).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Unresolved).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Closed).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Closed).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Where("updated_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Rejected).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Where("updated_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Rejected).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? AND tat BETWEEN ? AND ?", "unresolved", t.Format(constants.DateTimeFormat()), time.Now()).Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.DueToday).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? AND tat BETWEEN ? AND ?", "unresolved", t.Format(constants.DateTimeFormat()), time.Now()).Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.DueToday).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Where("updated_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Overdue).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Where("updated_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Overdue).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "reassigned").Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Reassigned).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "reassigned").Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Reassigned).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "escalated").Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Escalated).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.TicketActivity{}).Where("ticket_id IN ?", ticket_id).Where("status = ?", "escalated").Where("created_at BETWEEN ? and ?", start_date, end_date).Count(&stats.Escalated).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
@@ -81,79 +73,67 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 				ExpiryDate, _ := time.Parse(constants.DateTimeFormat(), stats.ExpiryDate)
 				x := ExpiryDate
 				y := x.AddDate(0, 0, 1)
-				tx = tx.Where("expiry_date BETWEEN ? AND ?", x, y)
+				db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 			}
 
 			if stats.TicketCreatedAt != "" {
 				CreatedAt, _ := time.Parse(constants.DateTimeFormat(), stats.TicketCreatedAt)
 				x := CreatedAt
 				y := x.AddDate(0, 0, 1)
-				tx = tx.Where("created_at BETWEEN ? AND ?", x, y)
+				db = db.Where("created_at BETWEEN ? AND ?", x, y)
 			}
 
 			if len(stats.Tags) != 0 {
-				tx = tx.Where("tags && ?", "{"+strings.Join(stats.Tags, ",")+"}")
+				db = db.Where("tags && ?", "{"+strings.Join(stats.Tags, ",")+"}")
 			}
 
 			if stats.TicketUserID != 0 {
-				tx = tx.Where("ticket_user_id = ?", stats.TicketUserID)
+				db = db.Where("ticket_user_id = ?", stats.TicketUserID)
 			}
 
 			if stats.QFilter != "" {
-				tx = tx.Where("id::text ilike ? OR type ilike ?", stats.QFilter, "%"+stats.QFilter+"%")
+				db = db.Where("id::text ilike ? OR type ilike ?", stats.QFilter, "%"+stats.QFilter+"%")
 			}
-			tx.Where("id IN ?", ticket_id).Distinct("id").Find(&ticket).Pluck("id ", &ticket_id)
+			db.Where("id IN ?", ticket_id).Distinct("id").Find(&ticket).Pluck("id ", &ticket_id)
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.Unresolved).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.Unresolved).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Count(&stats.Closed).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Count(&stats.Closed).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Count(&stats.Rejected).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Count(&stats.Rejected).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		fmt.Println(ticket_id, "ticket_id")
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.DueToday).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.DueToday).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Count(&stats.Overdue).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Count(&stats.Overdue).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "reassigned").Count(&stats.Reassigned).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "reassigned").Count(&stats.Reassigned).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("priority = 'high'").Count(&stats.HighPriority).Error; err != nil {
-			tx.Rollback()
-			return stats, errors.New(err.Error())
-		}
+		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("priority = 'high'").Count(&stats.HighPriority)
 
-		fmt.Println("no stats", ticket_id)
+		fmt.Println("no stats", stats.HighPriority)
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon).Error; err != nil {
-			tx.Rollback()
+		if err = db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon).Error; err != nil {
 			return stats, errors.New(err.Error())
 		}
 	}
 
-	tx.Commit()
+	db.Commit()
 	return stats, err
 }
