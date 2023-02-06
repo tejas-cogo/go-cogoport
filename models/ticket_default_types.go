@@ -26,8 +26,8 @@ type TicketDefault struct {
 	Tat                   string
 	Conditions            pq.StringArray `gorm:"type:text[]"`
 	TicketPriority        string
-	AdditionalOptions     gormjsonb.JSONB `gorm:"type:json"`
-	TicketDefaultRole     string
+	AdditionalOptions     gormjsonb.JSONB         `gorm:"type:json"`
+	TicketDefaultRole     []TicketTypeDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
 }
 
 type TicketDefaultFilter struct {
