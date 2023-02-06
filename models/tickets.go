@@ -11,7 +11,7 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint      
+	TicketUserID            uint
 	UserID                  uuid.UUID `gorm:"type:uuid"`
 	UserType                string
 	Source                  string `gorm:"not null"`
@@ -31,7 +31,7 @@ type Ticket struct {
 
 type TicketDetail struct {
 	TicketReviewerID  uint
-	TicketReviewer    TicketReviewer
+	TicketReviewer    TicketReviewerData
 	TicketSpectatorID uint
 	TicketSpectator   TicketSpectator
 	TicketID          uint

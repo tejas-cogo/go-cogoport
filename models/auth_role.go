@@ -10,10 +10,3 @@ type AuthRole struct {
 	StakeholderId uuid.UUID `gorm:"type:uuid"`
 	Status        string    `gorm:"not null:default:'active'"`
 }
-
-type AutRole struct {
-	ID            uuid.UUID `gorm:"type:uuid"`
-	Name          string
-	StakeholderId uuid.UUID `gorm:"type:uuid"`
-	Status        string    `gorm:"not null:default:'active'"`
-}

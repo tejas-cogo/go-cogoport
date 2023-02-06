@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
+	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/tickets"
 )
@@ -84,6 +85,13 @@ func ListTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {
+		db := config.GetCDB()
+		var user models.User
+		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
+		ser.TicketReviewer.User = user
+		var role models.AuthRole
+		db.Where("id = ?", ser.TicketReviewer.RoleID).First(&role)
+		ser.TicketReviewer.Role = role
 		c.JSON(c.Writer.Status(), ser)
 	}
 
