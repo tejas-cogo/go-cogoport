@@ -20,17 +20,14 @@ type TicketActivityService struct {
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	var err error
-	var ticket_user models.TicketUser
 
 	//reviewer assigned
-	if body.TicketActivity.UserType == "system" {
-		db.Where("system_user_id = ? ", body.Activity.PerformedByID).Find(&ticket_user)
+	if body.TicketActivity.UserType == "system" || body.TicketActivity.UserType == "internal" {
 
-		body.TicketActivity.UserID = body.Activity.PerformedByID
+		fmt.Println("ticket_activity", body.TicketActivity)
 
-	} else if body.TicketActivity.Status == "resolved" || body.TicketActivity.Status == "rejected" || body.TicketActivity.Status == "escalated" || body.TicketActivity.Status == "reviewer_reassigned" {
-
-	}
+	} // } else {
+	// }
 
 	if body.TicketActivity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
@@ -69,7 +66,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "internal" {
-				SendTicketActivity(ticket_activity)
+				// SendTicketActivity(ticket_activity)
 			}
 			tx.Commit()
 		}
@@ -104,7 +101,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "internal" {
-				SendTicketActivity(ticket_activity)
+				// SendTicketActivity(ticket_activity)
 			}
 			tx.Commit()
 		}
@@ -183,6 +180,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
+
 			audits.CreateAuditTicket(ticket, tx)
 			stmt := validations.ValidateTicketActivity(ticket_activity)
 			if stmt != "validated" {
@@ -194,7 +192,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "internal" {
-				SendTicketActivity(ticket_activity)
+				// SendTicketActivity(ticket_activity)
 			}
 			tx.Commit()
 		}
