@@ -88,10 +88,17 @@ func ListTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {
-		db := config.GetCDB()
+		db := config.GetDB()
+
 		var user models.User
 		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
 		ser.TicketReviewer.User = user
+
+		var t_user models.TicketUser
+		fmt.Println(ser.Ticket.UserID, "ser")
+		db.Where("system_user_id = ?", ser.Ticket.UserID).First(&t_user)
+		ser.TicketUser = t_user
+
 		var role models.AuthRole
 		db.Where("id = ?", ser.TicketReviewer.RoleID).First(&role)
 		ser.TicketReviewer.Role = role

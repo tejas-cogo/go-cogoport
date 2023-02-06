@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -32,12 +31,6 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 	}
 	ticket_detail.TicketReviewerID = ticket_reviewer.ID
 	ticket_detail.TicketReviewer = ticket_reviewer_data
-
-	// db.Where("ticket_id = ? and status = ?",filters.ID,"active").First(&ticket_spectator)
-	// ticket_detail.TicketSpectatorID = ticket_spectator.ID
-	// ticket_detail.TicketSpectator = ticket_spectator
-
-	fmt.Println(ticket_detail)
 
 	tx.Commit()
 	return ticket_detail, err

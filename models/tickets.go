@@ -36,6 +36,7 @@ type TicketDetail struct {
 	TicketSpectator   TicketSpectator
 	TicketID          uint
 	Ticket            Ticket
+	TicketUser        TicketUser
 }
 
 type TicketStat struct {
