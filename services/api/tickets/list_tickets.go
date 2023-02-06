@@ -13,38 +13,31 @@ import (
 func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 	db := config.GetDB()
 
-	var ticket_user models.TicketUser
 	var ticket_reviewer models.TicketReviewer
 	var ticket_id []string
 
 	var ticket []models.Ticket
 
 	if filters.MyTicket != "" {
-		db.Where("system_user_id = ?", filters.MyTicket).First(&ticket_user)
-		db = db.Where("ticket_user_id = ?", ticket_user.ID)
+		db = db.Where("user_id = ?", filters.MyTicket).Distinct("id").Order("id").Find(&ticket).Pluck("id", &ticket_id)
+
 	} else {
 		if filters.AgentRmID != "" {
-			var ticket_users []uint
 
-			db2 := config.GetCDB()
-			var partner_user_rm_mapping []models.PartnerUserRmMapping
-			var partner_user_rm_ids []string
-
-			db2.Where("reporting_manager_id = ? and status = ?", filters.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids)
-
-			db.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users)
-
-			db.Where("ticket_user_id In ? or ticket_user_id = ? ", ticket_users, ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+			db.Where("manager_rm_ids && '(?)' or user_id = ?", filters.AgentRmID, filters.AgentRmID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
 		} else if filters.AgentID != "" {
-			db.Where("system_user_id = ?", filters.AgentID).First(&ticket_user)
 
-			db.Where("ticket_user_id = ?", ticket_user.ID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+			db.Where("user_id = ?", filters.AgentID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
 		} else {
+
 			db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
 		}
-		db = db.Where("id IN ?", ticket_id)
 	}
+
+	db = db.Where("id IN ?", ticket_id)
 
 	if filters.ID > 0 {
 		db = db.Where("id = ?", filters.ID)
@@ -69,9 +62,9 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
-	if filters.TicketUserID != 0 {
-		db = db.Where("ticket_user_id = ?", filters.TicketUserID)
-	}
+	// if filters.TicketUserID != 0 {
+	// 	db = db.Where("ticket_user_id = ?", filters.TicketUserID)
+	// }
 
 	if filters.TicketCreatedAt != "" {
 		CreatedAt, _ := time.Parse(constants.DateTimeFormat(), filters.TicketCreatedAt)
