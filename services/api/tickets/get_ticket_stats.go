@@ -34,9 +34,6 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 	}
 
-
-	db = config.GetDB()
-
 	if stats.StartDate != "" {
 		start_date, _ := time.Parse(constants.DateTimeFormat(), stats.StartDate)
 		end_date, _ := time.Parse(constants.DateTimeFormat(), stats.EndDate)
@@ -123,7 +120,8 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 			return stats, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? AND tat BETWEEN ? AND ?", "unresolved", t.Format(constants.DateTimeFormat()), time.Now()).Count(&stats.DueToday).Error; err != nil {
+		fmt.Println(ticket_id, "ticket_id")
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.DueToday).Error; err != nil {
 			tx.Rollback()
 			return stats, errors.New(err.Error())
 		}
