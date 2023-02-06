@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
@@ -20,6 +21,7 @@ type PartnerUser struct {
 	ID        uuid.UUID
 	PartnerID uuid.UUID
 	UserID    uuid.UUID
+	RoleIDs   pq.StringArray `gorm:"type:text[]"`
 	Status    string
 }
 type User struct {
