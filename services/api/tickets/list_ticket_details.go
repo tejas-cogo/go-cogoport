@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -17,7 +18,7 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 	var ticket_reviewer models.TicketReviewer
 	// var ticket_spectator models.TicketSpectator
 
-	if err := tx.Where("id = ? and status = ?", filters.ID, "active").First(&ticket).Error; err != nil {
+	if err := tx.Where("id = ?", filters.ID).First(&ticket).Error; err != nil {
 		tx.Rollback()
 		return ticket_detail, errors.New(err.Error())
 	}
@@ -34,6 +35,8 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 	// db.Where("ticket_id = ? and status = ?",filters.ID,"active").First(&ticket_spectator)
 	// ticket_detail.TicketSpectatorID = ticket_spectator.ID
 	// ticket_detail.TicketSpectator = ticket_spectator
+
+	fmt.Println(ticket_detail)
 
 	tx.Commit()
 	return ticket_detail, err
