@@ -18,14 +18,14 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 	var err error
 	var ticket_token models.TicketToken
 
-	if err := tx.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "utilized").First(&ticket_token).Error; err != nil {
+	if err := tx.Where("ticket_token = ? AND status = ?", token_filter.TicketToken, "active").First(&ticket_token).Error; err != nil {
 		tx.Rollback()
 		return ticket_token, errors.New(err.Error())
 	}
 
 	today := time.Now()
 
-	if today.Before(ticket_token.ExpiryDate) && ticket_token.Status != "inactive" {
+	if today.Before(ticket_token.ExpiryDate) {
 
 		var ticket models.Ticket
 
@@ -44,6 +44,8 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		if err != nil {
 			return ticket_token, err
 		}
+
+		fmt.Println("ticket_data", ticket_data)
 
 		ticket_token.TicketID = ticket_data.ID
 		ticket_token.Status = "utilized"

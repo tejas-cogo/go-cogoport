@@ -31,7 +31,7 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	var ticket_reviewer models.TicketReviewer
 	// var ticket_spectator models.TicketSpectator
 
-	if err := tx.Where("id = ? and status = ?", filters.ID, "active").First(&ticket).Error; err != nil {
+	if err := tx.Where("id = ?", filters.ID).First(&ticket).Error; err != nil {
 		tx.Rollback()
 		return ticket_detail, errors.New(err.Error())
 	}

@@ -62,10 +62,6 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("expiry_date BETWEEN ? AND ?", x, y)
 	}
 
-	// if filters.TicketUserID != 0 {
-	// 	db = db.Where("ticket_user_id = ?", filters.TicketUserID)
-	// }
-
 	if filters.TicketCreatedAt != "" {
 		CreatedAt, _ := time.Parse(constants.DateTimeFormat(), filters.TicketCreatedAt)
 		x := CreatedAt

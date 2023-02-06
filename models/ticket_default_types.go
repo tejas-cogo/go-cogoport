@@ -12,7 +12,7 @@ type TicketDefaultType struct {
 	PerformedByID     uuid.UUID       `gorm:"type:uuid" json:"performedByID"`
 	TicketType        string          `gorm:"not null;unique"`
 	AdditionalOptions gormjsonb.JSONB `gorm:"type:json"`
-	ClosureAuthorizer pq.StringArray  `gorm:"type:text[]"`
+	ClosureAuthorizer pq.StringArray  `gorm:"type:text[]; default:{}"`
 	Status            string          `gorm:"not null;default:'active'"`
 }
 
@@ -22,6 +22,7 @@ type TicketDefault struct {
 	TypeStatus            string
 	TicketDefaultTimingID uint
 	TimingStatus          string
+	ClosureAuthorizer     pq.StringArray `gorm:"type:text[]"`
 	ExpiryDuration        string
 	Tat                   string
 	Conditions            pq.StringArray `gorm:"type:text[]"`
