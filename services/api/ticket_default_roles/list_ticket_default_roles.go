@@ -6,12 +6,14 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func ListTicketDefaultRole(filters models.TicketDefaultRole) ([]models.TicketDefaultRole, error) {
+func ListTicketDefaultRole(filters models.TicketDefaultRole) ([]models.TicketTypeDefaultRole, error) {
 	db := config.GetDB()
 
 	var err error
 
 	var ticket_default_roles []models.TicketDefaultRole
+	var ticket_default_type_roles []models.TicketTypeDefaultRole
+	db = db.Model(&ticket_default_roles)
 
 	if filters.TicketDefaultTypeID > 0 {
 		db = db.Where("ticket_default_type_id = ?", filters.TicketDefaultTypeID)
@@ -29,9 +31,7 @@ func ListTicketDefaultRole(filters models.TicketDefaultRole) ([]models.TicketDef
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db = db.Order("created_at desc").Find(&ticket_default_roles)
+	db.Order("created_at desc").Scan(&ticket_default_type_roles)
 
-	db = db.Order("created_at desc").Find(&ticket_default_roles)
-
-	return ticket_default_roles, err
+	return ticket_default_type_roles, err
 }

@@ -22,6 +22,11 @@ type PartnerUser struct {
 	UserID    uuid.UUID
 	Status    string
 }
+type User struct {
+	ID    uuid.UUID
+	Name  string
+	Email string
+}
 
 type Filter struct {
 	gorm.Model
