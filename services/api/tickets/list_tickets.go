@@ -84,9 +84,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("status = ?", filters.Status)
 	}
 
-	db = db.Order("created_at desc").Order("expiry_date desc")
-
-	db = db.Preload("TicketUser").Find(&ticket)
+	db = db.Order("created_at desc").Order("expiry_date desc").Find(&ticket)
 
 	return ticket, db
 }

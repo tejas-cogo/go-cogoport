@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -20,8 +22,9 @@ func ListTicket(c *gin.Context) {
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
-		pg := paginate.New()
-		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+		data := paginate.New().With(db).Request(c.Request).Response(&ser)
+		fmt.Println(data.MaxPage)
+		c.JSON(c.Writer.Status(), data)
 	}
 }
 
