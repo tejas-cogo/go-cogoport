@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -163,4 +164,23 @@ func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 	}
 
 	return ("validated")
+}
+
+func ValidateActivityPermission(ticket_activity models.TicketActivity) bool {
+	db := config.GetDB()
+
+	var ticket_reviewer models.TicketReviewer
+	var ticket models.Ticket
+
+	fmt.Println("ticket_activity", ticket_activity)
+
+	db.Where("ticket_id = ? and status = ?", ticket_activity.TicketID, "active").First("ticket_reviewer")
+
+	db.Where("id = ? and status = ?", ticket_activity.TicketID, "unresolved").First("ticket")
+
+	fmt.Println("ticket")
+	if ticket_reviewer.UserID != ticket_activity.UserID && ticket.UserID != ticket_activity.UserID {
+		return false
+	}
+	return true
 }
