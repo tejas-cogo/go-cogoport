@@ -68,7 +68,7 @@ func ListTokenTicketActivity(c *gin.Context) {
 		}
 
 		for j := 0; j < len(output); j++ {
-			if output[j].UserType != "ticket_user" {
+			if output[j].UserType == "ticket_user" {
 				var user models.TicketUser
 				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
