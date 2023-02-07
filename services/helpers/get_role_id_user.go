@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -14,36 +15,41 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	var body models.PartnerUserBody
 
 	rubyclient.Endpoint = "partner/list_partner_users"
-
 	body.Filters.RoleIDs = append(body.Filters.RoleIDs, RoleID.String())
 	body.Filters.Status = "active"
 	body.RmMappingDataRequired = false
 	body.PageLimit = 1
-	// var partner_users map[string]interface{}
+
 	var partner_users models.RubyClientOutput
 	obj, _ := RubyClient(body, rubyclient)
-	// fmt.Println(obj)
-	// var new models.RubyClientOutput
-	// err := json.Unmarshal([]byte(obj), &partner_users)
 
 	bodyString := string(obj)
 
 	err := json.Unmarshal([]byte(bodyString), &partner_users)
-
-	// for k, v := range partner_users {
-	// 	// fmt.Print("-------------------------------------------------------------------------------------------------------")
-	// 	// fmt.Print(k, v)
-	// 	switch c := v.(type) {
-	// 	default:
-	// 		// fmt.Printf("Not sure what type item %q is, but I think it might be %T\n", k, c)
-	// 	}
-	// }
 	if err != nil {
 		fmt.Println(err, "Error occured")
 	}
 
-	fmt.Println(partner_users)
+	var user_id []string
+	for _, user_details := range partner_users.List {
+		user_id = append(user_id, user_details.UserID)
+	}
 
+	var ticket_reviewer models.TicketReviewer
+
+	type Result struct {
+		UserID string
+		Count  int
+	}
+	// var max models.PartnerUserList
+
+	var result Result
+
+	db := config.GetDB()
+	db.Model(&ticket_reviewer).Where("user_id = ? and status = ?", user_id, "active").Select("Count(Distinct(ticket_id)) as count,user_id as user_id").Group("user_id").Scan(&result)
+
+	fmt.Println("----------------------")
+	fmt.Println(result)
 	return auth_role.StakeholderId
 
 }

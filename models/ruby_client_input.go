@@ -7,12 +7,12 @@ type RubyClientInput struct {
 }
 
 type PartnerUserFilter struct {
-	RoleIDs pq.StringArray `gorm:"type:json[]"`
-	Status  string
+	RoleIDs pq.StringArray `json:"role_ids"`
+	Status  string         `json:"status"`
 }
 
 type PartnerUserBody struct {
-	RmMappingDataRequired bool
-	Filters               PartnerUserFilter
-	PageLimit             uint
+	RmMappingDataRequired bool              `json:"rm_mappings_data_required"`
+	Filters               PartnerUserFilter `json:"filters"`
+	PageLimit             uint              `json:"page_limit"`
 }

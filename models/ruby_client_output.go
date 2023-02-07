@@ -1,7 +1,5 @@
 package models
 
-import "github.com/google/uuid"
-
 type RubyClientOutput struct {
 	List       []PartnerUserList
 	Page       uint
@@ -11,6 +9,6 @@ type RubyClientOutput struct {
 }
 
 type PartnerUserList struct {
-	ID        string
-	PartnerID uuid.UUID 
+	UserID string `json:"user_id"`
+	// Max    int64
 }
