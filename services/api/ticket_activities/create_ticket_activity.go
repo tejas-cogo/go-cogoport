@@ -32,10 +32,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 
-			validate := validations.ValidateActivityPermission(ticketactivity)
-			if validate == false {
-				return ticket_activity, errors.New("You are not authorized to create activity!")
-			}
+			// validate := validations.ValidateActivityPermission(ticket_activity)
+			// if validate == false {
+			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
+			// }
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
@@ -77,10 +77,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
 
-			validate := validations.ValidateActivityPermission(ticketactivity)
-			if validate == false {
-				return ticket_activity, errors.New("You are not authorized to create activity!")
-			}
+			// validate := validations.ValidateActivityPermission(ticket_activity)
+			// if validate == false {
+			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
+			// }
 
 			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
 				tx.Rollback()
@@ -116,10 +116,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket_activity := body.TicketActivity
 
 			ticket_activity.TicketID = u
-			validate := validations.ValidateActivityPermission(ticketactivity)
-			if validate == false {
-				return ticket_activity, errors.New("You are not authorized to create activity!")
-			}
+			// validate := validations.ValidateActivityPermission(ticket_activity)
+			// if validate == false {
+			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
+			// }
 			var ticket_reviewer models.TicketReviewer
 			var old_ticket_reviewer models.TicketReviewer
 			var ticket_default_type models.TicketDefaultType
@@ -206,10 +206,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			tx := db.Begin()
 			var ticket models.Ticket
 			ticket_activity.TicketID = u
-			validate := validations.ValidateActivityPermission(ticketactivity)
-			if validate == false {
-				return ticket_activity, errors.New("You are not authorized to create activity!")
-			}
+			// validate := validations.ValidateActivityPermission(ticket_activity)
+			// if validate == false {
+			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
+			// }
 
 			audits.CreateAuditTicket(ticket, tx)
 			stmt := validations.ValidateTicketActivity(ticket_activity)
