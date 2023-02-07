@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -28,6 +30,7 @@ type TicketActivityData struct {
 	IsRead      bool
 	Status      string
 	TicketUser  User
+	CreatedAt   time.Time
 }
 
 type Activity struct {
