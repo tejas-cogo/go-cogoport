@@ -164,3 +164,16 @@ func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 
 	return ("validated")
 }
+
+func ValidateActivityPermission(ticket_activity models.TicketActivity) bool {
+	db := config.GetDB()
+
+	var ticket_reviewer models.TicketReviewer
+
+	db.Where("ticket_id = ? and status = ?", ticket_activity.TicketID, "active").First("ticket_reviewer")
+
+	if ticket_reviewer.UserID != ticket_activity.UserID {
+		return false
+	}
+	return true
+}
