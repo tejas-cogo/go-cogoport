@@ -32,6 +32,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		ticket.Source = token_filter.Source
 		ticket.Type = token_filter.Type
 		ticket.TicketUserID = ticket_token.TicketUserID
+		ticket.UserType = "ticket_user"
 
 		stmt := validations.ValidateTokenTicket(ticket)
 		if stmt != "validated" {

@@ -101,7 +101,6 @@ func GetTicketToken(c *gin.Context) {
 }
 
 func CreateTokenTicket(c *gin.Context) {
-
 	var token_filter models.TokenFilter
 	err := c.Bind(&token_filter)
 	if err != nil {
