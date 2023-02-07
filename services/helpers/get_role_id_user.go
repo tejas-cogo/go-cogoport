@@ -11,14 +11,14 @@ import (
 
 func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	var rubyclient models.RubyClientInput
-	var body models.PartnerUserBody
+	var body models.Body
 
 	rubyclient.Endpoint = "partner/list_partner_users"
 	body.Filters.RoleIDs = append(body.Filters.RoleIDs, RoleID.String())
 	body.Filters.Status = "active"
 	body.RmMappingDataRequired = false
 
-	var partner_users models.RubyClientOutput
+	var partner_users models.RestClientOutput
 	obj, _ := RubyClient(body, rubyclient)
 
 	bodyString := string(obj)
@@ -65,7 +65,7 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 				user_id, err = uuid.Parse(value.UserID)
 			}
 		}
-		
+
 	}
 
 	return user_id
