@@ -16,7 +16,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	var err error
 	ticketactivity := body.TicketActivity
 
-	if !(ticketactivity.UserType == "user" || ticketactivity.UserType == "ticket_user") {
+	if !(ticketactivity.UserType == "user" || ticketactivity.UserType == "ticket_user" || ticketactivity.UserType == "system") {
 		return ticketactivity, errors.New("user type is invalid")
 	}
 
