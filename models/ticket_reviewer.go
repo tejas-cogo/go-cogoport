@@ -8,9 +8,10 @@ import (
 
 type TicketReviewer struct {
 	gorm.Model
-	PerformedByID      uuid.UUID      `gorm:"type:uuid"`
-	TicketID           uint           `gorm:"not null"`
-	UserID             uuid.UUID      `gorm:"not null"`
+	PerformedByID      uuid.UUID `gorm:"type:uuid"`
+	TicketID           uint      `gorm:"not null"`
+	UserID             uuid.UUID `gorm:"not null"`
+	Level              int
 	RoleID             uuid.UUID      `gorm:"not null"`
 	ReviewerManagerIDs pq.StringArray `gorm:"type:text[]"`
 	Status             string         `gorm:"not null;default:'active'"`
