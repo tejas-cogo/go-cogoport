@@ -4,7 +4,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -53,7 +52,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 	} else {
 		var ticket models.Ticket
-		if stats.ExpiryDate != "" || stats.TicketCreatedAt != "" || len(stats.Tags) != 0 || stats.UserID != uuid.Nil || stats.QFilter != "" {
+		if stats.ExpiryDate != "" || stats.TicketCreatedAt != "" || len(stats.Tags) != 0 || stats.UserID != "" || stats.QFilter != "" {
 			if stats.ExpiryDate != "" {
 				ExpiryDate, _ := time.Parse(constants.DateTimeFormat(), stats.ExpiryDate)
 				x := ExpiryDate
@@ -72,7 +71,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 				db = db.Where("tags && ?", "{"+strings.Join(stats.Tags, ",")+"}")
 			}
 
-			if stats.UserID != uuid.Nil {
+			if stats.UserID != "" {
 				db = db.Where("user_id = ?", stats.UserID)
 			}
 

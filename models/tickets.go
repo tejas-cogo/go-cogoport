@@ -76,7 +76,7 @@ type TicketStat struct {
 	HighPriority    int64
 	StartDate       string
 	EndDate         string
-	UserID          uuid.UUID `gorm:"type:uuid"`
+	UserID          string
 	QFilter         string
 	ExpiryDate      string
 	TicketCreatedAt string
@@ -124,9 +124,9 @@ type TicketExtraFilter struct {
 	QFilter                 string
 	PerformedByID           string
 	MyTicket                string
-	AgentID                 uuid.UUID `gorm:"type:uuid"`
-	AgentRmID               uuid.UUID `gorm:"type:uuid"`
-	UserID                  uuid.UUID `gorm:"type:uuid"`
+	AgentID                 string
+	AgentRmID               string
+	UserID                  string
 	Source                  string
 	Type                    string
 	Category                string
