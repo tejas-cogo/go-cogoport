@@ -11,10 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func AllowedUserType() []string {
-	return []string{"respond", "rejected", "mark_as_resolved", "reassigned", "escalated", "assigned"}
-}
-
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	var err error

@@ -27,6 +27,10 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	var ticket_default_type models.TicketDefaultType
 
 	tx.Where("ticket_token = ?", body.TicketToken).First(&ticket_token)
+	if ticket_token.Status == "utilized" {
+		tx.Rollback()
+		return ticket, errors.New("token is already used")
+	}
 
 	tx.Where("id = ?", ticket_token.TicketID).First(&ticket)
 
@@ -80,7 +84,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	audits.CreateAuditTicket(ticket, db)
 
-	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").First(&ticket_default_role).Error; erro != nil {
+	if erro := tx.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").Order("level desc").First(&ticket_default_role).Error; erro != nil {
 		if err := tx.Where("ticket_default_type_id = ?", 1).First(&ticket_default_role).Error; err != nil {
 			tx.Rollback()
 			return ticket, errors.New(err.Error())
@@ -111,6 +115,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 
 	}
 	ticket_reviewer.Status = "active"
+	ticket_reviewer.Level = ticket_default_role.Level
 
 	var filters models.Filter
 
@@ -121,7 +126,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	activities.CreateTicketActivity(filters)
 
 	ticket_token.Status = "utilized"
-	tx.Save(ticket_token)
+	tx.Save(&ticket_reviewer)
+	tx.Save(&ticket_token)
 	tx.Commit()
 
 	return ticket, err
