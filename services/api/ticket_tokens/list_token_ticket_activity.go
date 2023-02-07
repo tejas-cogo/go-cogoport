@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
 	"gorm.io/gorm"
 )
@@ -22,6 +23,16 @@ func ListTokenTicketActivity(token_filter models.TokenFilter) ([]models.TicketAc
 
 	if ticket_token.TicketID > 0 {
 		db = db.Where("ticket_id = ?", ticket_token.TicketID)
+	}
+
+	if token_filter.UserType != "" {
+
+		if token_filter.UserType == "user" {
+			db = db.Where("type IN ?", constants.AdminActivityView())
+		} else if token_filter.UserType == "ticket_user" {
+			db = db.Where("type IN ?", constants.ClientActivityView())
+		}
+
 	}
 
 	db = db.Order("created_at desc").Preload("Ticket").Find(&ticket_activity)

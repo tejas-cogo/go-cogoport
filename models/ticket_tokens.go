@@ -30,6 +30,7 @@ type TokenFilter struct {
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Status                  string
+	UserType                string
 }
 
 type TokenActivity struct {
