@@ -11,7 +11,7 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint      
+	TicketUserID            uint
 	UserID                  uuid.UUID `gorm:"type:uuid"`
 	UserType                string
 	Source                  string `gorm:"not null"`
@@ -54,7 +54,7 @@ type TicketStat struct {
 	HighPriority    int64
 	StartDate       string
 	EndDate         string
-	TicketUserID    uint
+	UserID          uuid.UUID `gorm:"type:uuid"`
 	QFilter         string
 	ExpiryDate      string
 	TicketCreatedAt string
@@ -101,10 +101,10 @@ type TicketExtraFilter struct {
 	TicketUserID            uint
 	QFilter                 string
 	PerformedByID           string
-	MyTicket                string
-	AgentID                 string
-	AgentRmID               string
-	UserID                  string
+	MyTicket               uuid.UUID
+	AgentID                 uuid.UUID
+	AgentRmID               uuid.UUID
+	UserID                  uuid.UUID
 	Source                  string
 	Type                    string
 	Category                string

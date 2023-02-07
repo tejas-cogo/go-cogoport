@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -33,7 +34,6 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
 	}
-
 
 	db = config.GetDB()
 
@@ -79,7 +79,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 	} else {
 		var ticket models.Ticket
-		if stats.ExpiryDate != "" || stats.TicketCreatedAt != "" || len(stats.Tags) != 0 || stats.TicketUserID != 0 || stats.QFilter != "" {
+		if stats.ExpiryDate != "" || stats.TicketCreatedAt != "" || len(stats.Tags) != 0 || stats.UserID != uuid.Nil || stats.QFilter != "" {
 			if stats.ExpiryDate != "" {
 				ExpiryDate, _ := time.Parse(constants.DateTimeFormat(), stats.ExpiryDate)
 				x := ExpiryDate
@@ -98,8 +98,8 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 				tx = tx.Where("tags && ?", "{"+strings.Join(stats.Tags, ",")+"}")
 			}
 
-			if stats.TicketUserID != 0 {
-				tx = tx.Where("ticket_user_id = ?", stats.TicketUserID)
+			if stats.UserID != uuid.Nil {
+				tx = tx.Where("user_id = ?", stats.UserID)
 			}
 
 			if stats.QFilter != "" {
