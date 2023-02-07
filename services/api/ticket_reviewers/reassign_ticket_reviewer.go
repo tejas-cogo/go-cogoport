@@ -7,6 +7,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
@@ -31,11 +32,9 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	}
 
 	if body.ReviewerUserID == uuid.Nil {
-
-		//from ruby client
+		body.ReviewerUserID = helpers.GetRoleIdUser(body.RoleID)
 	} else if body.RoleID == uuid.Nil {
-		//from ruby client
-
+		body.ReviewerUserID = helpers.GetRoleIdUser(body.RoleID)
 	}
 
 	if err := tx.Where("ticket_id = ? AND user_id = ? AND role_id = ?", body.TicketID, body.ReviewerUserID, body.RoleID).Find(&ticket_reviewer_old).Error; err != nil {
@@ -58,10 +57,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		ticket_reviewer.UserID = body.ReviewerUserID
 
 		if body.ReviewerUserID == uuid.Nil {
-			var partner_user models.PartnerUser
-			tx.Where("role_ids = '{?}'", ticket_reviewer.RoleID).First(&partner_user)
-			ticket_reviewer.UserID = partner_user.UserID
-			// ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
+			ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
 		}
 
 		stmt := validations.ValidateTicketReviewer(ticket_reviewer)
