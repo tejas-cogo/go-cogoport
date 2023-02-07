@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	activities "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
@@ -46,6 +47,14 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		ticket_reviewer.TicketID = body.TicketID
 		ticket_reviewer.UserID = body.ReviewerUserID
 		ticket_reviewer.RoleID = body.RoleID
+		ticket_reviewer.UserID = body.ReviewerUserID
+
+		if body.ReviewerUserID == uuid.Nil {
+			var partner_user models.PartnerUser
+			tx.Where("role_ids = '{?}'", ticket_reviewer.RoleID).First(&partner_user)
+			ticket_reviewer.UserID = partner_user.UserID
+			// ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
+		}
 
 		stmt := validations.ValidateTicketReviewer(ticket_reviewer)
 		if stmt != "validated" {

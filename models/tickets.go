@@ -29,13 +29,34 @@ type Ticket struct {
 	Status                  string `gorm:"not null;default:'active'"`
 }
 
+type TicketData struct {
+	TicketUserID            uint
+	UserID                  uuid.UUID `gorm:"type:uuid"`
+	User                    User
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
+	Category                string
+	Subcategory             string
+	Description             string
+	Priority                string          `gorm:"not null;default:'low'"`
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Tat                     time.Time       `gorm:"not null"`
+	ExpiryDate              time.Time       `gorm:"not null"`
+	IsUrgent                bool
+	Status                  string `gorm:"not null;default:'active'"`
+}
+
 type TicketDetail struct {
 	TicketReviewerID  uint
-	TicketReviewer    TicketReviewer
+	TicketReviewer    TicketReviewerData
 	TicketSpectatorID uint
 	TicketSpectator   TicketSpectator
 	TicketID          uint
 	Ticket            Ticket
+	TicketUser        TicketUser
 }
 
 type TicketStat struct {

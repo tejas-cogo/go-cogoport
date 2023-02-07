@@ -29,7 +29,7 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 
 	var ticket models.Ticket
 	var ticket_reviewer models.TicketReviewer
-	// var ticket_spectator models.TicketSpectator
+	var ticket_reviewer_data models.TicketReviewerData
 
 	if err := tx.Where("id = ?", filters.ID).First(&ticket).Error; err != nil {
 		tx.Rollback()
@@ -38,16 +38,12 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	ticket_detail.TicketID = ticket.ID
 	ticket_detail.Ticket = ticket
 
-	if err := tx.Where("ticket_id = ? and status = ?", filters.ID, "active").First(&ticket_reviewer).Error; err != nil {
+	if err := tx.Model(&ticket_reviewer).Where("ticket_id = ? and status = ?", filters.ID, "active").Scan(&ticket_reviewer_data).Error; err != nil {
 		tx.Rollback()
 		return ticket_detail, errors.New(err.Error())
 	}
 	ticket_detail.TicketReviewerID = ticket_reviewer.ID
-	ticket_detail.TicketReviewer = ticket_reviewer
-
-	// db.Where("ticket_id = ? and status = ?",filters.ID,"active").First(&ticket_spectator)
-	// ticket_detail.TicketSpectatorID = ticket_spectator.ID
-	// ticket_detail.TicketSpectator = ticket_spectator
+	ticket_detail.TicketReviewer = ticket_reviewer_data
 
 	tx.Commit()
 

@@ -76,8 +76,6 @@ func ListTicketDefaultType(c *gin.Context) {
 					output[j].TicketDefaultRole[i].Role = auth_role
 				}
 			}
-			fmt.Println(output[j].TicketDefaultRole)
-
 		}
 
 		data.Items = output
