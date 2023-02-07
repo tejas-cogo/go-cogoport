@@ -13,9 +13,18 @@ import (
 	"gorm.io/gorm"
 )
 
+func AllowedUserType() []string {
+	return []string{"respond", "rejected", "mark_as_resolved", "reassigned", "escalated", "assigned"}
+}
+
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	var err error
+	ticketactivity := body.TicketActivity
+
+	if !(ticketactivity.UserType == "user" || ticketactivity.UserType == "ticket_user") {
+		return ticketactivity, errors.New("user type is invalid")
+	}
 
 	if body.TicketActivity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
