@@ -25,7 +25,7 @@ func ListTokenTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {
-		db := config.GetCDB()
+		db := config.GetDB()
 
 		var user models.User
 		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
