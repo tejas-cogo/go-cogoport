@@ -70,9 +70,3 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	return user_id
 }
-
-// rest client leke ruby ki api call krna h. // done
-// Listpartner users - rm mapping required false. // done
-// users apollo3 - incident client ka user banana h in navigation bar.
-// ruby client similar to incident client.
-// role id -> partner users list -> get active users from ticket reviewers -> active tickets jiska lowest hoga unko bhejna h
