@@ -33,9 +33,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 
 	if body.ReviewerUserID == uuid.Nil {
 		body.ReviewerUserID = helpers.GetRoleIdUser(body.RoleID)
-	} else if body.RoleID == uuid.Nil {
-		body.ReviewerUserID = helpers.GetRoleIdUser(body.RoleID)
-	}
+	} 
 
 	if err := tx.Where("ticket_id = ? AND user_id = ? AND role_id = ?", body.TicketID, body.ReviewerUserID, body.RoleID).Find(&ticket_reviewer_old).Error; err != nil {
 		tx.Rollback()
