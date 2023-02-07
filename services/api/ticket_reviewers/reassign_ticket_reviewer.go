@@ -45,6 +45,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 
 	if ticket_reviewer_old.ID != 0 {
 		ticket_reviewer_old.Status = "active"
+		ticket_reviewer_old.Level = 3
 		if err := tx.Save(&ticket_reviewer_old).Error; err != nil {
 			tx.Rollback()
 			return body, errors.New(err.Error())
@@ -56,6 +57,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		ticket_reviewer.UserID = body.ReviewerUserID
 		ticket_reviewer.RoleID = body.RoleID
 		ticket_reviewer.UserID = body.ReviewerUserID
+		ticket_reviewer.Level = 3
 
 		if body.ReviewerUserID == uuid.Nil {
 			var partner_user models.PartnerUser
