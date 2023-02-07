@@ -19,6 +19,7 @@ type TicketActivity struct {
 	Data        gormjsonb.JSONB `gorm:"type:json"`
 	IsRead      bool
 	Status      string
+	Ticket      Ticket `gorm:"foreignKey:TicketID"`
 }
 type TicketActivityData struct {
 	TicketID    uint      `gorm:"not null"`
@@ -29,7 +30,8 @@ type TicketActivityData struct {
 	Data        gormjsonb.JSONB `gorm:"type:json"`
 	IsRead      bool
 	Status      string
-	TicketUser  User
+	TicketUser  TicketUser
+	Ticket      Ticket `gorm:"foreignKey:TicketID"`
 	CreatedAt   time.Time
 }
 

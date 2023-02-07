@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
@@ -62,14 +63,19 @@ func ListTicketActivity(c *gin.Context) {
 
 		for j := 0; j < len(output); j++ {
 			if output[j].UserType != "ticket_user" {
-				var user models.User
-				db2.Where("id = ?", output[j].UserID).First(&user)
+				var user models.TicketUser
+				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
+				fmt.Println("output[j].UserID", output[j].UserID)
 				output[j].TicketUser = user
 			} else {
+				fmt.Println("output[j].UserID", output[j].UserID)
 
 				var user models.User
-				db2.Model(&models.TicketUser{}).Where("system_user_id = ?", output[j].UserID).Scan(&user)
-				output[j].TicketUser = user
+				db2.Where("system_user_id = ?", output[j].UserID).First(&user)
+				output[j].TicketUser.SystemUserID = user.ID
+				output[j].TicketUser.Name = user.Name
+				output[j].TicketUser.Email = user.Email
+				output[j].TicketUser.MobileNumber = user.MobileNumber
 			}
 
 		}

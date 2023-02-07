@@ -60,7 +60,7 @@ func ListTokenTicketActivity(c *gin.Context) {
 		items, _ := json.Marshal(data.Items)
 		var output []models.TicketActivityData
 
-		db2 := config.GetCDB()
+		db2 := config.GetDB()
 		err := json.Unmarshal([]byte(items), &output)
 		if err != nil {
 			print(err)
@@ -69,14 +69,17 @@ func ListTokenTicketActivity(c *gin.Context) {
 
 		for j := 0; j < len(output); j++ {
 			if output[j].UserType != "ticket_user" {
-				var user models.User
-				db2.Where("id = ?", output[j].UserID).First(&user)
+				var user models.TicketUser
+				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
 			} else {
 
 				var user models.User
-				db2.Model(&models.TicketUser{}).Where("system_user_id = ?", output[j].UserID).Scan(&user)
-				output[j].TicketUser = user
+				db2.Where("id = ?", output[j].UserID).First(&user)
+				output[j].TicketUser.SystemUserID = user.ID
+				output[j].TicketUser.Name = user.Name
+				output[j].TicketUser.Email = user.Email
+				output[j].TicketUser.MobileNumber = user.MobileNumber
 			}
 
 		}
