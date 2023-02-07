@@ -146,6 +146,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 			if ticket_reviewer.UserID == uuid.Nil {
 				ticket_reviewer.RoleID = ticket_default_role.RoleID
+				ticket_reviewer.Level = old_ticket_reviewer.Level - 1
 				ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
 			}
 
