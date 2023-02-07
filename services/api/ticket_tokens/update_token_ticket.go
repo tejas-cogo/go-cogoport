@@ -120,6 +120,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	filters.TicketActivity.Status = "reassigned"
 	activities.CreateTicketActivity(filters)
 
+	ticket_token.Status = "utilized"
+	tx.Save(ticket_token)
 	tx.Commit()
 
 	return ticket, err
