@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -22,9 +21,7 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		db.Where("ticket_token = ?", token_filter.TicketToken).First(&ticket_token)
 		var err error
 		tx.Commit()
-		fmt.Println(ticket_token.Status)
 		return ticket_token, err
-
 	}
 
 	today := time.Now()
@@ -45,7 +42,6 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 
 		stmt := validations.ValidateTokenTicket(ticket)
 		if stmt != "validated" {
-			fmt.Println("changes")
 			return ticket_token, errors.New(stmt)
 		}
 
