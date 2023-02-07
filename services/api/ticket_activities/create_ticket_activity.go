@@ -7,7 +7,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
-	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 	"gorm.io/gorm"
 )
@@ -110,6 +109,11 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			var ticket models.Ticket
 
 			old_ticket_reviewer, err := DeactivateReviewer(u, tx)
+			if old_ticket_reviewer.Level < 1 {
+				return ticket_activity, errors.New("cannot escalate further")
+			}
+			ticket_reviewer.Level = old_ticket_reviewer.Level - 1
+			ticket_reviewer.Status = "active"
 
 			if err != nil {
 				tx.Rollback()
@@ -146,12 +150,14 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 
 			if ticket_reviewer.UserID == uuid.Nil {
 				ticket_reviewer.RoleID = ticket_default_role.RoleID
-				ticket_reviewer.Level = old_ticket_reviewer.Level - 1
-				ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
+				db2 := config.GetCDB().Debug()
+				var partner_user models.PartnerUser
+				db2.Where("role_ids && '{"+ticket_default_role.RoleID.String()+"}' and status = ?", "active").First(&partner_user)
+				ticket_reviewer.UserID = partner_user.UserID
+				// ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
 			}
 
 			ticket_reviewer.TicketID = u
-			ticket_reviewer.Status = "active"
 
 			stmt := validations.ValidateTicketActivity(ticket_activity)
 			if stmt != "validated" {
