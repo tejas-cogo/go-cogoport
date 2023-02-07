@@ -146,7 +146,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				}
 			}
 
-			if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_type.ID, "active", old_ticket_reviewer.Level-1).Order(" level desc").First(&ticket_default_role).Error; err != nil {
+			if err = tx.Where("ticket_default_type_id = ? and status = ? and level < ?", ticket_default_type.ID, "active", old_ticket_reviewer.Level).Order("level desc").First(&ticket_default_role).Error; err != nil {
 				db2 := config.GetCDB().Debug()
 				var partner_user models.PartnerUser
 				db2.Where("user_id = ? and status = ?", old_ticket_reviewer.UserID, "active").First(&partner_user)
