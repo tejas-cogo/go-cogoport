@@ -30,6 +30,14 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 		return body, errors.New(err.Error())
 	}
 
+	if body.ReviewerUserID == uuid.Nil {
+
+		//from ruby client
+	} else if body.RoleID == uuid.Nil {
+		//from ruby client
+
+	}
+
 	if err := tx.Where("ticket_id = ? AND user_id = ? AND role_id = ?", body.TicketID, body.ReviewerUserID, body.RoleID).Find(&ticket_reviewer_old).Error; err != nil {
 		tx.Rollback()
 		return body, errors.New(err.Error())
