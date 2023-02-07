@@ -45,8 +45,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	// }
 	// ticket_reviewer.ReviewerManagerIDs = []
 	ticket_reviewer.Status = "active"
-
-	fmt.Println("before", ticket_reviewer)
+	ticket_reviewer.Level = ticket_default_role.Level
 
 	stmt := validations.ValidateTicketReviewer(ticket_reviewer)
 	fmt.Println("validations", stmt)
@@ -67,6 +66,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_activity.UserID = ticket_reviewer.UserID
 	ticket_activity.UserType = "system"
 	ticket_activity.Type = "reviewer_assigned"
+	ticket_activity.Status = "assigned"
 	ticket_activity.Status = "assigned"
 
 	stmt3 := validations.ValidateTicketActivity(ticket_activity)
