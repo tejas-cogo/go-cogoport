@@ -122,7 +122,7 @@ type TicketExtraFilter struct {
 	TicketUserID            uint
 	QFilter                 string
 	PerformedByID           string
-	MyTicket                uuid.UUID `gorm:"type:uuid"`
+	MyTicket                string
 	AgentID                 uuid.UUID `gorm:"type:uuid"`
 	AgentRmID               uuid.UUID `gorm:"type:uuid"`
 	UserID                  uuid.UUID `gorm:"type:uuid"`

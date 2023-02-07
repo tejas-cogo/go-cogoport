@@ -19,7 +19,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	var ticket []models.Ticket
 
-	if filters.MyTicket != uuid.Nil {
+	if filters.MyTicket != "" {
 		db.Where("user_id = ?", filters.MyTicket).Distinct("id").Order("id").Find(&ticket).Pluck("id", &ticket_id)
 		db = db.Where("id IN ?", ticket_id)
 
