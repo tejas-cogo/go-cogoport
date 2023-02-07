@@ -23,6 +23,7 @@ type TicketDefault struct {
 	TicketDefaultTimingID uint
 	TimingStatus          string
 	ClosureAuthorizer     pq.StringArray `gorm:"type:text[]"`
+	ClosureAuthorizerData []User         `gorm:"type:json"`
 	ExpiryDuration        string
 	Tat                   string
 	Conditions            pq.StringArray `gorm:"type:text[]"`

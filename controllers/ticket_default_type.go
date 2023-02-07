@@ -2,12 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 
 	role_service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_roles"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_types"
@@ -64,6 +64,8 @@ func ListTicketDefaultType(c *gin.Context) {
 
 			for i := 0; i < len(output[j].TicketDefaultRole); i++ {
 				var user models.User
+				output[j].ClosureAuthorizerData = helpers.GetPartnerUserData(output[j].ClosureAuthorizer)
+
 				users := db2.Where("id = ?", output[j].TicketDefaultRole[i].UserID).First(&user)
 				if users.RowsAffected > 0 {
 					output[j].TicketDefaultRole[i].User = user
@@ -72,7 +74,6 @@ func ListTicketDefaultType(c *gin.Context) {
 				var auth_role models.AuthRole
 				auth_roles := db2.Where("id = ?", output[j].TicketDefaultRole[i].RoleID).First(&auth_role)
 				if auth_roles.RowsAffected > 0 {
-					fmt.Println("auth_role", auth_role)
 					output[j].TicketDefaultRole[i].Role = auth_role
 				}
 			}

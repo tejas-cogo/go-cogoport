@@ -27,9 +27,9 @@ type PartnerUser struct {
 }
 type User struct {
 	ID           uuid.UUID
-	Name         string
-	Email        string
-	MobileNumber string
+	Name         string `json:"name"`
+	Email        string `json:"email"`
+	MobileNumber string `json:"mobile_number"`
 }
 
 type Filter struct {
