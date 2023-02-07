@@ -47,29 +47,28 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	max := 0
 	var users []string
+	var user_id uuid.UUID
 
 	db.Model(&ticket_reviewer).Where("role_id = ? and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &users)
 
 	if len(users) < len(user_id_array) {
 		for _, value := range user_id_array {
 			if !inslice(value, users) {
-				// return value
+				user_id, err = uuid.Parse(user_id_array[0])
 			}
 		}
 	} else {
 		db.Model(&ticket_reviewer).Where("user_id IN (?) and status = ?", user_id_array, "active").Select("Count(Distinct(ticket_id)) as count,user_id as user_id").Group("user_id").Order("count desc").Scan(&result)
-
+		for _, value := range result {
+			if value.Count >= max {
+				max = value.Count
+				user_id, err = uuid.Parse(value.UserID)
+			}
+		}
 		
 	}
 
-	var user_id uuid.UUID
-
-	fmt.Println(RoleID)
-	fmt.Println(user_id)
 	return user_id
-	// } else {
-	// return a
-	// }
 }
 
 // rest client leke ruby ki api call krna h. // done
