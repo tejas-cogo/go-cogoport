@@ -16,7 +16,6 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 	var ticket_reviewer models.TicketReviewer
 	var ticket_spectator models.TicketSpectator
 
-
 	tx := db.Begin()
 
 	if err := tx.Where("id = ? ", p.TicketID).First(&ticket).Error; err != nil {
@@ -44,8 +43,6 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 				return err
 			}
 
-			
-
 			if err := tx.Where("ticket_id = ? and status = ?", ticket.ID, "active").First(&ticket_spectator).Error; err != nil {
 				tx.Rollback()
 				return err
@@ -60,7 +57,7 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 			var ticket_activity models.TicketActivity
 			ticket_activity.TicketID = ticket_reviewer.TicketID
 			ticket_activity.UserID = ticket_reviewer.UserID
-			ticket_activity.UserType = "worker"
+			ticket_activity.UserType = "system"
 			ticket_activity.Type = "Ticket Expired"
 			ticket_activity.Status = "expired"
 

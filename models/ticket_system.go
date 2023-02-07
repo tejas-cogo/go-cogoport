@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
@@ -20,7 +21,15 @@ type PartnerUser struct {
 	ID        uuid.UUID
 	PartnerID uuid.UUID
 	UserID    uuid.UUID
+	ManagerID uuid.UUID
+	RoleIDs   pq.StringArray `gorm:"type:text[]"`
 	Status    string
+}
+type User struct {
+	ID           uuid.UUID
+	Name         string
+	Email        string
+	MobileNumber string
 }
 
 type Filter struct {
@@ -56,7 +65,7 @@ func Init() {
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&TicketUser{}, &TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketAudit{}, &TicketToken{})
+	db.Migrator().AutoMigrate(&TicketDefaultType{})
 
 	// db.Migrator().AutoMigrate(&TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{}, &TicketTask{}, &TicketTaskAssignee{})
 }

@@ -17,15 +17,14 @@ func ListTokenTicketActivity(token_filter models.TokenFilter) ([]models.TicketAc
 	var err error
 
 	if err = db.Where("ticket_token = ? and status= ?", token_filter.TicketToken, "utilized").First(&ticket_token).Error; err != nil {
-		return ticket_activity, db, errors.New("Token Not Found!")
+		return ticket_activity, db, errors.New("token not found!")
 	}
 
-	
 	if ticket_token.TicketID > 0 {
 		db = db.Where("ticket_id = ?", ticket_token.TicketID)
 	}
 
-	db = db.Order("created_at desc").Preload("TicketUser").Find(&ticket_activity)
+	db = db.Order("created_at desc").Preload("Ticket").Find(&ticket_activity)
 
 	return ticket_activity, db, err
 }

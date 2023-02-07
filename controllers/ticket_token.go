@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
+	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_tokens"
 )
@@ -22,6 +25,18 @@ func ListTokenTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {
+		db := config.GetCDB()
+
+		var user models.User
+		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
+		ser.TicketReviewer.User = user
+		var ticket_user models.TicketUser
+		db.Where("system_user_id = ?", ser.Ticket.UserID).First(&ticket_user)
+		ser.TicketUser = ticket_user
+
+		var role models.AuthRole
+		db.Where("id = ?", ser.TicketReviewer.RoleID).First(&role)
+		ser.TicketReviewer.Role = role
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
@@ -41,8 +56,35 @@ func ListTokenTicketActivity(c *gin.Context) {
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), err)
 	} else {
-		pg := paginate.New()
-		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+		data := paginate.New().With(db).Request(c.Request).Response(&ser)
+		items, _ := json.Marshal(data.Items)
+		var output []models.TicketActivityData
+
+		db2 := config.GetDB()
+		err := json.Unmarshal([]byte(items), &output)
+		if err != nil {
+			print(err)
+			c.JSON(400, err)
+		}
+
+		for j := 0; j < len(output); j++ {
+			if output[j].UserType != "ticket_user" {
+				var user models.TicketUser
+				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
+				output[j].TicketUser = user
+			} else {
+
+				var user models.User
+				db2.Where("id = ?", output[j].UserID).First(&user)
+				output[j].TicketUser.SystemUserID = user.ID
+				output[j].TicketUser.Name = user.Name
+				output[j].TicketUser.Email = user.Email
+				output[j].TicketUser.MobileNumber = user.MobileNumber
+			}
+
+		}
+		data.Items = output
+		c.JSON(c.Writer.Status(), data)
 	}
 }
 
@@ -62,7 +104,6 @@ func GetTicketToken(c *gin.Context) {
 }
 
 func CreateTokenTicket(c *gin.Context) {
-
 	var token_filter models.TokenFilter
 	err := c.Bind(&token_filter)
 	if err != nil {
@@ -129,5 +170,27 @@ func UpdateTokenTicket(c *gin.Context) {
 		c.JSON(400, err.Error())
 	} else {
 		c.JSON(c.Writer.Status(), ser)
+	}
+}
+
+func ListTokenTicketType(c *gin.Context) {
+	var body models.TokenFilter
+
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
+	if body.TicketToken == "" {
+		c.JSON(c.Writer.Status(), "Token Required!")
+		return
+	}
+
+	ser, db := service.ListTokenTicketType(body)
+	if c.Writer.Status() == 400 {
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
 	}
 }

@@ -11,8 +11,29 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint      `gorm:"not null"`
+	TicketUserID            uint
 	UserID                  uuid.UUID `gorm:"type:uuid"`
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
+	Category                string
+	Subcategory             string
+	Description             string
+	Priority                string          `gorm:"not null;default:'low'"`
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Tat                     time.Time       `gorm:"not null"`
+	ExpiryDate              time.Time       `gorm:"not null"`
+	IsUrgent                bool
+	Status                  string `gorm:"not null;default:'active'"`
+}
+
+type TicketData struct {
+	ID                      uint
+	TicketUserID            uint
+	UserID                  uuid.UUID `gorm:"type:uuid"`
+	User                    User
 	UserType                string
 	Source                  string `gorm:"not null"`
 	Type                    string `gorm:"not null"`
@@ -31,11 +52,12 @@ type Ticket struct {
 
 type TicketDetail struct {
 	TicketReviewerID  uint
-	TicketReviewer    TicketReviewer
+	TicketReviewer    TicketReviewerData
 	TicketSpectatorID uint
 	TicketSpectator   TicketSpectator
 	TicketID          uint
 	Ticket            Ticket
+	TicketUser        TicketUser
 }
 
 type TicketStat struct {
@@ -54,7 +76,7 @@ type TicketStat struct {
 	HighPriority    int64
 	StartDate       string
 	EndDate         string
-	TicketUserID    uint
+	UserID          uuid.UUID `gorm:"type:uuid"`
 	QFilter         string
 	ExpiryDate      string
 	TicketCreatedAt string
@@ -102,9 +124,9 @@ type TicketExtraFilter struct {
 	QFilter                 string
 	PerformedByID           string
 	MyTicket                string
-	AgentID                 string
-	AgentRmID               string
-	UserID                  string
+	AgentID                 uuid.UUID `gorm:"type:uuid"`
+	AgentRmID               uuid.UUID `gorm:"type:uuid"`
+	UserID                  uuid.UUID `gorm:"type:uuid"`
 	Source                  string
 	Type                    string
 	Category                string

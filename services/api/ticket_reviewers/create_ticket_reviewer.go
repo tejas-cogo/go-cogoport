@@ -2,12 +2,10 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	activity "github.com/tejas-cogo/go-cogoport/services/api/ticket_activities"
-	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
@@ -39,22 +37,30 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 			return body, errors.New(err.Error())
 		}
 	}
-
+	ticket_reviewer.TicketID = body.ID
 	ticket_reviewer.RoleID = ticket_default_role.RoleID
 	ticket_reviewer.UserID = ticket_default_role.UserID
-	if ticket_reviewer.UserID == uuid.Nil {
-		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
-	}
+	// if ticket_reviewer.UserID == uuid.Nil {
+	// 	ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
+	// }
+	// ticket_reviewer.ReviewerManagerIDs = []
 	ticket_reviewer.Status = "active"
 
+	fmt.Println("before", ticket_reviewer)
+
 	stmt := validations.ValidateTicketReviewer(ticket_reviewer)
+	fmt.Println("validations", stmt)
 	if stmt != "validated" {
+		txt.Rollback()
+
 		return body, errors.New(stmt)
 	}
 	if err := txt.Create(&ticket_reviewer).Error; err != nil {
 		txt.Rollback()
 		return body, errors.New(err.Error())
 	}
+
+	fmt.Println("after", ticket_reviewer)
 
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = ticket_reviewer.TicketID
@@ -72,9 +78,9 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		return body, errors.New(err.Error())
 	}
 
-	if ticket_activity.UserType == "internal" {
-		activity.SendTicketActivity(ticket_activity)
-	}
+	// if ticket_activity.UserType == "internal" {
+	// 	// activity.SendTicketActivity(ticket_activity)
+	// }
 
 	txt.Commit()
 	return body, err

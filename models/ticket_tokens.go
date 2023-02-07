@@ -19,6 +19,7 @@ type TicketToken struct {
 
 type TokenFilter struct {
 	TicketToken             string
+	TicketType              string
 	Source                  string
 	Type                    string
 	Category                string
@@ -28,11 +29,13 @@ type TokenFilter struct {
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Status                  string
 }
 
 type TokenActivity struct {
 	TicketToken string
 	Description string
+	UserType    string
 	Data        gormjsonb.JSONB `gorm:"type:json"`
 	Type        string
 	Status      string

@@ -1,12 +1,13 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	"errors"
 )
 
-func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaultType,error) {
+func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaultType, error) {
 	db := config.GetDB()
 	tx := db.Begin()
 	var err error
@@ -23,6 +24,9 @@ func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaul
 	}
 	if body.AdditionalOptions != nil {
 		ticket_default_type.AdditionalOptions = body.AdditionalOptions
+	}
+	if len(body.ClosureAuthorizer) != 0 {
+		ticket_default_type.ClosureAuthorizer = body.ClosureAuthorizer
 	}
 	if body.Status != "" {
 		ticket_default_type.Status = body.Status
