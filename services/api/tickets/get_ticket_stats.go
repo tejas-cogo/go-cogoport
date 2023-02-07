@@ -82,21 +82,23 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 			db.Where("id IN ?", ticket_id).Distinct("id").Find(&ticket).Pluck("id ", &ticket_id)
 		}
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.Unresolved)
+		db = config.GetDB()
+
+		db.Where("id in ? and status = ?", ticket_id, "unresolved").Model(&models.Ticket{}).Count(&stats.Unresolved)
+
+		db.Model(&models.Ticket{}).Where("id in ? and priority = ? and status = ?", ticket_id, "high", "unresolved").Count(&stats.HighPriority)
+
+		db.Model(&models.Ticket{}).Where("id in ? and created_at::date = ? and status = ?", ticket_id, time.Now().Format(constants.DateTimeFormat()), "unresolved").Count(&stats.DueToday)
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Count(&stats.Closed)
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "rejected").Count(&stats.Rejected)
-
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Count(&stats.DueToday)
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Count(&stats.Overdue)
 
 		db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "reassigned").Count(&stats.Reassigned)
 
 		db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated)
-
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = 'unresolved'").Where("priority = 'high'").Count(&stats.HighPriority)
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
 	}
