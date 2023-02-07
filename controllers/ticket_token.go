@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -54,8 +56,32 @@ func ListTokenTicketActivity(c *gin.Context) {
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), err)
 	} else {
-		pg := paginate.New()
-		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+		data := paginate.New().With(db).Request(c.Request).Response(&ser)
+		items, _ := json.Marshal(data.Items)
+		var output []models.TicketActivityData
+
+		db2 := config.GetCDB()
+		err := json.Unmarshal([]byte(items), &output)
+		if err != nil {
+			print(err)
+			c.JSON(400, err)
+		}
+
+		for j := 0; j < len(output); j++ {
+			if output[j].UserType != "ticket_user" {
+				var user models.User
+				db2.Where("id = ?", output[j].UserID).First(&user)
+				output[j].TicketUser = user
+			} else {
+
+				var user models.User
+				db2.Model(&models.TicketUser{}).Where("system_user_id = ?", output[j].UserID).Scan(&user)
+				output[j].TicketUser = user
+			}
+
+		}
+		data.Items = output
+		c.JSON(c.Writer.Status(), data)
 	}
 }
 
