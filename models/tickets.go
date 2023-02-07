@@ -30,6 +30,7 @@ type Ticket struct {
 }
 
 type TicketData struct {
+	ID                      uint
 	TicketUserID            uint
 	UserID                  uuid.UUID `gorm:"type:uuid"`
 	User                    User
