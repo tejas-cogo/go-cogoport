@@ -21,24 +21,26 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	if filters.MyTicket != uuid.Nil {
 		db = db.Where("user_id = ?", filters.MyTicket).Distinct("id").Order("id").Find(&ticket).Pluck("id", &ticket_id)
+		db = db.Where("id IN ?", ticket_id)
 
 	} else {
 		if filters.AgentRmID != uuid.Nil {
 
 			db.Where("manager_rm_ids && '(?)' or user_id = ?", filters.AgentRmID, filters.AgentRmID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+			db = db.Where("id IN ?", ticket_id)
 
 		} else if filters.AgentID != uuid.Nil {
 
 			db.Where("user_id = ?", filters.AgentID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+			db = db.Where("id IN ?", ticket_id)
 
 		} else {
 
 			db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
+			db = db.Where("id IN ?", ticket_id)
 		}
 	}
-
-	db = db.Where("id IN ?", ticket_id)
 
 	if filters.ID > 0 {
 		db = db.Where("id = ?", filters.ID)
