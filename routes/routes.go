@@ -53,7 +53,7 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("create_token_ticket_activity", controllers.CreateTokenTicketActivity)
 	ticket_system.GET("get_token_ticket_details", controllers.ListTokenTicketDetail)
 	ticket_system.GET("list_token_ticket_activities", controllers.ListTokenTicketActivity)
-
+	ticket_system.GET("list_token_ticket_types", controllers.ListTokenTicketType)
 	ticket_system.PUT("update_token_ticket", controllers.UpdateTokenTicket)
 
 	return r

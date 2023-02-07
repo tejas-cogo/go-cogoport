@@ -144,3 +144,25 @@ func UpdateTokenTicket(c *gin.Context) {
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
+
+func ListTokenTicketType(c *gin.Context) {
+	var body models.TokenFilter
+
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(c.Writer.Status(), "Bad Request")
+		return
+	}
+	if body.TicketToken == "" {
+		c.JSON(c.Writer.Status(), "Token Required!")
+		return
+	}
+
+	ser, db := service.ListTokenTicketType(body)
+	if c.Writer.Status() == 400 {
+		c.JSON(c.Writer.Status(), "Not Found")
+	} else {
+		pg := paginate.New()
+		c.JSON(c.Writer.Status(), pg.Response(db, c.Request, &ser))
+	}
+}
