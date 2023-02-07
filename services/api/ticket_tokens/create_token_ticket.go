@@ -20,10 +20,14 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 
 	if err := tx.Where("ticket_token = ? AND status = ?", token_filter.TicketToken, "active").First(&ticket_token).Error; err != nil {
 		tx.Rollback()
-		return ticket_token, errors.New(err.Error())
+		return ticket_token, errors.New("token is expired")
 	}
 
 	today := time.Now()
+
+	if ticket_token.TicketID != 0 {
+		return ticket_token, errors.New("ticket already created")
+	}
 
 	if today.Before(ticket_token.ExpiryDate) {
 
