@@ -18,13 +18,17 @@ type TicketService struct {
 
 func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	db := config.GetDB()
+	db2 := config.GetCDB()
 
 	tx := db.Begin()
 	var err error
 
 	var ticket_user models.TicketUser
+	var user models.User
 	var ticket_default_type models.TicketDefaultType
 	var ticket_default_timing models.TicketDefaultTiming
+	db2.Where("id = ?", ticket.UserID).First(&user)
+	// TODO: CreateTicketUser
 
 	if ticket.TicketUserID != 0 {
 		if err := tx.Where("id = ? ", ticket.TicketUserID).First(&ticket_user).Error; err != nil {
