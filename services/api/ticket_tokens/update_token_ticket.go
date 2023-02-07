@@ -14,10 +14,8 @@ import (
 
 func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	db := config.GetDB()
-	db2 := config.GetCDB()
-
 	tx := db
-	tx2 := db2
+
 	var err error
 	var ticket models.Ticket
 	var ticket_token models.TicketToken
@@ -102,17 +100,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	ticket_reviewer.Status = "active"
 
 	if ticket_reviewer.UserID == uuid.Nil {
-		var partner_user models.PartnerUser
-
-		// helpers.GetRoleIdUser(ticket_default_role.RoleID)
-		// TODO: circulation logic peding
-
-		if err := db2.Where("role_ids = '{" + ticket_default_role.RoleID.String() + "}'").First(&partner_user).Error; err != nil {
-			tx2.Rollback()
-			return ticket, errors.New(err.Error())
-		}
-		ticket_reviewer.UserID = partner_user.UserID
-
+		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
 	}
 	ticket_reviewer.Status = "active"
 	ticket_reviewer.Level = ticket_default_role.Level

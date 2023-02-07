@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
@@ -40,9 +42,10 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_reviewer.TicketID = body.ID
 	ticket_reviewer.RoleID = ticket_default_role.RoleID
 	ticket_reviewer.UserID = ticket_default_role.UserID
-	// if ticket_reviewer.UserID == uuid.Nil {
-	// 	ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
-	// }
+
+	if ticket_reviewer.UserID == uuid.Nil {
+		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
+	}
 	// ticket_reviewer.ReviewerManagerIDs = []
 	ticket_reviewer.Status = "active"
 	ticket_reviewer.Level = ticket_default_role.Level
