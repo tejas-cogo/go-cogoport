@@ -33,7 +33,6 @@ type User struct {
 }
 
 type Filter struct {
-	gorm.Model
 	Ticket              Ticket
 	TicketUser          TicketUser
 	TicketActivity      TicketActivity

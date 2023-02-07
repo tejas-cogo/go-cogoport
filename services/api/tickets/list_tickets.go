@@ -4,7 +4,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -24,12 +23,12 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("id IN ?", ticket_id)
 
 	} else {
-		if filters.AgentRmID != uuid.Nil {
+		if filters.AgentRmID != "" {
 
 			db.Where("manager_rm_ids && '(?)' or user_id = ?", filters.AgentRmID, filters.AgentRmID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 			db = db.Where("id IN ?", ticket_id)
 
-		} else if filters.AgentID != uuid.Nil {
+		} else if filters.AgentID != "" {
 
 			db.Where("user_id = ?", filters.AgentID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 			db = db.Where("id IN ?", ticket_id)
@@ -46,7 +45,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		db = db.Where("id = ?", filters.ID)
 	}
 
-	if filters.UserID != uuid.Nil {
+	if filters.UserID != "" {
 		db = db.Where("id = ?", filters.UserID)
 	}
 

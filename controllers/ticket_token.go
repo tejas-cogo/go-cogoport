@@ -25,7 +25,7 @@ func ListTokenTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {
-		db := config.GetCDB()
+		db := config.GetDB()
 
 		var user models.User
 		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
@@ -73,7 +73,6 @@ func ListTokenTicketActivity(c *gin.Context) {
 				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
 			} else {
-
 				var user models.User
 				db2.Where("id = ?", output[j].UserID).First(&user)
 				output[j].TicketUser.SystemUserID = user.ID
