@@ -45,7 +45,7 @@ func ListTicketActivity(c *gin.Context) {
 		return
 	}
 
-	ser, db, err := service.ListTicketActivity(filters)
+	ser, db, _ := service.ListTicketActivity(filters)
 	if c.Writer.Status() == 400 {
 		c.JSON(c.Writer.Status(), "Not Found")
 	} else {
@@ -71,7 +71,7 @@ func ListTicketActivity(c *gin.Context) {
 				fmt.Println("output[j].UserID", output[j].UserID)
 
 				var user models.User
-				db2.Where("system_user_id = ?", output[j].UserID).First(&user)
+				db2.Where("id = ?", output[j].UserID).First(&user)
 				output[j].TicketUser.SystemUserID = user.ID
 				output[j].TicketUser.Name = user.Name
 				output[j].TicketUser.Email = user.Email
