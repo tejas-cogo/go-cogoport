@@ -13,21 +13,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type TicketActivityService struct {
-	ticket_activity models.TicketActivity
-}
-
 func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 	db := config.GetDB()
 	var err error
-
-	//reviewer assigned
-	if body.TicketActivity.UserType == "system" || body.TicketActivity.UserType == "internal" {
-
-		
-
-	} // } else {
-	// }
 
 	if body.TicketActivity.Status == "resolved" {
 		for _, u := range body.Activity.TicketID {
@@ -65,7 +53,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				return ticket_activity, errors.New(err.Error())
 			}
 
-			if ticket_activity.UserType == "internal" {
+			if ticket_activity.UserType == "user" {
 				// SendTicketActivity(ticket_activity)
 			}
 			tx.Commit()
@@ -100,7 +88,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				return ticket_activity, errors.New(err.Error())
 			}
 
-			if ticket_activity.UserType == "internal" {
+			if ticket_activity.UserType == "user" {
 				// SendTicketActivity(ticket_activity)
 			}
 			tx.Commit()
@@ -191,8 +179,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				return ticket_activity, errors.New(err.Error())
 			}
 
-		
-			if ticket_activity.UserType == "internal" {
+			if ticket_activity.UserType == "user" {
 				// SendTicketActivity(ticket_activity)
 			}
 			tx.Commit()
