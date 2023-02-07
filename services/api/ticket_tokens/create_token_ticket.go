@@ -58,8 +58,6 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 			return ticket_token, err
 		}
 
-		fmt.Println("ticket_data", ticket_data)
-
 		ticket_token.TicketID = ticket_data.ID
 		ticket_token.Status = "misc_ticket_created"
 
