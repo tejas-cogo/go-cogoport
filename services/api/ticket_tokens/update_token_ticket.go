@@ -100,10 +100,10 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	if ticket_reviewer.UserID == uuid.Nil {
 		var partner_user models.PartnerUser
 
-		helpers.GetRoleIdUser(ticket_default_role.RoleID)
+		// helpers.GetRoleIdUser(ticket_default_role.RoleID)
 		// TODO: circulation logic peding
 
-		if err := db2.Where("role_ids = '{?}'", ticket_default_role.RoleID).First(&partner_user).Error; err != nil {
+		if err := db2.Where("role_ids = '{" + ticket_default_role.RoleID.String() + "}'").First(&partner_user).Error; err != nil {
 			tx2.Rollback()
 			return ticket, errors.New(err.Error())
 		}
