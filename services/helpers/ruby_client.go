@@ -30,7 +30,6 @@ func RubyClient(body models.Body, rubyclient models.RubyClientInput) ([]byte, er
 	resp, err := hc.Do(req)
 
 	if err == nil {
-
 		defer resp.Body.Close()
 	}
 	resp_body, err := ioutil.ReadAll(resp.Body)
