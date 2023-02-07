@@ -73,7 +73,6 @@ func ListTokenTicketActivity(c *gin.Context) {
 				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
 			} else {
-
 				var user models.User
 				db2.Where("id = ?", output[j].UserID).First(&user)
 				output[j].TicketUser.SystemUserID = user.ID

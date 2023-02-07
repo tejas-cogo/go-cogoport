@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
@@ -54,7 +53,7 @@ func ListTicketActivity(c *gin.Context) {
 		items, _ := json.Marshal(data.Items)
 		var output []models.TicketActivityData
 
-		db2 := config.GetCDB()
+		db2 := config.GetDB()
 		err := json.Unmarshal([]byte(items), &output)
 		if err != nil {
 			print(err)
@@ -65,11 +64,8 @@ func ListTicketActivity(c *gin.Context) {
 			if output[j].UserType != "ticket_user" {
 				var user models.TicketUser
 				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
-				fmt.Println("output[j].UserID", output[j].UserID)
 				output[j].TicketUser = user
 			} else {
-				fmt.Println("output[j].UserID", output[j].UserID)
-
 				var user models.User
 				db2.Where("id = ?", output[j].UserID).First(&user)
 				output[j].TicketUser.SystemUserID = user.ID
