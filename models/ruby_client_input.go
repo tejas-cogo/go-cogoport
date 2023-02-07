@@ -14,5 +14,4 @@ type PartnerUserFilter struct {
 type PartnerUserBody struct {
 	RmMappingDataRequired bool              `json:"rm_mappings_data_required"`
 	Filters               PartnerUserFilter `json:"filters"`
-	PageLimit             uint              `json:"page_limit"`
 }

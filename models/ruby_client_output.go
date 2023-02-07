@@ -2,10 +2,10 @@ package models
 
 type RubyClientOutput struct {
 	List       []PartnerUserList
-	Page       uint
-	Total      uint
-	TotalCount uint
-	PageLimit  uint
+	Page       uint `json:"page"`
+	Total      uint `json:"total"`
+	TotalCount uint `json:"total_count"`
+	PageLimit  uint `json:"page_limit"`
 }
 
 type PartnerUserList struct {

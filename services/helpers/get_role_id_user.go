@@ -17,7 +17,6 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	body.Filters.RoleIDs = append(body.Filters.RoleIDs, RoleID.String())
 	body.Filters.Status = "active"
 	body.RmMappingDataRequired = false
-	body.PageLimit = 1
 
 	var partner_users models.RubyClientOutput
 	obj, _ := RubyClient(body, rubyclient)
@@ -54,14 +53,19 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 		if value.Count >= max {
 			max = value.Count
 			user_id, err = uuid.Parse(value.UserID)
-		} else {
-			user_id, err = uuid.Parse(user_id_array[0])
 		}
 	}
 
-	fmt.Println(RoleID)
-	fmt.Println(user_id)
+	// a, _ := uuid.Parse(user_id_array[0])
+	// fmt.Println(a)
+	fmt.Println("--------------------->",RoleID)
+	// fmt.Println(user_id)
+
+	// if user_id == "00000000-0000-0000-0000-000000000000"{
 	return user_id
+	// } else {
+		// return a
+	// }
 }
 
 // rest client leke ruby ki api call krna h. // done
