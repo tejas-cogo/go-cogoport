@@ -61,9 +61,17 @@ func ListTicketActivity(c *gin.Context) {
 		}
 
 		for j := 0; j < len(output); j++ {
-			var user models.User
-			db2.Where("id = ?", output[j].UserID).First(&user)
-			output[j].TicketUser = user
+			if output[j].UserType != "ticket_user" {
+				var user models.User
+				db2.Where("id = ?", output[j].UserID).First(&user)
+				output[j].TicketUser = user
+			} else {
+
+				var user models.User
+				db2.Model(&models.TicketUser{}).Where("system_user_id = ?", output[j].UserID).Scan(&user)
+				output[j].TicketUser = user
+			}
+
 		}
 		data.Items = output
 		c.JSON(c.Writer.Status(), data)

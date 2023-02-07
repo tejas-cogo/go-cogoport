@@ -27,11 +27,11 @@ func CreateTokenTicketActivity(token_activity models.TokenActivity) (models.Tick
 
 	ticket = append(ticket, ticket_token.TicketID)
 
-	db.Where("id = ?", ticket_token.TicketUserID).First(&ticket_user)
+	tx.Where("id = ?", ticket_token.TicketUserID).First(&ticket_user)
 
 	body.Activity.TicketID = ticket
 	body.TicketActivity.UserID = ticket_user.SystemUserID
-
+	body.TicketActivity.UserType = token_activity.UserType
 	body.TicketActivity.Description = token_activity.Description
 	body.TicketActivity.Data = token_activity.Data
 	body.TicketActivity.Status = token_activity.Status
