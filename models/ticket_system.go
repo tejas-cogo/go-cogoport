@@ -21,6 +21,7 @@ type PartnerUser struct {
 	ID        uuid.UUID
 	PartnerID uuid.UUID
 	UserID    uuid.UUID
+	ManagerID uuid.UUID
 	RoleIDs   pq.StringArray `gorm:"type:text[]"`
 	Status    string
 }

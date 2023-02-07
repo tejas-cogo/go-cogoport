@@ -29,9 +29,9 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 
 	if filters.UserType != "" {
 
-		if filters.UserType == "internal" {
+		if filters.UserType == "user" {
 			db = db.Where("type IN ?", constants.AdminActivityView())
-		} else if filters.UserType == "client" {
+		} else if filters.UserType == "ticket_user" {
 			db = db.Where("type IN ?", constants.ClientActivityView())
 		}
 
