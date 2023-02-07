@@ -21,11 +21,15 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 	if err := tx.Where("ticket_token = ? AND status = ?", token_filter.TicketToken, "active").First(&ticket_token).Error; err != nil {
 		db.Where("ticket_token = ?", token_filter.TicketToken).First(&ticket_token)
 		if ticket_token.Status == "utilized" {
-			tx.Rollback()
+			var err error
+			tx.Commit()
+			fmt.Println(ticket_token.Status)
 			return ticket_token, err
 
 		} else {
 			tx.Rollback()
+			fmt.Println(",token", ticket_token.Status)
+
 			return ticket_token, errors.New("token is not utilized")
 		}
 	}
