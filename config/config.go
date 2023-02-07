@@ -66,7 +66,7 @@ func ConnectCogoport() {
 }
 
 func GetDB() *gorm.DB {
-	return db
+	return db.Debug()
 }
 
 func GetCDB() *gorm.DB {

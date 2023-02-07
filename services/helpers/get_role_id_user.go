@@ -10,7 +10,6 @@ import (
 )
 
 func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
-	var auth_role models.AuthRole
 	var rubyclient models.RubyClientInput
 	var body models.PartnerUserBody
 
@@ -30,28 +29,39 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 		fmt.Println(err, "Error occured")
 	}
 
-	var user_id []string
+	var user_id_array []string
 	for _, user_details := range partner_users.List {
-		user_id = append(user_id, user_details.UserID)
+		user_id_array = append(user_id_array, user_details.UserID)
 	}
 
 	var ticket_reviewer models.TicketReviewer
 
 	type Result struct {
-		UserID string
+		UserID string `json:"user_id"`
 		Count  int
 	}
 	// var max models.PartnerUserList
 
-	var result Result
+	var result []Result
 
 	db := config.GetDB()
-	db.Model(&ticket_reviewer).Where("user_id = ? and status = ?", user_id, "active").Select("Count(Distinct(ticket_id)) as count,user_id as user_id").Group("user_id").Scan(&result)
+	db = db.Model(&ticket_reviewer).Where("user_id IN (?) and status = ?", user_id_array, "active").Select("Count(Distinct(ticket_id)) as count,user_id as user_id").Group("user_id").Scan(&result)
 
-	fmt.Println("----------------------")
-	fmt.Println(result)
-	return auth_role.StakeholderId
+	max := 0
+	var user_id uuid.UUID
 
+	for _, value := range result {
+		if value.Count >= max {
+			max = value.Count
+			user_id, err = uuid.Parse(value.UserID)
+		} else {
+			user_id, err = uuid.Parse(user_id_array[0])
+		}
+	}
+
+	fmt.Println(RoleID)
+	fmt.Println(user_id)
+	return user_id
 }
 
 // rest client leke ruby ki api call krna h. // done
