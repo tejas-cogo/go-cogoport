@@ -42,7 +42,7 @@ func ListTicketActivity(filters models.TicketActivity) ([]models.TicketActivity,
 	}
 
 	// db = db.Order("created_at desc").Preload("TicketUser").Find(&ticket_activity)
-	db = db.Order("created_at desc").Find(&ticket_activity)
+	db = db.Order("created_at desc").Preload("Ticket").Find(&ticket_activity)
 
 	return ticket_activity, db, err
 }
