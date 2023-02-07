@@ -99,7 +99,7 @@ func TicketEscalation(p models.TicketEscalatedPayload) error {
 		var ticket_activity models.TicketActivity
 		ticket_activity.TicketID = ticket_reviewer_new.TicketID
 		ticket_activity.UserID = ticket_reviewer_new.UserID
-		ticket_activity.UserType = "worker"
+		ticket_activity.UserType = "system"
 		ticket_activity.Type = "Automatically Reviewer Escalated"
 		ticket_activity.Status = "escalated"
 

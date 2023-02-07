@@ -99,8 +99,10 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			ticket_activity := body.TicketActivity
 			ticket_activity.TicketID = u
 			var ticket_reviewer models.TicketReviewer
+			var old_ticket_reviewer models.TicketReviewer
 			var ticket_default_type models.TicketDefaultType
 			var ticket models.Ticket
+			db.Where("ticket_id = ? and status = ?", u, "active").First(&old_ticket_reviewer)
 
 			ticket_default_role, err := DeactivateReviewer(u, tx)
 			if err != nil {
@@ -120,10 +122,24 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				}
 			}
 
-			if err = tx.Where("ticket_default_type_id = ? and status = ? and level<?", ticket_default_type.ID, "active", ticket_default_role.Level).Order(" level desc").First(&ticket_default_role).Error; err != nil {
-				if err = tx.Where("ticket_default_type_id = ? and status = ? and level<?", 1, "active", ticket_default_role.Level).Order(" level desc").First(&ticket_default_role).Error; err != nil {
-					tx.Rollback()
-					return ticket_activity, errors.New(err.Error())
+			fmt.Println(ticket_default_role, "ticket_default_role")
+			if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_type.ID, "active", ticket_default_role.Level+1).Order(" level desc").First(&ticket_default_role).Error; err != nil {
+				db2 := config.GetCDB()
+				var partner_user models.PartnerUser
+				db2.Where("user_id = ? and status = ?", old_ticket_reviewer.UserID, "active").First(&partner_user)
+				var manager_user models.PartnerUser
+
+				db2.Where("user_id = ? and status = ?", partner_user.UserID, "active").First(&manager_user)
+				if manager_user.UserID != uuid.Nil {
+					ticket_reviewer.RoleID, _ = uuid.Parse(manager_user.RoleIDs[len(manager_user.RoleIDs)-1])
+					ticket_reviewer.UserID = manager_user.UserID
+				} else {
+					if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", ticket_default_role.Level+1, "active", ticket_default_role.Level).Order(" level desc").First(&ticket_default_role).Error; err != nil {
+						if err = tx.Where("ticket_default_type_id = ? and status = ? and level = ?", 3, "active", ticket_default_role.Level).Order(" level desc").First(&ticket_default_role).Error; err != nil {
+							tx.Rollback()
+							return ticket_activity, errors.New(err.Error())
+						}
+					}
 				}
 			}
 

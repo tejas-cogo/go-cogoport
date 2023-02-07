@@ -71,7 +71,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 
 	filters.TicketActivity.TicketID = body.TicketID
 	filters.TicketActivity.UserID = body.PerformedByID
-	filters.TicketActivity.UserType = "internal"
+	filters.TicketActivity.UserType = "user"
 	filters.TicketActivity.Type = "reviewer_reassigned"
 	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Status = "reassigned"
