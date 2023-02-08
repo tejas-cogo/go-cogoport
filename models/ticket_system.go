@@ -31,6 +31,12 @@ type User struct {
 	Email        string
 	MobileNumber string
 }
+type UserData struct {
+	ID           uuid.UUID
+	Name         string `json:"name"`
+	Email        string `json:"email"`
+	MobileNumber string `json:"mobile_number"`
+}
 
 type Filter struct {
 	Ticket              Ticket
