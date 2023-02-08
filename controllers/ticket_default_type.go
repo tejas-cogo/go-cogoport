@@ -65,7 +65,17 @@ func ListTicketDefaultType(c *gin.Context) {
 
 			for i := 0; i < len(output[j].TicketDefaultRole); i++ {
 
-				// output[j].ClosureAuthorizerData = helpers.GetUserData(output[j].ClosureAuthorizer)
+				data := helpers.GetUserData(output[j].ClosureAuthorizer)
+
+				var user models.User
+
+				for k := 0; k < len(data); k++ {
+					user.ID = data[k].ID
+					user.Name = data[k].Name
+					user.Email = data[k].Email
+					user.MobileNumber = data[k].MobileNumber
+					output[j].ClosureAuthorizerData = append(output[j].ClosureAuthorizerData, user)
+				}
 
 				if output[j].TicketDefaultRole[i].UserID != uuid.Nil {
 					users = append(users, output[j].TicketDefaultRole[i].UserID.String())
