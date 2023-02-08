@@ -92,7 +92,8 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 		return ticket, err
 	}
 
-	// workers.StartTicketClient(ticket.ID)
+	// workers.StartTicketClient(ticket.ID,"escalation")
+	// workers.StartTicketClient(ticket.ID,"expiration")
 	tx.Commit()
 
 	return ticket, err
