@@ -8,7 +8,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func TicketExpiration(p models.TicketEscalatedPayload) error {
+func TicketExpiration(p models.TicketPayload) error {
 
 	db := config.GetDB()
 

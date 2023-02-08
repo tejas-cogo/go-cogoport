@@ -48,7 +48,11 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 		ticket_data, err := tickets.CreateTicket(ticket)
 
 		if err != nil {
-			return ticket_token, err
+			return ticket_token, errors.New(err.Error())
+		}
+
+		if ticket_data.ID == 0 {
+			return ticket_token, errors.New(err.Error())
 		}
 
 		ticket_token.TicketID = ticket_data.ID
@@ -58,12 +62,11 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 			tx.Rollback()
 			return ticket_token, errors.New(err.Error())
 		}
-
 		tx.Commit()
-
 	} else {
 		DeleteTicketToken(ticket_token.ID)
 		tx.Commit()
+		return ticket_token, errors.New("Token is Expired!")
 	}
 	return ticket_token, err
 }

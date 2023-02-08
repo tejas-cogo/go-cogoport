@@ -9,6 +9,7 @@ import (
 const (
 	TicketEscalation = "ticket:escalated"
 	TicketExpiration = "ticket:expired"
+	TicketCommunication = "ticket:communication"
 )
 
 type TicketPayload struct {
@@ -31,4 +32,13 @@ func ScheduleTicketExpirationTask(TicketID uint) (*asynq.Task, error) {
 		return nil, err
 	}
 	return asynq.NewTask(TicketExpiration, payload), nil
+}
+
+func ScheduleTicketCommunicationTask(TicketID uint) (*asynq.Task, error) {
+	payload, err := json.Marshal(TicketPayload{TicketID: TicketID})
+
+	if err != nil {
+		return nil, err
+	}
+	return asynq.NewTask(TicketCommunication, payload), nil
 }
