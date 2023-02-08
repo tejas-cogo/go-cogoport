@@ -234,13 +234,23 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
 	var ticket_reviewer models.TicketReviewer
 	var err error
+	var ticket models.Ticket
 
 	if err := tx.Where("ticket_id = ? and status = ?", ID, "active").First(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
 		return ticket_reviewer, errors.New("reviewer not found")
 	}
 
-	ticket_reviewer.Status = "inactive"
+	if err := tx.Where("id = ?", ID).First(&ticket).Error; err != nil {
+		tx.Rollback()
+		return ticket_reviewer, errors.New("reviewer not found")
+	}
+
+	if ticket.Status != "unresolved" {
+		ticket_reviewer.Status = "closed"
+	} else {
+		ticket_reviewer.Status = "inactive"
+	}
 
 	if err := tx.Save(&ticket_reviewer).Error; err != nil {
 		tx.Rollback()
