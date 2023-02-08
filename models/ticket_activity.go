@@ -5,7 +5,6 @@ import (
 
 	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -44,14 +43,4 @@ type Activity struct {
 	Data          gormjsonb.JSONB `gorm:"type:json"`
 	Type          string
 	Status        string
-}
-
-type Communication struct {
-	Recipient    string         `json:"recipient"`
-	Type         string         `json:"type"`
-	Service      string         `json:"service"`
-	ServiceID    string         `json:"service_id"`
-	TemplateName string         `json:"template_name"`
-	Sender       string         `json:"sender"`
-	CcEmails     pq.StringArray `gorm:"type:json[]"`
 }
