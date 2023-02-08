@@ -87,7 +87,7 @@ func ListTicketDefaultType(c *gin.Context) {
 
 		user_data := helpers.GetUserData(users)
 
-		// role_data := helpers.GetAuthRoleData(roles)
+		role_data := helpers.GetAuthRoleData(roles)
 
 		for j := 0; j < len(output); j++ {
 			var f models.TicketDefaultRole
@@ -104,11 +104,11 @@ func ListTicketDefaultType(c *gin.Context) {
 						}
 					}
 				} else {
-					// for k := 0; k < len(role_data); k++ {
-					// 	if role_data[k].ID ==  output[j].TicketDefaultRole[i].Role.ID{
-					// 		output[j].TicketDefaultRole[i].Role.Name = role_data[k].Name
-					// 	}
-					// }
+					for k := 0; k < len(role_data); k++ {
+						if role_data[k].ID ==  output[j].TicketDefaultRole[i].Role.ID{
+							output[j].TicketDefaultRole[i].Role.Name = role_data[k].Name
+						}
+					}
 				}
 			}
 		}
