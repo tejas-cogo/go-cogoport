@@ -15,7 +15,7 @@ func ListTicket(c *gin.Context) {
 	var filters models.TicketExtraFilter
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request!")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -60,7 +60,7 @@ func GetTicketStats(c *gin.Context) {
 
 	err := c.Bind(&stats)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -77,7 +77,7 @@ func GetTicketGraph(c *gin.Context) {
 
 	err := c.Bind(&graph)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -94,11 +94,11 @@ func ListTicketDetail(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if filters.ID <= 0 {
-		c.JSON(c.Writer.Status(), "Bad Request!")
+		c.JSON(c.Writer.Status(), "Id required!")
 		return
 	}
 
@@ -129,7 +129,7 @@ func CreateTicket(c *gin.Context) {
 	var body models.Ticket
 	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.CreateTicket(body)
@@ -146,7 +146,7 @@ func UpdateTicket(c *gin.Context) {
 	var body models.Ticket
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.UpdateTicket(body)
