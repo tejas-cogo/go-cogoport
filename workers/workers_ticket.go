@@ -21,42 +21,49 @@ type TicketData struct {
 
 // const redisAddr = "login-apollo.dev.cogoport.io:6379"
 
-func StartTicketClient(ID uint) {
+func StartTicketClient(ID uint, Type string) {
 	log.Print("Start of Ticket Client")
 	client := asynq.NewClient(asynq.RedisClientOpt{
 		Addr:     redisAddr,
 		Password: "f7d8279ad6ecaea58ccffd277a79b1cc4019da22713118805a9341d15a76c178",
 	})
 
-	task3, err := tasks.ScheduleTicketCommunicationTask(ID)
-	task2, err := tasks.ScheduleTicketExpirationTask(ID)
-	task1, err := tasks.ScheduleTicketEscalationTask(ID)
-
 	tat := "00d:00h:05m"
-
 	Duration := helpers.GetDuration(tat)
 
-	if err != nil {
-		log.Fatalf("could not create task: %v", err)
+	if Type == "expiration" {
+		task, err := tasks.ScheduleTicketExpirationTask(ID)
+		if err != nil {
+			log.Fatalf("could not create task: %v", err)
+		}
+		info, err := client.Enqueue(task, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
+		if err != nil {
+			log.Fatalf("could not enqueue expiration task: %v", err)
+		}
+		log.Print("Task done", info)
+
+	} else if Type == "escalation" {
+		task, err := tasks.ScheduleTicketEscalationTask(ID)
+		if err != nil {
+			log.Fatalf("could not create task: %v", err)
+		}
+		info, err := client.Enqueue(task, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
+		if err != nil {
+			log.Fatalf("could not enqueue escalation task: %v", err)
+		}
+		log.Print("Task done", info)
+	} else if Type == "communication" {
+		task, err := tasks.ScheduleTicketCommunicationTask(ID)
+		if err != nil {
+			log.Fatalf("could not create task: %v", err)
+		}
+		info, err := client.Enqueue(task, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
+		if err != nil {
+			log.Fatalf("could not enqueue expiration task: %v", err)
+		}
+		log.Print("Task done", info)
 	}
 
-	info3, err3 := client.Enqueue(task3, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
-	info2, err2 := client.Enqueue(task2, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
-	info1, err1 := client.Enqueue(task1, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
-
-	if err1 != nil {
-		log.Fatalf("could not enqueue escalation task: %v", err1)
-	}
-	if err2 != nil {
-		log.Fatalf("could not enqueue expiration task: %v", err2)
-	}
-	if err3 != nil {
-		log.Fatalf("could not enqueue expiration task: %v", err3)
-	}
-
-	log.Print("Task done", info3)
-	log.Print("Task done", info2)
-	log.Print("Task done", info1)
 	log.Print("End of New server")
 }
 
