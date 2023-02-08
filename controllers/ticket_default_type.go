@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -67,14 +68,15 @@ func ListTicketDefaultType(c *gin.Context) {
 
 				data := helpers.GetUserData(output[j].ClosureAuthorizer)
 
-				var user models.User
-
 				for k := 0; k < len(data); k++ {
+					var user models.User
+
 					user.ID = data[k].ID
 					user.Name = data[k].Name
 					user.Email = data[k].Email
 					user.MobileNumber = data[k].MobileNumber
 					output[j].ClosureAuthorizerData = append(output[j].ClosureAuthorizerData, user)
+
 				}
 
 				if output[j].TicketDefaultRole[i].UserID != uuid.Nil {
@@ -86,6 +88,9 @@ func ListTicketDefaultType(c *gin.Context) {
 		}
 
 		user_data := helpers.GetUserData(users)
+
+		fmt.Println(users, "user_data")
+		fmt.Println(roles, "roles")
 
 		role_data := helpers.GetAuthRoleData(roles)
 
@@ -105,8 +110,11 @@ func ListTicketDefaultType(c *gin.Context) {
 					}
 				} else {
 					for k := 0; k < len(role_data); k++ {
-						if role_data[k].ID ==  output[j].TicketDefaultRole[i].Role.ID{
+						if role_data[k].ID == output[j].TicketDefaultRole[i].Role.ID {
+							output[j].TicketDefaultRole[i].Role.ID = role_data[k].ID
 							output[j].TicketDefaultRole[i].Role.Name = role_data[k].Name
+							output[j].TicketDefaultRole[i].Role.StakeholderId = role_data[k].StakeholderId
+							output[j].TicketDefaultRole[i].Role.Status = role_data[k].Status
 						}
 					}
 				}

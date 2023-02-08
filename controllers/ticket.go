@@ -41,15 +41,14 @@ func ListTicket(c *gin.Context) {
 
 		user_data := helpers.GetUserData(users)
 
-		for j := 0; j < len(user_data); j++ {
-
-			for i := 0; i < len(output); i++ {
+		for j := 0; j < len(output); j++ {
+			for i := 0; i < len(user_data); i++ {
 
 				if user_data[i].ID == output[j].User.ID {
-					output[i].User.ID = user_data[j].ID
-					output[i].User.Name = user_data[j].Name
-					output[i].User.Email = user_data[j].Email
-					output[i].User.MobileNumber = user_data[j].MobileNumber
+					output[j].User.ID = user_data[i].ID
+					output[j].User.Name = user_data[i].Name
+					output[j].User.Email = user_data[i].Email
+					output[j].User.MobileNumber = user_data[i].MobileNumber
 					break
 				}
 			}
