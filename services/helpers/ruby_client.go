@@ -10,7 +10,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func RubyClient(body models.Body, rubyclient models.RubyClientInput) ([]byte, error) {
+func RubyClient(body any, rubyclient models.RubyClientInput) ([]byte, error) {
 	hc := http.Client{}
 
 	reqBody, err := json.Marshal(body)
