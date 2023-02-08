@@ -10,10 +10,10 @@ import (
 )
 
 type TicketWorkerService struct {
-	TicketEscalatedPayload models.TicketEscalatedPayload
+	TicketEscalatedPayload models.TicketPayload
 }
 
-func TicketEscalation(p models.TicketEscalatedPayload) error {
+func TicketEscalation(p models.TicketPayload) error {
 
 	db := config.GetDB()
 

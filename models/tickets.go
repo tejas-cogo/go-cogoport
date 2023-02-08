@@ -97,7 +97,7 @@ type TicketGraph struct {
 	Sum         int64
 }
 
-type TicketEscalatedPayload struct {
+type TicketPayload struct {
 	TicketID uint
 }
 

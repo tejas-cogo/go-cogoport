@@ -27,7 +27,10 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	tx.Where("ticket_token = ?", body.TicketToken).First(&ticket_token)
 	if ticket_token.Status == "utilized" {
 		tx.Rollback()
-		return ticket, errors.New("token is already used")
+		return ticket, errors.New("token is already used!")
+	}else if ticket_token.TicketID == 0 {
+		tx.Rollback()
+		return ticket, errors.New("Ticket wasn't created!")
 	}
 
 	tx.Where("id = ?", ticket_token.TicketID).First(&ticket)
@@ -67,8 +70,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
-	// ticket.Tat = ticket_default_timing.Tat
-	ticket.Tat = time.Now().UTC()
+
+	ticket.Tat = time.Now()
 	ticket.ExpiryDate = time.Now()
 
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)

@@ -70,7 +70,6 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	ticket_activity.UserType = "system"
 	ticket_activity.Type = "reviewer_assigned"
 	ticket_activity.Status = "assigned"
-	ticket_activity.Status = "assigned"
 
 	stmt3 := validations.ValidateTicketActivity(ticket_activity)
 	if stmt3 != "validated" {
