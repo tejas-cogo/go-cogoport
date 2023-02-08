@@ -74,11 +74,15 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 			if stats.UserID != "" {
 				db = db.Where("user_id = ?", stats.UserID)
 			}
+			if stats.Category != "" {
+				db = db.Where("category ilike ?", stats.Category)
+			}
 
 			if stats.QFilter != "" {
-				db = db.Where("id::text ilike ? OR type ilike ?", stats.QFilter, "%"+stats.QFilter+"%")
+				db = db.Where("id::text ilike ? OR type ilike ? OR category ilike ?", stats.QFilter, "%"+stats.QFilter+"%", "%"+stats.QFilter+"%")
 			}
 			db.Where("id IN ?", ticket_id).Distinct("id").Find(&ticket).Pluck("id ", &ticket_id)
+
 		}
 
 		db = config.GetDB()

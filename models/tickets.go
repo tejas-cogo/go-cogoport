@@ -81,6 +81,7 @@ type TicketStat struct {
 	ExpiryDate      string
 	TicketCreatedAt string
 	Tags            pq.StringArray `gorm:"type:text[]"`
+	Category        string
 }
 
 type TicketGraph struct {
