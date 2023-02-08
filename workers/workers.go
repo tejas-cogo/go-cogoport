@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
-	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	"github.com/tejas-cogo/go-cogoport/tasks"
 )
 
@@ -21,48 +20,21 @@ type TicketData struct {
 
 const redisAddr = "login-apollo.dev.cogoport.io:6379"
 
-func StartClient(ID uint, Type string) {
+func StartClient(duration time.Duration, Task *asynq.Task) {
 	log.Print("Start of Ticket Client")
 	client := asynq.NewClient(asynq.RedisClientOpt{
 		Addr:     redisAddr,
 		Password: "f7d8279ad6ecaea58ccffd277a79b1cc4019da22713118805a9341d15a76c178",
 	})
 
-	tat := "00d:00h:05m"
-	Duration := helpers.GetDuration(tat)
+	// Duration := helpers.GetDuration(Tat)
 
-	if Type == "expiration" {
-		task, err := tasks.ScheduleTicketExpirationTask(ID)
-		if err != nil {
-			log.Fatalf("could not create task: %v", err)
-		}
-		info, err := client.Enqueue(task, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
-		if err != nil {
-			log.Fatalf("could not enqueue expiration task: %v", err)
-		}
-		log.Print("Task done", info)
+	info, err := client.Enqueue(Task, asynq.ProcessIn(duration))
 
-	} else if Type == "escalation" {
-		task, err := tasks.ScheduleTicketEscalationTask(ID)
-		if err != nil {
-			log.Fatalf("could not create task: %v", err)
-		}
-		info, err := client.Enqueue(task, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
-		if err != nil {
-			log.Fatalf("could not enqueue escalation task: %v", err)
-		}
-		log.Print("Task done", info)
-	} else if Type == "communication" {
-		task, err := tasks.ScheduleTicketCommunicationTask(ID)
-		if err != nil {
-			log.Fatalf("could not create task: %v", err)
-		}
-		info, err := client.Enqueue(task, asynq.ProcessIn(time.Duration(Duration)*time.Minute))
-		if err != nil {
-			log.Fatalf("could not enqueue expiration task: %v", err)
-		}
-		log.Print("Task done", info)
+	if err != nil {
+		log.Fatalf("could not enqueue expiration task: %v", err)
 	}
+	log.Print("Task done", info)
 
 	log.Print("End of New server")
 }

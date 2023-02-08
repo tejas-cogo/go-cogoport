@@ -11,6 +11,9 @@ import (
 	ticket_users "github.com/tejas-cogo/go-cogoport/services/api/ticket_users"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	_"github.com/tejas-cogo/go-cogoport/tasks"
+	// workers "github.com/tejas-cogo/go-cogoport/workers"
+	
 )
 
 type TicketService struct {
@@ -92,8 +95,14 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 		return ticket, err
 	}
 
-	// workers.StartTicketClient(ticket.ID,"escalation")
-	// workers.StartTicketClient(ticket.ID,"expiration")
+	// task, err := tasks.ScheduleTicketEscalationTask(ticket.ID)
+	// Duration = helpers.GetDuration(ticket_default_timing.Tat)
+	// workers.StartClient((time.Duration(Duration)*time.Minute), task)
+
+	// task, err = tasks.ScheduleTicketExpirationTask(ticket.ID)
+	// Duration = helpers.GetDuration(ticket_default_timing.ExpiryDuration)
+	// workers.StartClient((time.Duration(Duration)*time.Minute), task)
+
 	tx.Commit()
 
 	return ticket, err

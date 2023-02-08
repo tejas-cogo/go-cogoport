@@ -14,6 +14,8 @@ import (
 func CreateTicketActivity(c *gin.Context) {
 	var body models.Activity
 	err := c.Bind(&body)
+
+	
 	if err != nil {
 		c.JSON(c.Writer.Status(), err.Error())
 		return
