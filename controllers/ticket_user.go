@@ -28,7 +28,7 @@ func CreateTicketUser(c *gin.Context) {
 	var ticket_user models.TicketUser
 	err := c.Bind(&ticket_user)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.CreateTicketUser(ticket_user)

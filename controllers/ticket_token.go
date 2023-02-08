@@ -14,7 +14,7 @@ func ListTokenTicketDetail(c *gin.Context) {
 	var filters models.TokenFilter
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if filters.TicketToken == "" {
@@ -45,7 +45,7 @@ func ListTokenTicketActivity(c *gin.Context) {
 	var filters models.TokenFilter
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if filters.TicketToken == "" {
@@ -91,7 +91,7 @@ func GetTicketToken(c *gin.Context) {
 	var body models.TicketUser
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.GetTicketToken(body)
@@ -106,7 +106,7 @@ func CreateTokenTicket(c *gin.Context) {
 	var token_filter models.TokenFilter
 	err := c.Bind(&token_filter)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if token_filter.TicketToken == "" {
@@ -126,7 +126,7 @@ func CreateTokenTicketActivity(c *gin.Context) {
 	var token_filter models.TokenActivity
 	err := c.Bind(&token_filter)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if token_filter.TicketToken == "" {
@@ -157,7 +157,7 @@ func UpdateTokenTicket(c *gin.Context) {
 	var body models.TokenFilter
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if body.TicketToken == "" {
@@ -177,7 +177,7 @@ func ListTokenTicketType(c *gin.Context) {
 
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	if body.TicketToken == "" {

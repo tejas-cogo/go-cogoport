@@ -18,7 +18,7 @@ func ListTicketType(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -36,7 +36,7 @@ func ListTicketDefaultType(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -88,7 +88,7 @@ func CreateTicketDefaultType(c *gin.Context) {
 	var ticket_default_type models.TicketDefaultType
 	err := c.Bind(&ticket_default_type)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.CreateTicketDefaultType(ticket_default_type)
@@ -103,7 +103,7 @@ func DeleteTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	id := body.ID
@@ -119,7 +119,7 @@ func UpdateTicketDefaultType(c *gin.Context) {
 	var body models.TicketDefaultType
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.UpdateTicketDefaultType(body)

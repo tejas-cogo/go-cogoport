@@ -10,7 +10,7 @@ func CreateTicketDefaultRole(c *gin.Context) {
 	var ticket_default_role models.TicketDefaultRole
 	err := c.Bind(&ticket_default_role)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.CreateTicketDefaultRole(ticket_default_role)
@@ -25,7 +25,7 @@ func DeleteTicketDefaultRole(c *gin.Context) {
 	var body models.TicketDefaultRole
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	id := body.ID
@@ -41,7 +41,7 @@ func UpdateTicketDefaultRole(c *gin.Context) {
 	var body models.TicketDefaultRole
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.UpdateTicketDefaultRole(body)

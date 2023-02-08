@@ -10,7 +10,7 @@ func CreateTicketDefaultTiming(c *gin.Context) {
 	var ticket_default_timing models.TicketDefaultTiming
 	err := c.Bind(&ticket_default_timing)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -26,7 +26,7 @@ func DeleteTicketDefaultTiming(c *gin.Context) {
 	var body models.TicketDefaultTiming
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	id := body.ID
@@ -42,7 +42,7 @@ func UpdateTicketDefaultTiming(c *gin.Context) {
 	var body models.TicketDefaultTiming
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.UpdateTicketDefaultTiming(body)
