@@ -8,6 +8,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_tokens"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
 func ListTokenTicketDetail(c *gin.Context) {
@@ -66,6 +67,7 @@ func ListTokenTicketActivity(c *gin.Context) {
 			print(err)
 			c.JSON(400, err)
 		}
+		var users []string
 
 		for j := 0; j < len(output); j++ {
 			if output[j].UserType == "ticket_user" {
@@ -73,14 +75,26 @@ func ListTokenTicketActivity(c *gin.Context) {
 				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
 			} else {
-				var user models.User
-				db2.Where("id = ?", output[j].UserID).First(&user)
-				output[j].TicketUser.SystemUserID = user.ID
-				output[j].TicketUser.Name = user.Name
-				output[j].TicketUser.Email = user.Email
-				output[j].TicketUser.MobileNumber = user.MobileNumber
-			}
 
+				users = append(users, output[j].UserID.String())
+
+			}
+		}
+
+		user_data := helpers.GetPartnerUserData(users)
+
+		for j := 0; j < len(output); j++ {
+			if output[j].UserType != "ticket_user" {
+				for i := 0; i < len(user_data); i++ {
+					if user_data[i].ID == output[j].UserID {
+						output[j].TicketUser.SystemUserID = user_data[i].ID
+						output[j].TicketUser.Name = user_data[i].Name
+						output[j].TicketUser.Email = user_data[i].Email
+						output[j].TicketUser.MobileNumber = user_data[i].MobileNumber
+						break
+					}
+				}
+			}
 		}
 		data.Items = output
 		c.JSON(c.Writer.Status(), data)
