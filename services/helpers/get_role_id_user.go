@@ -2,7 +2,7 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -25,7 +25,7 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	err := json.Unmarshal([]byte(bodyString), &partner_users)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 
 	var user_id_array []string

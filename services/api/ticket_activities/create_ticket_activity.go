@@ -208,7 +208,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				helpers.SendCommunications(ticket_activity)
+				// helpers.SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}

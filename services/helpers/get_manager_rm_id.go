@@ -2,7 +2,7 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -23,7 +23,7 @@ func GetManagerRmId(UserID uuid.UUID) []string {
 
 	err := json.Unmarshal([]byte(bodyString), &partner_users_rm_mapping)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 	var user_id_array []string
 	for _, user_details := range partner_users_rm_mapping.List {

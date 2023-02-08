@@ -2,7 +2,7 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/lib/pq"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -38,7 +38,7 @@ func GetPartnerUserData(UserIDs pq.StringArray) []models.User {
 
 	err := json.Unmarshal([]byte(bodyString), &partner_users)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 
 	var users []models.User

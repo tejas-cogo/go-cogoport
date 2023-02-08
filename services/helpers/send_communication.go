@@ -2,7 +2,6 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/google/uuid"
@@ -34,16 +33,16 @@ func SendCommunications(ticket_activity models.TicketActivity) {
 	body.Service = "user"
 	body.ServiceID = "f06b29c0-b443-4f71-bf64-b61106dcaaf8"
 	body.TemplateName = "Ticket System"
-	
+
 	obj, _ := PostRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 	err := json.Unmarshal([]byte(bodyString), &communication_id)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 
 	if communication_id.ID != uuid.Nil {
-		log.Printf("Successfully Created")
+		log.Printf("Successfully Created!")
 	}
 }
