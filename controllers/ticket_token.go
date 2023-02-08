@@ -26,18 +26,20 @@ func ListTokenTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {
-		db := config.GetDB()
+		var users []string
+		users = append(users, ser.TicketReviewer.UserID.String())
+		user_data := helpers.GetUserData(users)
+		ser.TicketReviewer.User.ID = user_data[0].ID
+		ser.TicketReviewer.User.Name = user_data[0].Name
+		ser.TicketReviewer.User.Email = user_data[0].Email
+		ser.TicketReviewer.User.MobileNumber = user_data[0].MobileNumber
 
-		var user models.User
-		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
-		ser.TicketReviewer.User = user
-		var ticket_user models.TicketUser
-		db.Where("system_user_id = ?", ser.Ticket.UserID).First(&ticket_user)
-		ser.TicketUser = ticket_user
+		var roles []string
+		roles = append(users, ser.TicketReviewer.RoleID.String())
+		role_data := helpers.GetAuthRoleData(roles)
+		ser.TicketReviewer.Role.ID = role_data[0].ID
+		ser.TicketReviewer.Role.Name = role_data[0].Name
 
-		var role models.AuthRole
-		db.Where("id = ?", ser.TicketReviewer.RoleID).First(&role)
-		ser.TicketReviewer.Role = role
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
@@ -61,7 +63,7 @@ func ListTokenTicketActivity(c *gin.Context) {
 		items, _ := json.Marshal(data.Items)
 		var output []models.TicketActivityData
 
-		db2 := config.GetDB()
+		db := config.GetDB()
 		err := json.Unmarshal([]byte(items), &output)
 		if err != nil {
 			print(err)
@@ -72,7 +74,7 @@ func ListTokenTicketActivity(c *gin.Context) {
 		for j := 0; j < len(output); j++ {
 			if output[j].UserType == "ticket_user" {
 				var user models.TicketUser
-				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
+				db.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
 			} else {
 
@@ -154,18 +156,6 @@ func CreateTokenTicketActivity(c *gin.Context) {
 		c.JSON(c.Writer.Status(), ser)
 	}
 }
-
-// func DeleteTicketToken(c *gin.Context) {
-// 	var body models.TicketToken
-// 	c.BindJSON(&body)
-// 	id := body.ID
-// 	ser, err := service.DeleteTicketToken(id)
-// 	if err != nil {
-// 		c.JSON(c.Writer.Status(), err)
-// 	} else {
-// 		c.JSON(c.Writer.Status(), ser)
-// 	}
-// }
 
 func UpdateTokenTicket(c *gin.Context) {
 	var body models.TokenFilter

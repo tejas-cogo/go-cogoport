@@ -54,7 +54,7 @@ func ListTicketActivity(c *gin.Context) {
 		items, _ := json.Marshal(data.Items)
 		var output []models.TicketActivityData
 
-		db2 := config.GetDB()
+		db := config.GetDB()
 		err := json.Unmarshal([]byte(items), &output)
 		if err != nil {
 			print(err)
@@ -66,15 +66,10 @@ func ListTicketActivity(c *gin.Context) {
 		for j := 0; j < len(output); j++ {
 			if output[j].UserType == "ticket_user" {
 				var user models.TicketUser
-
-				db2.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
+				db.Where("id = ?", output[j].Ticket.TicketUserID).First(&user)
 				output[j].TicketUser = user
-
 			} else {
-				
-
 				users = append(users, output[j].UserID.String())
-
 			}
 		}
 

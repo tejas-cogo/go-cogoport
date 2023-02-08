@@ -2,11 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
-	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/tickets"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
@@ -29,7 +27,6 @@ func ListTicket(c *gin.Context) {
 		items, _ := json.Marshal(data.Items)
 		var output []models.TicketData
 
-		// db2 := config.GetCDB()
 		err := json.Unmarshal([]byte(items), &output)
 		if err != nil {
 			print(err)
@@ -39,14 +36,10 @@ func ListTicket(c *gin.Context) {
 		var users []string
 
 		for j := 0; j < len(output); j++ {
-
-			// db2.Where("id = ?", output[j].UserID).First(&user)
-			// output[j].User = user
-
 			users = append(users, output[j].UserID.String())
 		}
 
-		user_data := helpers.GetPartnerUserData(users)
+		user_data := helpers.GetUserData(users)
 
 		for j := 0; j < len(user_data); j++ {
 
@@ -54,13 +47,12 @@ func ListTicket(c *gin.Context) {
 
 				if user_data[i].ID == output[j].User.ID {
 					output[i].User.ID = user_data[j].ID
-					// output[i].User.Name = user_data[j].Name
-					// output[i].User.Email = user_data[j].Email
-					// output[i].User.MobileNumber = user_data[j].MobileNumber
+					output[i].User.Name = user_data[j].Name
+					output[i].User.Email = user_data[j].Email
+					output[i].User.MobileNumber = user_data[j].MobileNumber
 					break
 				}
 			}
-
 		}
 
 		data.Items = output
@@ -129,20 +121,21 @@ func ListTicketDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(c.Writer.Status(), err)
 	} else {
-		db := config.GetDB()
 
-		var user models.User
-		db.Where("id = ?", ser.TicketReviewer.UserID).First(&user)
-		ser.TicketReviewer.User = user
+		var users []string
+		users = append(users, ser.TicketReviewer.UserID.String())
+		user_data := helpers.GetUserData(users)
+		ser.TicketReviewer.User.ID = user_data[0].ID
+		ser.TicketReviewer.User.Name = user_data[0].Name
+		ser.TicketReviewer.User.Email = user_data[0].Email
+		ser.TicketReviewer.User.MobileNumber = user_data[0].MobileNumber
 
-		var t_user models.TicketUser
-		fmt.Println(ser.Ticket.UserID, "ser")
-		db.Where("system_user_id = ?", ser.Ticket.UserID).First(&t_user)
-		ser.TicketUser = t_user
+		var roles []string
+		roles = append(users, ser.TicketReviewer.RoleID.String())
+		role_data := helpers.GetAuthRoleData(roles)
+		ser.TicketReviewer.Role.ID = role_data[0].ID
+		ser.TicketReviewer.Role.Name = role_data[0].Name
 
-		var role models.AuthRole
-		db.Where("id = ?", ser.TicketReviewer.RoleID).First(&role)
-		ser.TicketReviewer.Role = role
 		c.JSON(c.Writer.Status(), ser)
 	}
 
