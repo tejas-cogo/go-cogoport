@@ -9,6 +9,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
 	service "github.com/tejas-cogo/go-cogoport/services/api/tickets"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
 func ListTicket(c *gin.Context) {
@@ -28,18 +29,40 @@ func ListTicket(c *gin.Context) {
 		items, _ := json.Marshal(data.Items)
 		var output []models.TicketData
 
-		db2 := config.GetCDB()
+		// db2 := config.GetCDB()
 		err := json.Unmarshal([]byte(items), &output)
 		if err != nil {
 			print(err)
 			c.JSON(400, err)
 		}
 
+		var users []string
+
 		for j := 0; j < len(output); j++ {
-			var user models.User
-			db2.Where("id = ?", output[j].UserID).First(&user)
-			output[j].User = user
+
+			// db2.Where("id = ?", output[j].UserID).First(&user)
+			// output[j].User = user
+
+			users = append(users, output[j].UserID.String())
 		}
+
+		user_data := helpers.GetPartnerUserData(users)
+
+		for j := 0; j < len(user_data); j++ {
+
+			for i := 0; i < len(output); i++ {
+
+				if user_data[i].ID == output[j].User.ID {
+					output[i].User.ID = user_data[j].ID
+					// output[i].User.Name = user_data[j].Name
+					// output[i].User.Email = user_data[j].Email
+					// output[i].User.MobileNumber = user_data[j].MobileNumber
+					break
+				}
+			}
+
+		}
+
 		data.Items = output
 
 		c.JSON(c.Writer.Status(), data)

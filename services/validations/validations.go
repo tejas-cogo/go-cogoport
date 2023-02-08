@@ -145,6 +145,15 @@ func ValidateTicket(ticket models.Ticket) string {
 }
 
 func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
+	db := config.GetDB()
+	var ticket models.Ticket
+
+	db.Where("id = ?", ticket_activity.TicketID).First(ticket)
+
+	if ticket.Status != "unresolved" {
+		return ("Ticket is not open for activities anymore!")
+	}
+
 	if ticket_activity.Status == "" {
 		return ("Status is Required!")
 	}
@@ -174,9 +183,9 @@ func ValidateActivityPermission(ticket_activity models.TicketActivity) bool {
 
 	fmt.Println("ticket_activity", ticket_activity)
 
-	db.Where("ticket_id = ? and status = ?", ticket_activity.TicketID, "active").First("ticket_reviewer")
+	db.Where("ticket_id = ? and status = ?", ticket_activity.TicketID, "active").First(&ticket_reviewer)
 
-	db.Where("id = ? and status = ?", ticket_activity.TicketID, "unresolved").First("ticket")
+	db.Where("id = ? and status = ?", ticket_activity.TicketID, "unresolved").First(&ticket)
 
 	fmt.Println("ticket")
 	if ticket_reviewer.UserID != ticket_activity.UserID && ticket.UserID != ticket_activity.UserID {
