@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/morkid/paginate"
-	"github.com/tejas-cogo/go-cogoport/config"
 	models "github.com/tejas-cogo/go-cogoport/models"
-	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 
 	role_service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_roles"
 	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_types"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
 func ListTicketType(c *gin.Context) {
@@ -55,7 +55,8 @@ func ListTicketDefaultType(c *gin.Context) {
 			c.JSON(400, err)
 		}
 
-		db2 := config.GetDB()
+		var users []string
+		var roles []string
 
 		for j := 0; j < len(output); j++ {
 			var f models.TicketDefaultRole
@@ -63,18 +64,41 @@ func ListTicketDefaultType(c *gin.Context) {
 			output[j].TicketDefaultRole, _ = role_service.ListTicketDefaultRole(f)
 
 			for i := 0; i < len(output[j].TicketDefaultRole); i++ {
-				var user models.User
-				output[j].ClosureAuthorizerData = helpers.GetPartnerUserData(output[j].ClosureAuthorizer)
 
-				users := db2.Where("id = ?", output[j].TicketDefaultRole[i].UserID).First(&user)
-				if users.RowsAffected > 0 {
-					output[j].TicketDefaultRole[i].User = user
+				// output[j].ClosureAuthorizerData = helpers.GetUserData(output[j].ClosureAuthorizer)
+
+				if output[j].TicketDefaultRole[i].UserID != uuid.Nil {
+					users = append(users, output[j].TicketDefaultRole[i].UserID.String())
+				} else {
+					roles = append(roles, output[j].TicketDefaultRole[i].RoleID.String())
 				}
+			}
+		}
 
-				var auth_role models.AuthRole
-				auth_roles := db2.Where("id = ?", output[j].TicketDefaultRole[i].RoleID).First(&auth_role)
-				if auth_roles.RowsAffected > 0 {
-					output[j].TicketDefaultRole[i].Role = auth_role
+		user_data := helpers.GetUserData(users)
+
+		// role_data := helpers.GetAuthRoleData(roles)
+
+		for j := 0; j < len(output); j++ {
+			var f models.TicketDefaultRole
+			f.TicketDefaultTypeID = output[j].ID
+			output[j].TicketDefaultRole, _ = role_service.ListTicketDefaultRole(f)
+
+			for i := 0; i < len(output[j].TicketDefaultRole); i++ {
+
+				if output[j].TicketDefaultRole[i].UserID != uuid.Nil {
+					for k := 0; k < len(user_data); k++ {
+						if user_data[k].ID == output[j].TicketDefaultRole[i].User.ID {
+							output[j].TicketDefaultRole[i].User.Name = user_data[k].Name
+							output[j].TicketDefaultRole[i].User.Email = user_data[k].Email
+						}
+					}
+				} else {
+					// for k := 0; k < len(role_data); k++ {
+					// 	if role_data[k].ID ==  output[j].TicketDefaultRole[i].Role.ID{
+					// 		output[j].TicketDefaultRole[i].Role.Name = role_data[k].Name
+					// 	}
+					// }
 				}
 			}
 		}
