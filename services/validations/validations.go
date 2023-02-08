@@ -148,10 +148,11 @@ func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 	db := config.GetDB()
 	var ticket models.Ticket
 
-	db.Where("id = ?", ticket_activity.TicketID).First(&ticket)
-
-	if ticket.Status != "unresolved" {
-		return ("Ticket is not open for activities anymore!")
+	if ticket_activity.Status != "assigned" {
+		db.Where("id = ?", ticket_activity.TicketID).First(&ticket)
+		if ticket.Status != "unresolved" {
+			return ("Ticket is not open for activities anymore!")
+		}
 	}
 
 	if ticket_activity.Status == "" {
