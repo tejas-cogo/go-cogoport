@@ -10,11 +10,11 @@ import (
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
-func SendCommunications(ticket_activity models.TicketActivity) {
+func SendCommunications(ID uint) {
 	db := config.GetDB()
 
 	var ticket models.Ticket
-	db.Where("id = ?", ticket_activity.TicketID).First(&ticket)
+	db.Where("id = ?", ID).First(&ticket)
 
 	var ticket_user models.TicketUser
 	db.Where("id = ?", ticket.TicketUserID).First(&ticket_user)
