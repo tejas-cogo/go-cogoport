@@ -32,7 +32,7 @@ func GetUserData(IDs pq.StringArray) []models.UserData {
 
 	rubyclient.Endpoint = "user/list_users"
 	body.Filters.ID = IDs
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 

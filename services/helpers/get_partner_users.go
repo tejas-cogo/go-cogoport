@@ -32,7 +32,7 @@ func GetPartnerUserData(UserIDs pq.StringArray) []models.User {
 	body.Filters.UserID = UserIDs
 
 	var partner_users Response
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 

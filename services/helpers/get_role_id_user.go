@@ -19,7 +19,7 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	body.RmMappingDataRequired = false
 
 	var partner_users models.RestClientOutput
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 

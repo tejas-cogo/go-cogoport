@@ -82,7 +82,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	}
 
 	// if ticket_activity.UserType == "internal" {
-	// 	// activity.SendTicketActivity(ticket_activity)
+	// 	// activity.SendCommunications(ticket_activity)
 	// }
 
 	txt.Commit()

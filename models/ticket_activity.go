@@ -46,7 +46,7 @@ type Activity struct {
 	Status        string
 }
 
-type Post struct {
+type Communication struct {
 	Recipient    string         `json:"recipient"`
 	Type         string         `json:"type"`
 	Service      string         `json:"service"`

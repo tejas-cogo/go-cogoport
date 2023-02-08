@@ -17,7 +17,7 @@ func GetManagerRmId(UserID uuid.UUID) []string {
 	body.Filters.UserID = UserID.String()
 	body.Filters.Status = "active"
 
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 

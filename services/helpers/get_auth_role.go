@@ -32,7 +32,7 @@ func GetAuthRoleData(RoleIDs pq.StringArray) []models.AuthRoleData {
 
 	rubyclient.Endpoint = "auth/list_auth_roles"
 	body.Filters.ID = RoleIDs
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 

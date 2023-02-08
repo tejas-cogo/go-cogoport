@@ -61,7 +61,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendTicketActivity(ticket_activity)
+				// SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}
@@ -103,7 +103,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendTicketActivity(ticket_activity)
+				// SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}
@@ -208,7 +208,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendTicketActivity(ticket_activity)
+				helpers.SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}
