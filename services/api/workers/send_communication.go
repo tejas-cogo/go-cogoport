@@ -1,4 +1,4 @@
-package apihelper
+package api
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
 func SendCommunications(ticket_activity models.TicketActivity) {
@@ -34,7 +35,7 @@ func SendCommunications(ticket_activity models.TicketActivity) {
 	body.ServiceID = "f06b29c0-b443-4f71-bf64-b61106dcaaf8"
 	body.TemplateName = "Ticket System"
 
-	obj, _ := PostRubyClient(body, rubyclient)
+	obj, _ := helpers.PostRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 	err := json.Unmarshal([]byte(bodyString), &communication_id)

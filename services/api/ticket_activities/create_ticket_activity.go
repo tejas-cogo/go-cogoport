@@ -7,6 +7,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
+	// workers "github.com/tejas-cogo/go-cogoport/services/api/workers"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 	"gorm.io/gorm"
@@ -61,7 +62,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendCommunications(ticket_activity)
+				// workers.SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}
@@ -103,7 +104,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendCommunications(ticket_activity)
+				// workers.SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}
@@ -208,7 +209,7 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// helpers.SendCommunications(ticket_activity)
+				// workers.SendCommunications(ticket_activity)
 			}
 			tx.Commit()
 		}

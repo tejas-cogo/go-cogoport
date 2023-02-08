@@ -9,6 +9,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	// workers "github.com/tejas-cogo/go-cogoport/services/api/workers"
 )
 
 type TicketReviewerService struct {
@@ -80,8 +81,8 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		return body, errors.New(err.Error())
 	}
 
-	// if ticket_activity.UserType == "internal" {
-	// 	// activity.SendCommunications(ticket_activity)
+	// if ticket_activity.UserType == "user" {
+		// workers.SendCommunications(ticket_activity)
 	// }
 
 	txt.Commit()
