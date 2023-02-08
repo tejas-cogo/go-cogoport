@@ -43,7 +43,6 @@ func GetPartnerUserData(UserIDs pq.StringArray) []models.User {
 
 	var users []models.User
 	for _, user_details := range partner_users.List {
-		fmt.Println(user_details.Email, "user_details")
 		users = append(users, user_details)
 	}
 	return users
