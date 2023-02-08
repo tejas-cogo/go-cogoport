@@ -8,7 +8,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func GetUserData(IDs pq.StringArray) []models.UserData {
+func GetAuthRoleData(RoleIDs pq.StringArray) []models.AuthRoleData {
 	var rubyclient models.RubyClientInput
 
 	type Filters struct {
@@ -20,30 +20,30 @@ func GetUserData(IDs pq.StringArray) []models.UserData {
 	}
 
 	type Response struct {
-		List       []models.UserData
+		List       []models.AuthRoleData
 		Page       uint `json:"page"`
 		Total      uint `json:"total"`
 		TotalCount uint `json:"total_count"`
 		PageLimit  uint `json:"page_limit"`
 	}
 
-	var user Response
+	var auth_user Response
 	var body Body
 
-	rubyclient.Endpoint = "user/list_users"
-	body.Filters.ID = IDs
+	rubyclient.Endpoint = "auth/list_auth_roles"
+	body.Filters.ID = RoleIDs
 	obj, _ := RubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 
-	err := json.Unmarshal([]byte(bodyString), &user)
+	err := json.Unmarshal([]byte(bodyString), &auth_user)
 	if err != nil {
 		fmt.Println(err, "Error occured")
 	}
 
-	var users []models.UserData
-	for _, user_details := range user.List {
-		users = append(users, user_details)
+	var auth_users []models.AuthRoleData
+	for _, user_details := range auth_user.List {
+		auth_users = append(auth_users, user_details)
 	}
-	return users
+	return auth_users
 }
