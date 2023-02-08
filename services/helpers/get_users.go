@@ -8,11 +8,11 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func GetUserData(IDs pq.StringArray) []models.User {
+func GetUserData(IDs pq.StringArray) []models.UserData {
 	var rubyclient models.RubyClientInput
 
 	type Filters struct {
-		ID pq.StringArray `json:"user_id"`
+		ID pq.StringArray `json:"id"`
 	}
 
 	type Body struct {
@@ -20,7 +20,7 @@ func GetUserData(IDs pq.StringArray) []models.User {
 	}
 
 	type Response struct {
-		List       []models.User
+		List       []models.UserData
 		Page       uint `json:"page"`
 		Total      uint `json:"total"`
 		TotalCount uint `json:"total_count"`
@@ -41,7 +41,7 @@ func GetUserData(IDs pq.StringArray) []models.User {
 		fmt.Println(err, "Error occured")
 	}
 
-	var users []models.User
+	var users []models.UserData
 	for _, user_details := range user.List {
 		fmt.Println(user_details.Email, "user_details")
 		users = append(users, user_details)
