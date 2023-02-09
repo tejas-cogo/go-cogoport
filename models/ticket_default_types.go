@@ -31,6 +31,8 @@ type TicketDefault struct {
 	TicketPriority        string
 	AdditionalOptions     gormjsonb.JSONB         `gorm:"type:json"`
 	TicketDefaultRole     []TicketTypeDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
+	Category              string
+	Subcategory           string
 }
 
 type TicketDefaultFilter struct {
