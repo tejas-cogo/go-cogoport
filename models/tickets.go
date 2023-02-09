@@ -84,6 +84,7 @@ type TicketStat struct {
 	TicketCreatedAt string
 	Tags            pq.StringArray `gorm:"type:text[]"`
 	Category        string
+	Closure         int64
 }
 
 type TicketGraph struct {
