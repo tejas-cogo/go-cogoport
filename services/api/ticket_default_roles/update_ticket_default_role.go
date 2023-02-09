@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 func UpdateTicketDefaultRole(body models.TicketDefaultRole) (models.TicketDefaultRole, error) {
@@ -31,6 +32,11 @@ func UpdateTicketDefaultRole(body models.TicketDefaultRole) (models.TicketDefaul
 	}
 	if body.Status != "" {
 		ticket_default_role.Status = body.Status
+	}
+
+	stmt2 := validations.ValidateDuplicateDefaultType(ticket_default_role)
+	if stmt2 != "validated" {
+		return ticket_default_role, errors.New(stmt2)
 	}
 
 	if err := tx.Save(&ticket_default_role).Error; err != nil {
