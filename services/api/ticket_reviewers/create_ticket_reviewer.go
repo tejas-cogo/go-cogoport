@@ -80,10 +80,6 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		return body, errors.New(err.Error())
 	}
 
-	// if ticket_activity.UserType == "internal" {
-	// 	// activity.SendTicketActivity(ticket_activity)
-	// }
-
 	txt.Commit()
 	return body, err
 }

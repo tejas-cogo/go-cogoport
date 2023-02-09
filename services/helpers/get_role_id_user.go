@@ -2,7 +2,7 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -19,13 +19,13 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	body.RmMappingDataRequired = false
 
 	var partner_users models.RestClientOutput
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 
 	err := json.Unmarshal([]byte(bodyString), &partner_users)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 
 	var user_id_array []string

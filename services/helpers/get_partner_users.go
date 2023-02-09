@@ -2,7 +2,7 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/lib/pq"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -32,13 +32,13 @@ func GetPartnerUserData(UserIDs pq.StringArray) []models.User {
 	body.Filters.UserID = UserIDs
 
 	var partner_users Response
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 
 	err := json.Unmarshal([]byte(bodyString), &partner_users)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 
 	var users []models.User

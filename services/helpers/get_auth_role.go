@@ -2,7 +2,7 @@ package apihelper
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/lib/pq"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -32,13 +32,13 @@ func GetAuthRoleData(RoleIDs pq.StringArray) []models.AuthRoleData {
 
 	rubyclient.Endpoint = "auth/list_auth_roles"
 	body.Filters.ID = RoleIDs
-	obj, _ := RubyClient(body, rubyclient)
+	obj, _ := GetRubyClient(body, rubyclient)
 
 	bodyString := string(obj)
 
 	err := json.Unmarshal([]byte(bodyString), &auth_user)
 	if err != nil {
-		fmt.Println(err, "Error occured")
+		log.Println(err)
 	}
 
 	var auth_users []models.AuthRoleData
