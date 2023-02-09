@@ -53,7 +53,7 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	if len(users) < len(user_id_array) {
 		for _, value := range user_id_array {
-			if !inslice(value, users) {
+			if !Inslice(value, users) {
 				user_id, err = uuid.Parse(user_id_array[0])
 			}
 		}
