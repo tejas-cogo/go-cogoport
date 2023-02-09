@@ -22,8 +22,11 @@ func UpdateTicketDefaultType(body models.TicketDefaultType) (models.TicketDefaul
 	if body.TicketType != "" {
 		ticket_default_type.TicketType = body.TicketType
 	}
-	if body.AdditionalOptions != nil {
-		ticket_default_type.AdditionalOptions = body.AdditionalOptions
+	if body.Category != "" {
+		ticket_default_type.Category = body.Category
+	}
+	if body.Subcategory != "" {
+		ticket_default_type.Subcategory = body.Subcategory
 	}
 	if len(body.ClosureAuthorizer) != 0 {
 		ticket_default_type.ClosureAuthorizer = body.ClosureAuthorizer

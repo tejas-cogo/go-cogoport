@@ -27,6 +27,7 @@ type Ticket struct {
 	ExpiryDate              time.Time       `gorm:"not null"`
 	IsUrgent                bool
 	Status                  string `gorm:"not null;default:'active'"`
+	TicketDefaultTypeID     uint
 }
 
 type TicketData struct {
