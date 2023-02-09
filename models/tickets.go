@@ -85,6 +85,7 @@ type TicketStat struct {
 	Tags            pq.StringArray `gorm:"type:text[]"`
 	Category        string
 	Closure         int64
+	ClosureID       string
 }
 
 type TicketGraph struct {
@@ -148,4 +149,5 @@ type TicketExtraFilter struct {
 	ExpiryDate              string
 	ID                      uint
 	Closure                 bool
+	ClosureID               string
 }
