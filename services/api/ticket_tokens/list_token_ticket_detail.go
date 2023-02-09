@@ -5,6 +5,7 @@ import (
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
+	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
 func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail, error) {
@@ -48,6 +49,20 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 	var t_user models.TicketUser
 	db.Where("system_user_id = ?", ticket.UserID).First(&t_user)
 	ticket_detail.TicketUser = t_user
+
+	var users []string
+	users = append(users, ticket_detail.TicketReviewer.UserID.String())
+	user_data := helpers.GetUserData(users)
+	ticket_detail.TicketReviewer.User.ID = user_data[0].ID
+	ticket_detail.TicketReviewer.User.Name = user_data[0].Name
+	ticket_detail.TicketReviewer.User.Email = user_data[0].Email
+	ticket_detail.TicketReviewer.User.MobileNumber = user_data[0].MobileNumber
+
+	var roles []string
+	roles = append(users, ticket_detail.TicketReviewer.RoleID.String())
+	role_data := helpers.GetAuthRoleData(roles)
+	ticket_detail.TicketReviewer.Role.ID = role_data[0].ID
+	ticket_detail.TicketReviewer.Role.Name = role_data[0].Name
 
 	tx.Commit()
 
