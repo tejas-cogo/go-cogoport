@@ -202,7 +202,7 @@ func ValidateActivityPermission(ticket_activity models.TicketActivity) bool {
 	return true
 }
 
-func ValidateDuplicateDefaultType(ticket_default_role models.TicketDefaultRole) string{
+func ValidateDuplicateDefaultType(ticket_default_role models.TicketDefaultRole) string {
 	var user_ids []string
 	var role_ids []string
 
@@ -212,11 +212,11 @@ func ValidateDuplicateDefaultType(ticket_default_role models.TicketDefaultRole) 
 
 	db.Model(&models.TicketDefaultRole{}).Where("ticket_default_type_id = ? and status = ? and user_id is null", ticket_default_role.TicketDefaultTypeID, "active").Distinct("role_id").Pluck("role_id", &role_ids)
 
-	if !(helpers.Inslice(ticket_default_role.UserID.String(), user_ids)) {
+	if helpers.Inslice(ticket_default_role.UserID.String(), user_ids) {
 		return ("Cannot assign this user again for this type!")
 	}
 
-	if !(helpers.Inslice(ticket_default_role.UserID.String(), role_ids)) {
+	if helpers.Inslice(ticket_default_role.UserID.String(), role_ids) {
 		return ("Cannot assign this role again for this type!")
 	}
 
