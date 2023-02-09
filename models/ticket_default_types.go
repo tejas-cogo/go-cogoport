@@ -9,10 +9,10 @@ import (
 
 type TicketDefaultType struct {
 	gorm.Model
-	PerformedByID     uuid.UUID       `gorm:"type:uuid" json:"performedByID"`
-	TicketType        string          `gorm:"not null;unique"`
-	ClosureAuthorizers pq.StringArray  `gorm:"type:text[]"`
-	Status            string          `gorm:"not null;default:'active'"`
+	PerformedByID     uuid.UUID      `gorm:"type:uuid" json:"performedByID"`
+	TicketType        string         `gorm:"not null;unique"`
+	ClosureAuthorizer pq.StringArray `gorm:"type:text[]"`
+	Status            string         `gorm:"not null;default:'active'"`
 	Category          string
 	Subcategory       string
 }
