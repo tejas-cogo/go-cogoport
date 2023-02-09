@@ -29,8 +29,15 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	}
 
 	var user_id_array []string
+
+	db := config.GetDB()
+	var ticket models.Ticket
+	db.Where("id = ? and status = ?", RoleID, "active").First(&ticket)
+
 	for _, user_details := range partner_users.List {
-		user_id_array = append(user_id_array, user_details.UserID)
+		if user_details.UserID != ticket.UserID.String() {
+			user_id_array = append(user_id_array, user_details.UserID)
+		}
 	}
 
 	var ticket_reviewer models.TicketReviewer
@@ -42,8 +49,6 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 	// var max models.PartnerUserList
 
 	var result []Result
-
-	db := config.GetDB()
 
 	max := 0
 	var users []string
