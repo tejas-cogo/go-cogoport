@@ -21,6 +21,11 @@ func UpdateTicketDefaultRole(body models.TicketDefaultRole) (models.TicketDefaul
 		return body, errors.New(err.Error())
 	}
 
+	stmt2 := validations.ValidateDuplicateDefaultType(body)
+	if stmt2 != "validated" {
+		return body, errors.New(stmt2)
+	}
+
 	if body.TicketDefaultTypeID > 0 {
 		ticket_default_role.TicketDefaultTypeID = body.TicketDefaultTypeID
 	}
@@ -32,11 +37,6 @@ func UpdateTicketDefaultRole(body models.TicketDefaultRole) (models.TicketDefaul
 	}
 	if body.Status != "" {
 		ticket_default_role.Status = body.Status
-	}
-
-	stmt2 := validations.ValidateDuplicateDefaultType(ticket_default_role)
-	if stmt2 != "validated" {
-		return ticket_default_role, errors.New(stmt2)
 	}
 
 	if err := tx.Save(&ticket_default_role).Error; err != nil {
