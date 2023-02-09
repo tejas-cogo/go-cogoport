@@ -121,19 +121,7 @@ func ListTicketDetail(c *gin.Context) {
 		c.JSON(c.Writer.Status(), err)
 	} else {
 
-		var users []string
-		users = append(users, ser.TicketReviewer.UserID.String())
-		user_data := helpers.GetUserData(users)
-		ser.TicketReviewer.User.ID = user_data[0].ID
-		ser.TicketReviewer.User.Name = user_data[0].Name
-		ser.TicketReviewer.User.Email = user_data[0].Email
-		ser.TicketReviewer.User.MobileNumber = user_data[0].MobileNumber
-
-		var roles []string
-		roles = append(users, ser.TicketReviewer.RoleID.String())
-		role_data := helpers.GetAuthRoleData(roles)
-		ser.TicketReviewer.Role.ID = role_data[0].ID
-		ser.TicketReviewer.Role.Name = role_data[0].Name
+		
 
 		c.JSON(c.Writer.Status(), ser)
 	}

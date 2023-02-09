@@ -51,13 +51,14 @@ type TicketData struct {
 }
 
 type TicketDetail struct {
-	TicketReviewerID  uint
-	TicketReviewer    TicketReviewerData
-	TicketSpectatorID uint
-	TicketSpectator   TicketSpectator
-	TicketID          uint
-	Ticket            Ticket
-	TicketUser        TicketUser
+	TicketReviewerID   uint
+	TicketReviewer     TicketReviewerData
+	TicketSpectatorID  uint
+	TicketSpectator    TicketSpectator
+	TicketID           uint
+	Ticket             Ticket
+	TicketUser         TicketUser
+	ClosureAuthorizers []User
 }
 
 type TicketStat struct {
