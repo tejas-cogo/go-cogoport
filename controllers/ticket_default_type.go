@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -57,6 +58,7 @@ func ListTicketDefaultType(c *gin.Context) {
 
 		var users []string
 		var roles []string
+		var closures []string
 
 		for j := 0; j < len(output); j++ {
 			var f models.TicketDefaultRole
@@ -65,35 +67,58 @@ func ListTicketDefaultType(c *gin.Context) {
 
 			for i := 0; i < len(output[j].TicketDefaultRole); i++ {
 
-				data := helpers.GetUserData(output[j].ClosureAuthorizer)
-
-				for k := 0; k < len(data); k++ {
-					var user models.User
-
-					user.ID = data[k].ID
-					user.Name = data[k].Name
-					user.Email = data[k].Email
-					user.MobileNumber = data[k].MobileNumber
-					output[j].ClosureAuthorizerData = append(output[j].ClosureAuthorizerData, user)
-
-				}
-
 				if output[j].TicketDefaultRole[i].UserID != uuid.Nil {
 					users = append(users, output[j].TicketDefaultRole[i].UserID.String())
 				} else {
 					roles = append(roles, output[j].TicketDefaultRole[i].RoleID.String())
 				}
 			}
+
+			for i := 0; i < len(output[j].ClosureAuthorizer); i++ {
+				if output[j].ClosureAuthorizer[i] != "" {
+					if !helpers.Inslice(output[j].ClosureAuthorizer[i], closures) {
+						closures = append(closures, output[j].ClosureAuthorizer[i])
+					}
+				}
+			}
 		}
 
 		user_data := helpers.GetUserData(users)
-
+		closure_data := helpers.GetUserData(closures)
 		role_data := helpers.GetAuthRoleData(roles)
 
 		for j := 0; j < len(output); j++ {
 			var f models.TicketDefaultRole
 			f.TicketDefaultTypeID = output[j].ID
 			output[j].TicketDefaultRole, _ = role_service.ListTicketDefaultRole(f)
+
+			if len(output[j].ClosureAuthorizer) != 0 {
+				for i := 0; i < len(output[j].ClosureAuthorizer); i++ {
+
+					if output[j].ClosureAuthorizer[i] != "" {
+
+						fmt.Println("here ")
+
+						for k := 0; k < len(closure_data); k++ {
+							fmt.Println("here ", output[j].ClosureAuthorizer[i])
+							fmt.Println("here kjdehc", closure_data[k])
+
+							if output[j].ClosureAuthorizer[i] == closure_data[k].ID.String() {
+
+								var user models.User
+								user.ID = closure_data[k].ID
+								user.Name = closure_data[k].Name
+								user.Email = closure_data[k].Email
+								user.MobileNumber = closure_data[k].MobileNumber
+
+								output[j].ClosureAuthorizerData = append(output[j].ClosureAuthorizerData, user)
+								break
+
+							}
+						}
+					}
+				}
+			}
 
 			for i := 0; i < len(output[j].TicketDefaultRole); i++ {
 
