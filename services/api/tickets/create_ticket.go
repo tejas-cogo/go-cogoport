@@ -67,7 +67,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	ticket.Tat = time.Now()
 	tat := helpers.GetDuration(ticket_default_timing.Tat)
-	ticket.ExpiryDate = ticket.ExpiryDate.Add(time.Hour * time.Duration(tat))
+	ticket.Tat = ticket.ExpiryDate.Add(time.Hour * time.Duration(tat))
 
 	ticket.ExpiryDate = time.Now()
 	Duration := helpers.GetDuration(ticket_default_timing.ExpiryDuration)
