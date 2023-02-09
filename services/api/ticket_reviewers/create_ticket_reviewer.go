@@ -9,7 +9,6 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
-	workers "github.com/tejas-cogo/go-cogoport/workers"
 )
 
 type TicketReviewerService struct {
@@ -80,10 +79,6 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		txt.Rollback()
 		return body, errors.New(err.Error())
 	}
-
-	// if ticket_activity.UserType == "user" {
-	workers.StartClient(ticket_activity.TicketID, "communication")
-	// }
 
 	txt.Commit()
 	return body, err
