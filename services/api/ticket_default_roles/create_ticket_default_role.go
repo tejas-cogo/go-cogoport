@@ -6,7 +6,7 @@ import (
 
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
-	// validations _"github.com/tejas-cogo/go-cogoport/services/validations"
+	validations "github.com/tejas-cogo/go-cogoport/services/validations"
 )
 
 type TicketDefaultRoleService struct {
@@ -34,6 +34,16 @@ func CreateTicketDefaultRole(ticket_default_role models.TicketDefaultRole) (mode
 	}
 
 	ticket_default_role.Status = "active"
+
+	stmt1 := validations.ValidateTicketDefaultRole(ticket_default_role)
+	if stmt1 != "validated" {
+		return ticket_default_role, errors.New(stmt1)
+	}
+
+	stmt2 := validations.ValidateDuplicateDefaultType(ticket_default_role)
+	if stmt2 != "validated" {
+		return ticket_default_role, errors.New(stmt2)
+	}
 	if err := tx.Create(&ticket_default_role).Error; err != nil {
 		tx.Rollback()
 		return ticket_default_role, errors.New(err.Error())

@@ -67,6 +67,9 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 	}
 
 	ticket.Priority = ticket_default_timing.TicketPriority
+	ticket.Category = ticket_default_type.Category
+	ticket.Subcategory = ticket_default_type.Subcategory
+	ticket.TicketDefaultTypeID = ticket_default_type.ID
 
 	ticket.Tat = time.Now()
 	tat := helpers.GetDuration(ticket_default_timing.Tat)
