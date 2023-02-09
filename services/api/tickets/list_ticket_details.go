@@ -55,7 +55,7 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 	var user models.User
 	db.Where("ticket_type = ? and status = ?", ticket.Type, "active").First(&ticket_default_type)
 
-	closure_data := helpers.GetUserData(ticket_default_type.ClosureAuthorizer)
+	closure_data := helpers.GetUserData(ticket_default_type.ClosureAuthorizers)
 
 	for i := 0; i < len(closure_data); i++ {
 		user.ID = closure_data[i].ID
