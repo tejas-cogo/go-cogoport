@@ -87,7 +87,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 		db = config.GetDB()
 
-		db.Model(&models.Ticket{}).Distinct("tickets.id").Joins("inner join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ? ", "active").Where("tickets.status = ? and ticket_default_types.closure_authorizer && '{stats.AgentID}' and tickets.id IN ?", "pending", ticket_id).Count(&stats.Closure)
+		db.Model(&models.Ticket{}).Distinct("tickets.id").Joins("inner join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ? ", "active").Where("tickets.status = ? and ticket_default_types.closure_authorizer && ? and tickets.id IN ?", "pending", "{"+stats.AgentID+"}", ticket_id).Count(&stats.Closure)
 
 		db.Where("id IN ? and status = ?", ticket_id, "unresolved").Model(&models.Ticket{}).Count(&stats.Unresolved)
 
