@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
@@ -11,9 +12,14 @@ import (
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
+// type Headers struct{
+
+// }
+
 func CreateTicketActivity(c *gin.Context) {
 	var body models.Activity
 	err := c.Bind(&body)
+
 	if err != nil {
 		c.JSON(c.Writer.Status(), err.Error())
 		return
@@ -38,6 +44,8 @@ func CreateTicketActivity(c *gin.Context) {
 
 func ListTicketActivity(c *gin.Context) {
 	var filters models.TicketActivity
+
+	fmt.Println("headers", c.Request.Header)
 
 	err := c.Bind(&filters)
 	if err != nil {

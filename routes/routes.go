@@ -12,6 +12,8 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(cors.Default())
 
+	
+
 	ticket_system := r.Group("")
 
 	ticket_system.POST("create_ticket_user", controllers.CreateTicketUser)

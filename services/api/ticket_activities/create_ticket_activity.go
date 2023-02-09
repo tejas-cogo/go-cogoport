@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	_"time"
 
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -9,6 +10,8 @@ import (
 	audits "github.com/tejas-cogo/go-cogoport/services/api/ticket_audits"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
+	_"github.com/tejas-cogo/go-cogoport/tasks"
+	_"github.com/tejas-cogo/go-cogoport/workers"
 	"gorm.io/gorm"
 )
 
@@ -61,7 +64,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendTicketActivity(ticket_activity)
+				// task, err := tasks.ScheduleTicketCommunicationTask(u)
+				// if err != nil {
+				// 	return ticket_activity, errors.New(err.Error())
+				// }
+				// Duration := helpers.GetDuration("00h:00m:10s")
+				// workers.StartClient((time.Duration(Duration) * time.Minute), task)
 			}
 			tx.Commit()
 		}
@@ -103,7 +111,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendTicketActivity(ticket_activity)
+				// task, err := tasks.ScheduleTicketCommunicationTask(u)
+				// if err != nil {
+				// 	return ticket_activity, errors.New(err.Error())
+				// }
+				// Duration := helpers.GetDuration("00h:00m:10s")
+				// workers.StartClient((time.Duration(Duration) * time.Minute), task)
 			}
 			tx.Commit()
 		}
@@ -183,6 +196,14 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 				tx.Rollback()
 				return ticket_activity, errors.New(err.Error())
 			}
+			if ticket_activity.UserType == "user" {
+				// task, err := tasks.ScheduleTicketCommunicationTask(u)
+				// if err != nil {
+				// 	return ticket_activity, errors.New(err.Error())
+				// }
+				// Duration := helpers.GetDuration("00h:00m:10s")
+				// workers.StartClient((time.Duration(Duration) * time.Minute), task)
+			}
 			tx.Commit()
 
 		}
@@ -208,7 +229,12 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			}
 
 			if ticket_activity.UserType == "user" {
-				// SendTicketActivity(ticket_activity)
+				// task, err := tasks.ScheduleTicketCommunicationTask(u)
+				// if err != nil {
+				// 	return ticket_activity, errors.New(err.Error())
+				// }
+				// Duration := helpers.GetDuration("00h:00m:10s")
+				// workers.StartClient((time.Duration(Duration) * time.Minute), task)
 			}
 			tx.Commit()
 		}
@@ -225,6 +251,16 @@ func CreateTicketActivity(body models.Filter) (models.TicketActivity, error) {
 			tx.Rollback()
 			return ticket_activity, errors.New(err.Error())
 		}
+
+		if ticket_activity.UserType == "user" {
+			// task, err := tasks.ScheduleTicketCommunicationTask(u)
+			// if err != nil {
+			// 	return ticket_activity, errors.New(err.Error())
+			// }
+			// Duration := helpers.GetDuration("00h:00m:10s")
+			// workers.StartClient((time.Duration(Duration) * time.Minute), task)
+		}
+
 		tx.Commit()
 	}
 
