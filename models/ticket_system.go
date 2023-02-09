@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"gorm.io/gorm"
 )
@@ -20,33 +21,36 @@ type PartnerUser struct {
 	ID        uuid.UUID
 	PartnerID uuid.UUID
 	UserID    uuid.UUID
+	ManagerID uuid.UUID
+	RoleIDs   pq.StringArray `gorm:"type:text[]"`
 	Status    string
+}
+type User struct {
+	ID           uuid.UUID
+	Name         string
+	Email        string
+	MobileNumber string
+}
+type UserData struct {
+	ID           uuid.UUID
+	Name         string `json:"name"`
+	Email        string `json:"email"`
+	MobileNumber string `json:"mobile_number"`
 }
 
 type Filter struct {
-	gorm.Model
 	Ticket              Ticket
 	TicketUser          TicketUser
-	Group               Group
-	GroupMember         GroupMember
-	Role                Role
 	TicketActivity      TicketActivity
 	Activity            Activity
 	TicketAudit         TicketAudit
-	TicketDefaultGroup  TicketDefaultGroup
+	TicketDefaultRole   TicketDefaultRole
 	TicketDefaultTiming TicketDefaultTiming
 	TicketDefaultType   TicketDefaultType
 	TicketReviewer      TicketReviewer
 	TicketSpectator     TicketSpectator
 	TicketTask          TicketTask
 	TicketToken         TicketToken
-	TicketUserFilter    TicketUserFilter
-	FilterGroupMember   FilterGroupMember
-}
-
-type Sort struct {
-	SortBy   string
-	SortType string
 }
 
 //Model is sample of common table structure
@@ -54,6 +58,7 @@ type Sort struct {
 func Init() {
 
 	db := config.GetDB()
+
 	//Printing query
 	// db.LogMode(true)
 
@@ -61,13 +66,13 @@ func Init() {
 
 	// db.Migrator().DropTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	// db.Migrator().CreateTable(&TicketToken{})
+	// db.Migrator().CreateTable(&TicketDefaultRole{})
 
 	// db.Migrator().CreateTable(&Group{},&Role{},&TicketUser{},&GroupMember{},&TicketDefaultGroup{},&TicketDefaultTiming{},&TicketDefaultType{},&Ticket{},&TicketActivity{},&TicketReviewer{},&TicketSpectator{},&TicketTask{},&TicketTaskAssignee{},&TicketAudit{})
 
-	db.Migrator().AutoMigrate(&Ticket{})
+	db.Migrator().AutoMigrate(&TicketDefaultType{})
 
-	// db.Migrator().AutoMigrate(&Group{}, &Role{}, &TicketUser{}, &TicketDefaultGroup{}, &GroupMember{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{})
+	// db.Migrator().AutoMigrate(&TicketDefaultRole{}, &TicketDefaultTiming{}, &TicketDefaultType{}, &Ticket{}, &TicketActivity{}, &TicketReviewer{}, &TicketSpectator{}, &TicketTask{}, &TicketTaskAssignee{}, &TicketAudit{}, &TicketTask{}, &TicketTaskAssignee{})
 }
 
 // GetDB function return the instance of db

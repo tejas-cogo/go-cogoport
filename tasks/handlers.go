@@ -7,28 +7,57 @@ import (
 	"log"
 
 	"github.com/hibiken/asynq"
+	"github.com/tejas-cogo/go-cogoport/models"
+	worker "github.com/tejas-cogo/go-cogoport/services/api/workers"
+	// helpers _"github.com/tejas-cogo/go-cogoport/services/helpers"
 )
 
-type EmailDeliveryPayload struct {
-	user_id int
-}
-
-func HandleWelcomeEmailTask(c context.Context, t *asynq.Task) error {
-	var p EmailDeliveryPayload
-	if err := json.Unmarshal(t.Payload(), &p); err != nil {
-		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
-	}
-	log.Printf("Sending Email to User: user_id=%d", p.user_id)
-	return nil
+type TicketWorkerService struct {
+	p models.TicketPayload
 }
 
 // HandleReminderEmailTask for reminder email task.
-func HandleReminderEmailTask(c context.Context, t *asynq.Task) error {
-    // Get int with the user ID from the given task.
-	var p EmailDeliveryPayload
+func HandleTicketEscalationTask(c context.Context, t *asynq.Task) error {
+	// Get int with the user ID from the given task.
+
+	var p models.TicketPayload
+
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
-        return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
-    }
-    log.Printf("Sending Email to User: user_id=%d", p.user_id)
+		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
+	}
+
+	worker.TicketEscalation(p)
+
+	log.Printf("Ticket Escalated=%d", p.TicketID)
+	return nil
+}
+
+func HandleTicketExpirationTask(c context.Context, t *asynq.Task) error {
+	// Get int with the user ID from the given task.
+
+	var p models.TicketPayload
+
+	if err := json.Unmarshal(t.Payload(), &p); err != nil {
+		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
+	}
+
+	worker.TicketExpiration(p)
+
+	log.Printf("Ticket Expired=%d", p.TicketID)
+	return nil
+}
+
+func HandleTicketCommunicationTask(c context.Context, t *asynq.Task) error {
+	// Get int with the user ID from the given task.
+
+	var p models.TicketPayload
+
+	if err := json.Unmarshal(t.Payload(), &p); err != nil {
+		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
+	}
+
+	// helpers.SendCommunication(p)
+
+	log.Printf("Ticket Communication=%d", p.TicketID)
 	return nil
 }

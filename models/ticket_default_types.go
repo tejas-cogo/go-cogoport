@@ -9,34 +9,30 @@ import (
 
 type TicketDefaultType struct {
 	gorm.Model
-	PerformedByID     uuid.UUID       `gorm:"type:uuid"`
-	TicketType        string          `gorm:"not null:unique"`
+	PerformedByID     uuid.UUID       `gorm:"type:uuid" json:"performedByID"`
+	TicketType        string          `gorm:"not null;unique"`
 	AdditionalOptions gormjsonb.JSONB `gorm:"type:json"`
-	Status            string          `gorm:"not null:default:'active'"`
+	ClosureAuthorizer pq.StringArray  `gorm:"type:text[]"`
+	Status            string          `gorm:"not null;default:'active'"`
 }
 
 type TicketDefault struct {
-	ID                       uint
-	TicketType               string
-	AdditionalOptions        gormjsonb.JSONB `gorm:"type:json"`
-	TypeStatus               string
-	TicketDefaultTimingID    uint
-	TicketPriority           string
-	ExpiryDuration           string
-	Tat                      string
-	Conditions               pq.StringArray `gorm:"type:text[]"`
-	TimingStatus             string
-	TicketDefaultGroupID     uint
-	GroupID                  uint
-	GroupName                string
-	GroupMemberName          string
-	GroupMemberEmail          string
-	GroupMemberID            uint
-	Tags                     pq.StringArray `gorm:"type:text[]"`
-	MemberCount              int
-	TicketDefaultGroupStatus string
+	ID                    uint
+	TicketType            string
+	TypeStatus            string
+	TicketDefaultTimingID uint
+	TimingStatus          string
+	ClosureAuthorizer     pq.StringArray `gorm:"type:text[]"`
+	ClosureAuthorizerData []User         `gorm:"type:json"`
+	ExpiryDuration        string
+	Tat                   string
+	Conditions            pq.StringArray `gorm:"type:text[]"`
+	TicketPriority        string
+	AdditionalOptions     gormjsonb.JSONB         `gorm:"type:json"`
+	TicketDefaultRole     []TicketTypeDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
 }
 
 type TicketDefaultFilter struct {
+	TicketType string
 	QFilter    string
 }

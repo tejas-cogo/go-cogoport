@@ -11,52 +11,77 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint `gorm:"not null"`
-	PerformedByID           uuid.UUID
-	TicketUser              TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Source                  string     `gorm:"not null"`
-	Type                    string     `gorm:"not null"`
-	Category                string     `gorm:"not null"`
+	TicketUserID            uint
+	UserID                  uuid.UUID `gorm:"type:uuid"`
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
+	Category                string
 	Subcategory             string
 	Description             string
-	Priority                string          `gorm:"not null:default:'low'"`
+	Priority                string          `gorm:"not null;default:'low'"`
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
-	Tat                     string          `gorm:"not null"`
+	Tat                     time.Time       `gorm:"not null"`
 	ExpiryDate              time.Time       `gorm:"not null"`
 	IsUrgent                bool
-	Status                  string `gorm:"not null:default:'active'"`
+	Status                  string `gorm:"not null;default:'active'"`
+}
+
+type TicketData struct {
+	ID                      uint
+	TicketUserID            uint
+	UserID                  uuid.UUID `gorm:"type:uuid"`
+	User                    User
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
+	Category                string
+	Subcategory             string
+	Description             string
+	Priority                string          `gorm:"not null;default:'low'"`
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Tat                     time.Time       `gorm:"not null"`
+	ExpiryDate              time.Time       `gorm:"not null"`
+	IsUrgent                bool
+	Status                  string `gorm:"not null;default:'active'"`
 }
 
 type TicketDetail struct {
 	TicketReviewerID  uint
-	TicketReviewer    TicketReviewer
+	TicketReviewer    TicketReviewerData
 	TicketSpectatorID uint
 	TicketSpectator   TicketSpectator
-	TicketActivityID  uint
-	TicketActivity    []TicketActivity
 	TicketID          uint
 	Ticket            Ticket
-	Priority          string
+	TicketUser        TicketUser
 }
 
 type TicketStat struct {
-	AgentID      string
-	AgentRmID    string
-	TicketUsers  []uint
-	Overdue      int64
-	DueToday     int64
-	Open         int64
-	Escalated    int64
-	Rejected     int64
-	Closed       int64
-	Reassigned   int64
-	Unresolved   int64
-	ExpiringSoon int64
-	HighPriority int64
-	StartDate    string
-	EndDate      string
+	AgentID         string
+	AgentRmID       string
+	TicketUsers     []uint
+	Overdue         int64
+	DueToday        int64
+	Open            int64
+	Escalated       int64
+	Rejected        int64
+	Closed          int64
+	Reassigned      int64
+	Unresolved      int64
+	ExpiringSoon    int64
+	HighPriority    int64
+	StartDate       string
+	EndDate         string
+	UserID          string
+	QFilter         string
+	ExpiryDate      string
+	TicketCreatedAt string
+	Tags            pq.StringArray `gorm:"type:text[]"`
+	Category        string
 }
 
 type TicketGraph struct {
@@ -72,7 +97,7 @@ type TicketGraph struct {
 	Sum         int64
 }
 
-type TicketEscalatedPayload struct {
+type TicketPayload struct {
 	TicketID uint
 }
 
@@ -102,7 +127,7 @@ type TicketExtraFilter struct {
 	MyTicket                string
 	AgentID                 string
 	AgentRmID               string
-	TicketUser              TicketUser
+	UserID                  string
 	Source                  string
 	Type                    string
 	Category                string
@@ -115,7 +140,7 @@ type TicketExtraFilter struct {
 	Tat                     string
 	Status                  string
 	TicketCreatedAt         string
-	IsExpiringSoon          string
+	ExpiringSoon            string
 	ExpiryDate              string
 	ID                      uint
 }
