@@ -20,26 +20,32 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	if filters.MyTicket != "" {
 		db.Where("user_id = ?", filters.MyTicket).Distinct("id").Order("id").Find(&ticket).Pluck("id", &ticket_id)
-		db = db.Where("id IN ?", ticket_id)
 
 	} else {
 		if filters.AgentRmID != "" {
 
-			db.Where("manager_rm_ids && '(?)' or user_id = ?", filters.AgentRmID, filters.AgentRmID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
-			db = db.Where("id IN ?", ticket_id)
+			db.Where("manager_rm_ids && '(?)' or user_id = ? and status = ?", filters.AgentRmID, filters.AgentRmID, "active").Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
 		} else if filters.AgentID != "" {
 
-			db.Where("user_id = ?", filters.AgentID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
-			db = db.Where("id IN ?", ticket_id)
+			db.Where("user_id =  ? and status = ?", filters.AgentID, "active").Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
 		} else {
 
 			db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
-			db = db.Where("id IN ?", ticket_id)
 		}
+
 	}
+
+	if filters.Closure == true {
+		db2 := config.GetDB()
+		db2.Model(&models.Ticket{}).Distinct("tickets.id").Joins("left join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ?",
+			"active").Where("tickets.status = ? and ticket_default_types.closure_authorizer &&  ?  and tickets.id IN ?", "pending", "{"+filters.AgentID+"}", ticket_id).Pluck("tickets.id", &ticket_id)
+
+	}
+
+	db = db.Where("id IN ?", ticket_id)
 
 	if filters.ID > 0 {
 		db = db.Where("id = ?", filters.ID)
@@ -92,6 +98,11 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	if filters.Status != "" {
 		db = db.Where("status = ?", filters.Status)
+	} else if filters.Statuses != "" {
+
+		data := strings.Split(filters.Statuses, ",")
+
+		db = db.Where("status IN (?)", data)
 	}
 
 	db = db.Order("created_at desc").Order("expiry_date desc").Find(&ticket)

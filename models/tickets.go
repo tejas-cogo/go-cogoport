@@ -142,8 +142,10 @@ type TicketExtraFilter struct {
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Tat                     string
 	Status                  string
+	Statuses                string
 	TicketCreatedAt         string
 	ExpiringSoon            string
 	ExpiryDate              string
 	ID                      uint
+	Closure                 bool
 }
