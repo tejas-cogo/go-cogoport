@@ -38,7 +38,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
 			// }
 
-			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
+			if err = tx.Where("id = ? ", u).Where("status = ? or status = ?", "unresolved", "pending").First(&ticket).Error; err != nil {
 				tx.Rollback()
 				return "", errors.New(err.Error())
 			}
@@ -152,7 +152,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 				filters.Activity.TicketID = append(filters.Activity.TicketID, u)
 				filters.TicketActivity.UserID = ticket_activity.UserID
 				filters.TicketActivity.Type = "mark_as_resolved"
-				filters.TicketActivity.UserType = ticket_activity.UserType
+				filters.TicketActivity.UserType = "user"
 				filters.TicketActivity.Description = ticket_activity.Description
 				filters.TicketActivity.Data = ticket_activity.Data
 				filters.TicketActivity.Status = "resolved"
@@ -407,7 +407,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			// workers.StartClient((time.Duration(Duration) * time.Minute), task)
 		}
 		tx.Commit()
-		return "Ticket !", err
+		return "Activity is send !", err
 	}
 
 }
