@@ -39,7 +39,7 @@ func ListTicket(c *gin.Context) {
 			users = append(users, output[j].UserID.String())
 		}
 
-		user_data := helpers.GetUserData(users)
+		user_data := helpers.GetUnifiedUserData(users)
 
 		for j := 0; j < len(output); j++ {
 			for i := 0; i < len(user_data); i++ {

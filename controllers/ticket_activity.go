@@ -81,7 +81,7 @@ func ListTicketActivity(c *gin.Context) {
 			}
 		}
 
-		user_data := helpers.GetUserData(users)
+		user_data := helpers.GetUnifiedUserData(users)
 
 		for j := 0; j < len(output); j++ {
 			if output[j].UserType != "ticket_user" {

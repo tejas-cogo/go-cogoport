@@ -281,6 +281,8 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			ticket.Status = "escalated"
 			audits.CreateAuditTicket(ticket, tx)
 
+			
+
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
 				return "", errors.New(stmt)

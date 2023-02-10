@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -46,4 +48,25 @@ func GetAuthRoleData(RoleIDs pq.StringArray) []models.AuthRoleData {
 		auth_users = append(auth_users, user_details)
 	}
 	return auth_users
+}
+
+func GetUnifiedAuthRoleData(RoleIDs pq.StringArray) []models.AuthRoleData {
+
+	db2 := config.GetCDB()
+
+	var auth_role_data []models.AuthRoleData
+
+	var auth_role_ids []uuid.UUID
+
+	for _, u := range RoleIDs {
+		data, err := uuid.Parse(u)
+		if err != nil {
+			log.Println(err)
+		}
+		auth_role_ids = append(auth_role_ids, data)
+	}
+
+	db2.Model(&models.AuthRole{}).Where("id in (?) and status = ?", auth_role_ids, "active").Scan(&auth_role_data)
+
+	return auth_role_data
 }

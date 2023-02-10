@@ -52,7 +52,7 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 
 	var users []string
 	users = append(users, ticket_detail.TicketReviewer.UserID.String())
-	user_data := helpers.GetUserData(users)
+	user_data := helpers.GetUnifiedUserData(users)
 	ticket_detail.TicketReviewer.User.ID = user_data[0].ID
 	ticket_detail.TicketReviewer.User.Name = user_data[0].Name
 	ticket_detail.TicketReviewer.User.Email = user_data[0].Email
@@ -60,7 +60,7 @@ func ListTokenTicketDetail(token_filter models.TokenFilter) (models.TicketDetail
 
 	var roles []string
 	roles = append(users, ticket_detail.TicketReviewer.RoleID.String())
-	role_data := helpers.GetAuthRoleData(roles)
+	role_data := helpers.GetUnifiedAuthRoleData(roles)
 	ticket_detail.TicketReviewer.Role.ID = role_data[0].ID
 	ticket_detail.TicketReviewer.Role.Name = role_data[0].Name
 

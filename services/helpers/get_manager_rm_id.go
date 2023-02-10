@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -29,6 +30,17 @@ func GetManagerRmId(UserID uuid.UUID) []string {
 	for _, user_details := range partner_users_rm_mapping.List {
 		user_id_array = append(user_id_array, user_details.ReportingManagerID)
 	}
+
+	return user_id_array
+}
+
+func GetUnifiedManagerRmId(UserID uuid.UUID) []string {
+
+	db2 := config.GetCDB()
+
+	var user_id_array []string
+
+	db2.Model(&models.PartnerUserRmMapping{}).Where("user_id in (?) and status = ?", UserID, "active").Distinct("reporting_manager_id").Pluck("reporting_manager_id",&user_id_array)
 
 	return user_id_array
 }

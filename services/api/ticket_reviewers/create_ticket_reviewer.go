@@ -46,7 +46,7 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	if ticket_reviewer.UserID == uuid.Nil {
 		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
 	}
-	ticket_reviewer.ReviewerManagerIDs = helpers.GetManagerRmId(ticket_reviewer.UserID)
+	ticket_reviewer.ReviewerManagerIDs = helpers.GetUnifiedManagerRmId(ticket_reviewer.UserID)
 	ticket_reviewer.Status = "active"
 	ticket_reviewer.Level = ticket_default_role.Level
 

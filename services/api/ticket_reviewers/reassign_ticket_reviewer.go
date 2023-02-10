@@ -60,7 +60,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 			ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
 		}
 
-		ticket_reviewer.ReviewerManagerIDs = helpers.GetManagerRmId(ticket_reviewer.UserID)
+		ticket_reviewer.ReviewerManagerIDs = helpers.GetUnifiedManagerRmId(ticket_reviewer.UserID)
 
 		stmt := validations.ValidateTicketReviewer(ticket_reviewer)
 		if stmt != "validated" {

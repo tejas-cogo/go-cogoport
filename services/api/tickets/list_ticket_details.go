@@ -39,7 +39,7 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 
 	var users []string
 	users = append(users, ticket_detail.TicketReviewer.UserID.String())
-	user_data := helpers.GetUserData(users)
+	user_data := helpers.GetUnifiedUserData(users)
 	ticket_detail.TicketReviewer.User.ID = user_data[0].ID
 	ticket_detail.TicketReviewer.User.Name = user_data[0].Name
 	ticket_detail.TicketReviewer.User.Email = user_data[0].Email
@@ -47,7 +47,7 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 
 	var roles []string
 	roles = append(users, ticket_detail.TicketReviewer.RoleID.String())
-	role_data := helpers.GetAuthRoleData(roles)
+	role_data := helpers.GetUnifiedAuthRoleData(roles)
 	ticket_detail.TicketReviewer.Role.ID = role_data[0].ID
 	ticket_detail.TicketReviewer.Role.Name = role_data[0].Name
 
@@ -55,7 +55,7 @@ func ListTicketDetail(filters models.TicketExtraFilter) (models.TicketDetail, er
 	var user models.User
 	db.Where("ticket_type = ? and status = ?", ticket.Type, "active").First(&ticket_default_type)
 
-	closure_data := helpers.GetUserData(ticket_default_type.ClosureAuthorizer)
+	closure_data := helpers.GetUnifiedUserData(ticket_default_type.ClosureAuthorizer)
 
 	for i := 0; i < len(closure_data); i++ {
 		user.ID = closure_data[i].ID

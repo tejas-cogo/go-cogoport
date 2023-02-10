@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -46,4 +48,25 @@ func GetUserData(IDs pq.StringArray) []models.UserData {
 		users = append(users, user_details)
 	}
 	return users
+}
+
+func GetUnifiedUserData(IDs pq.StringArray) []models.UserData {
+
+	db2 := config.GetCDB()
+
+	var user_data []models.UserData
+
+	var user_ids []uuid.UUID
+
+	for _, u := range IDs {
+		data, err := uuid.Parse(u)
+		if err != nil {
+			log.Println(err)
+		}
+		user_ids = append(user_ids, data)
+	}
+
+	db2.Model(&models.User{}).Where("id in (?)", user_ids).Find(&user_data)
+
+	return user_data
 }

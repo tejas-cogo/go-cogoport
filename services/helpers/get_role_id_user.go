@@ -75,3 +75,48 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	return user_id
 }
+
+func GetUnifiedRoleIdUser(RoleID uuid.UUID) uuid.UUID {
+
+	db2 := config.GetCDB()
+	db := config.GetDB()
+
+	type Result struct {
+		UserID string `json:"user_id"`
+		Count  int
+	}
+
+	var user_id_array []string
+	var ticket_reviewer models.TicketReviewer
+	var err error
+	var result []Result
+
+	db2.Model(&models.PartnerUser{}).Where("? IN role_ids and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &user_id_array)
+
+	max := 0
+	var users []string
+	var user_id uuid.UUID
+
+	db.Model(&ticket_reviewer).Where("role_id = ? and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &users)
+
+	if len(users) < len(user_id_array) {
+		for _, value := range user_id_array {
+			if !Inslice(value, users) {
+				user_id, err = uuid.Parse(user_id_array[0])
+				if err != nil {
+					log.Print(err)
+				}
+			}
+		}
+	} else {
+		db.Model(&ticket_reviewer).Where("user_id IN (?) and status = ?", user_id_array, "active").Select("Count(Distinct(ticket_id)) as count,user_id as user_id").Group("user_id").Order("count desc").Scan(&result)
+		for _, value := range result {
+			if value.Count >= max {
+				max = value.Count
+				user_id, err = uuid.Parse(value.UserID)
+			}
+		}
+	}
+
+	return user_id
+}
