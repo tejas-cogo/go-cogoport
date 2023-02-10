@@ -70,17 +70,20 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 			tx.Rollback()
 			return body, errors.New(err.Error())
 		}
-
+		
 	}
-
+	
 	var filters models.Filter
-
+	
+	filters.TicketReviewer.UserID = body.ReviewerUserID
 	filters.TicketActivity.TicketID = body.TicketID
 	filters.TicketActivity.UserID = body.PerformedByID
 	filters.TicketActivity.UserType = "user"
 	filters.TicketActivity.Type = "reviewer_reassigned"
 	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Status = "reassigned"
+
+	filters.TicketActivity.Data = activities.GetReviewerUserID(filters)
 	activities.CreateTicketActivity(filters)
 
 	tx.Commit()

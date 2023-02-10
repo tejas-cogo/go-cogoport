@@ -37,7 +37,7 @@ type TokenActivity struct {
 	TicketToken string
 	Description string
 	UserType    string
-	Data        DataJson
+	Data         gormjsonb.JSONB `gorm:"type:json"`
 	Type        string
 	Status      string
 }
