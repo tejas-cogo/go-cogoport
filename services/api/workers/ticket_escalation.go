@@ -32,7 +32,7 @@ func TicketEscalation(p models.TicketPayload) error {
 		return err
 	}
 
-	if ticket.Status == "unresolved" || ticket.Status == "pending"{
+	if ticket.Status == "unresolved" || ticket.Status == "pending" {
 
 		if err := tx.Where("ticket_type = ?", ticket.Type).First(&ticket_default_type).Error; err != nil {
 			tx.Rollback()

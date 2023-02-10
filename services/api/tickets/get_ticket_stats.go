@@ -101,11 +101,13 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "overdue").Count(&stats.Overdue)
 
+		db.Model(&models.Ticket{}).Select("tickets.id").Joins("inner join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ? ", "active").Where("tickets.status = ?  and tickets.id IN ?", "pending", ticket_id).Not("ticket_default_types.closure_authorizer &&  ?", "{"+stats.NotClosureID+"}").Count(&stats.Requests)
+
 		db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "reassigned").Count(&stats.Reassigned)
 
 		db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status != ? and status != ?", "closed", "rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
+		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Not("status = (?)", "closed"+","+"rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
 	}
 
 	db.Commit()

@@ -38,10 +38,17 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 	}
 
-	if filters.Closure == true {
-		db2 := config.GetDB()
-		db2.Model(&models.Ticket{}).Distinct("tickets.id").Joins("inner join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ?",
-			"active").Where("tickets.status = ? and ticket_default_types.closure_authorizer &&  ?  and tickets.id IN ?", "pending", "{"+filters.ClosureID+"}", ticket_id).Pluck("tickets.id", &ticket_id)
+	if filters.Status == "pending" {
+		if filters.ClosureID != "" {
+			db2 := config.GetDB()
+			db2.Model(&models.Ticket{}).Distinct("tickets.id").Joins("inner join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ?",
+				"active").Where("tickets.status = ? and ticket_default_types.closure_authorizer &&  ?  and tickets.id IN ?", "pending", "{"+filters.ClosureID+"}", ticket_id).Pluck("tickets.id", &ticket_id)
+
+		} else {
+			db2 := config.GetDB()
+			db2.Model(&models.Ticket{}).Distinct("tickets.id").Joins("inner join ticket_default_types on ticket_default_types.id = tickets.ticket_default_type_id and ticket_default_types.status = ?",
+				"active").Where("tickets.status = ? and tickets.id IN ?", "pending", ticket_id).Not("ticket_default_types.closure_authorizer &&  ?", "{"+filters.NotClosureID+"}").Pluck("tickets.id", &ticket_id)
+		}
 
 	}
 

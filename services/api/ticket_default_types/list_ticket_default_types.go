@@ -22,5 +22,7 @@ func ListTicketDefaultType(filters models.TicketDefaultFilter) ([]models.TicketD
 
 	}
 
+	db.Order("ticket_default_types.created_at desc")
+
 	return ticket_default, db
 }
