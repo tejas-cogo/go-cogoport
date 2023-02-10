@@ -86,6 +86,8 @@ type TicketStat struct {
 	Category        string
 	Closure         int64
 	ClosureID       string
+	NotClosureID    string
+	Requests        int64
 }
 
 type TicketGraph struct {
@@ -148,6 +150,7 @@ type TicketExtraFilter struct {
 	ExpiringSoon            string
 	ExpiryDate              string
 	ID                      uint
-	Closure                 bool
-	ClosureID               string
+
+	ClosureID    string
+	NotClosureID string
 }

@@ -281,8 +281,6 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			ticket.Status = "escalated"
 			audits.CreateAuditTicket(ticket, tx)
 
-			
-
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
 				return "", errors.New(stmt)
@@ -337,6 +335,54 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 		}
 		tx.Commit()
 		return "Ticket has been activity!", err
+	} else if body.TicketActivity.Status == "unresolved" && body.TicketActivity.Type == "resolution_rejected" {
+		tx := db.Begin()
+		for _, u := range body.Activity.TicketID {
+
+			ticket_activity := body.TicketActivity
+
+			var ticket models.Ticket
+			ticket_activity.TicketID = u
+
+			// validate := validations.ValidateActivityPermission(ticket_activity)
+			// if validate == false {
+			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
+			// }
+
+			if err = tx.Where("id = ? and status = ?", u, "pending").First(&ticket).Error; err != nil {
+				tx.Rollback()
+				return "", errors.New(err.Error())
+			}
+
+			ticket.Status = "unresolved"
+
+			if err = tx.Save(&ticket).Error; err != nil {
+				tx.Rollback()
+				return "", errors.New(err.Error())
+			}
+
+			audits.CreateAuditTicket(ticket, tx)
+			stmt := validations.ValidateTicketActivity(ticket_activity)
+			if stmt != "validated" {
+				return "", errors.New(stmt)
+			}
+			if err = tx.Create(&ticket_activity).Error; err != nil {
+				tx.Rollback()
+				return "", errors.New(err.Error())
+			}
+
+			if ticket_activity.UserType == "user" {
+				// task, err := tasks.ScheduleTicketCommunicationTask(u)
+				// if err != nil {
+				// 	return ticket_activity, errors.New(err.Error())
+				// }
+				// Duration := helpers.GetDuration("00h:00m:10s")
+				// workers.StartClient((time.Duration(Duration) * time.Minute), task)
+			}
+
+		}
+		tx.Commit()
+		return "Pull Requested has been completed!", err
 	} else {
 		tx := db.Begin()
 		var ticket models.Ticket
