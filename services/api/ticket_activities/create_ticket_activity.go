@@ -253,17 +253,18 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			}
 
 			if err = tx.Where("ticket_default_type_id = ? and status = ? and level < ?", ticket_default_type.ID, "active", old_ticket_reviewer.Level).Order("level desc").First(&ticket_default_role).Error; err != nil {
-				if ticket_reviewer.UserID != uuid.Nil {
-					ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
-				} else {
+				if err = tx.Where("ticket_default_type_id = ? and status = ?", 1, "active").Order("level desc").First(&ticket_default_role).Error; err != nil {
 					tx.Rollback()
 					return "", errors.New("cannot escalate further")
 				}
 			}
 
-			if ticket_reviewer.UserID == uuid.Nil {
+			if ticket_default_role.UserID == uuid.Nil {
 				ticket_reviewer.RoleID = ticket_default_role.RoleID
 				ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
+			} else {
+				ticket_reviewer.RoleID = ticket_default_role.RoleID
+				ticket_reviewer.UserID = ticket_default_role.UserID
 			}
 
 			ticket_reviewer.TicketID = u
