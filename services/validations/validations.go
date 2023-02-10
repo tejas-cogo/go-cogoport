@@ -157,8 +157,12 @@ func ValidateTicketActivity(ticket_activity models.TicketActivity) string {
 
 	if ticket_activity.Status != "assigned" {
 		db.Where("id = ?", ticket_activity.TicketID).First(&ticket)
-		if ticket.Status != "unresolved" {
+		if ticket.Status != "unresolved" && ticket.Status != "pending" {
 			return ("Ticket is not open for activities anymore!")
+		} else if ticket.Status == "pending" {
+			if ticket_activity.Status != "aactivity" {
+				return ("These activity cannot be operated!")
+			}
 		}
 	}
 
