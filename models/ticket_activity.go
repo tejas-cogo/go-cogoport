@@ -41,7 +41,6 @@ type Activity struct {
 	UserID        uuid.UUID `gorm:"type:uuid"`
 	UserType      string
 	Description   string
-	DataID        uint
 	Data          gormjsonb.JSONB `gorm:"type:json"`
 	Type          string
 	Status        string
