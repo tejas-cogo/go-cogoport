@@ -1,0 +1,27 @@
+package models
+
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+type TicketDefaultRole struct {
+	gorm.Model
+	PerformedByID       uuid.UUID `gorm:"type:uuid"`
+	TicketDefaultTypeID uint      `gorm:"not null"`
+	RoleID              uuid.UUID `gorm:"type:uuid ; not null"`
+	UserID              uuid.UUID `gorm:"type:uuid"`
+	Level               int       `gorm:"not null;default:3"`
+	Status              string    `gorm:"not null;default:'active'"`
+}
+
+type TicketTypeDefaultRole struct {
+	PerformedByID       uuid.UUID `gorm:"type:uuid"`
+	TicketDefaultTypeID uint      `gorm:"not null"`
+	RoleID              uuid.UUID `gorm:"type:uuid ; not null"`
+	UserID              uuid.UUID `gorm:"type:uuid"`
+	Level               int       `gorm:"not null;default:3"`
+	Status              string    `gorm:"not null;default:'active'"`
+	User                User
+	Role                AuthRole
+}

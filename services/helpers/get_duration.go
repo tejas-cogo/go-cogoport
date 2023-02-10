@@ -22,3 +22,12 @@ func GetDuration(ExpiryDuration string) int {
 	return h
 
 }
+
+func Inslice(n string, h []string) bool {
+	for _, v := range h {
+		if v == n {
+			return true
+		}
+	}
+	return false
+}

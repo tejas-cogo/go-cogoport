@@ -10,16 +10,16 @@ import (
 
 type TicketToken struct {
 	gorm.Model
-	TicketToken  string     `gorm:"not null:unique"`
-	TicketID     uint       `gorm:"default:null"`
-	TicketUserID uint       `gorm:"not null"`
-	ExpiryDate   time.Time  `gorm:"not null"`
-	Status       string     `gorm:"not null:default:'active'"`
-	TicketUser   TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	TicketToken  string `gorm:"not null;unique"`
+	TicketID     uint
+	TicketUserID uint      `gorm:"not null"`
+	ExpiryDate   time.Time `gorm:"not null"`
+	Status       string    `gorm:"not null; default:'active'"`
 }
 
 type TokenFilter struct {
 	TicketToken             string
+	TicketType              string
 	Source                  string
 	Type                    string
 	Category                string
@@ -29,11 +29,14 @@ type TokenFilter struct {
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Status                  string
+	UserType                string
 }
 
 type TokenActivity struct {
 	TicketToken string
 	Description string
+	UserType    string
 	Data        gormjsonb.JSONB `gorm:"type:json"`
 	Type        string
 	Status      string

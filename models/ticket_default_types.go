@@ -9,62 +9,33 @@ import (
 
 type TicketDefaultType struct {
 	gorm.Model
-	PerformedByID     uuid.UUID       `gorm:"type:uuid"`
-	TicketType        string          `gorm:"not null:unique"`
-	AdditionalOptions gormjsonb.JSONB `gorm:"type:json"`
-	Status            string          `gorm:"not null:default:'active'"`
+	PerformedByID     uuid.UUID      `gorm:"type:uuid" json:"performedByID"`
+	TicketType        string         `gorm:"not null;unique"`
+	ClosureAuthorizer pq.StringArray `gorm:"type:text[]"`
+	Status            string         `gorm:"not null;default:'active'"`
+	Category          string
+	Subcategory       string
 }
 
 type TicketDefault struct {
-	ID                            uint
-	TicketType                    string
-	TypeStatus                    string
-	TicketDefaultTimingID         uint
-	TimingStatus                  string
-	ExpiryDuration                string
-	Tat                           string
-	Conditions                    pq.StringArray `gorm:"type:text[]"`
-	TicketPriority                string
-	AdditionalOptions             gormjsonb.JSONB `gorm:"type:json"`
-	TicketDefaultGroupTypeQueryID uint
-	TicketDefaultGroupTypeQuery   []TicketDefaultGroupTypeQuery `gorm:"foreignKey:TicketDefaultTypeID"`
+	ID                    uint
+	TicketType            string
+	TypeStatus            string
+	TicketDefaultTimingID uint
+	TimingStatus          string
+	ClosureAuthorizer     pq.StringArray `gorm:"type:text[]"`
+	ClosureAuthorizerData []User         `gorm:"type:json"`
+	ExpiryDuration        string
+	Tat                   string
+	Conditions            pq.StringArray `gorm:"type:text[]"`
+	TicketPriority        string
+	AdditionalOptions     gormjsonb.JSONB         `gorm:"type:json"`
+	TicketDefaultRole     []TicketTypeDefaultRole `gorm:"foreignKey:TicketDefaultTypeID"`
+	Category              string
+	Subcategory           string
 }
 
 type TicketDefaultFilter struct {
 	TicketType string
 	QFilter    string
-}
-
-type TicketDefaultGroupTypeQuery struct {
-	ID                        uint
-	TicketDefaultTypeID       uint
-	TicketDefaultGroupQueryID uint
-	TicketDefaultGroupQuery   []TicketDefaultGroupQuery `gorm:"foreignKey:TicketDefaultGroupID"`
-}
-
-type TicketDefaultGroupQuery struct {
-	ID                   uint
-	TicketDefaultGroupID uint
-	GroupLevel           uint
-	Status               string
-	TicketDefaultTypeID  uint
-	GroupQueryID         uint
-	GroupQuery           []GroupQuery `gorm:"foreignKey:GroupID"`
-	GroupQueryMemberID   uint
-	GroupMemberQuery     []GroupMemberQuery `gorm:"foreignKey:GroupMemberID"`
-}
-
-type GroupQuery struct {
-	ID        uint
-	GroupID   uint
-	GroupName string
-	Count     uint
-}
-
-type GroupMemberQuery struct {
-	ID               uint
-	GroupMemberID    uint
-	TicketUserID     uint
-	GroupMemberEmail string
-	GroupMemberName  string
 }

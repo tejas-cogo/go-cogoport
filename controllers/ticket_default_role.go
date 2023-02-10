@@ -3,18 +3,17 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	models "github.com/tejas-cogo/go-cogoport/models"
-	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_timings"
+	service "github.com/tejas-cogo/go-cogoport/services/api/ticket_default_roles"
 )
 
-func CreateTicketDefaultTiming(c *gin.Context) {
-	var ticket_default_timing models.TicketDefaultTiming
-	err := c.Bind(&ticket_default_timing)
+func CreateTicketDefaultRole(c *gin.Context) {
+	var ticket_default_role models.TicketDefaultRole
+	err := c.Bind(&ticket_default_role)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
-
-	ser, err := service.CreateTicketDefaultTiming(ticket_default_timing)
+	ser, err := service.CreateTicketDefaultRole(ticket_default_role)
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {
@@ -22,15 +21,15 @@ func CreateTicketDefaultTiming(c *gin.Context) {
 	}
 }
 
-func DeleteTicketDefaultTiming(c *gin.Context) {
-	var body models.TicketDefaultTiming
+func DeleteTicketDefaultRole(c *gin.Context) {
+	var body models.TicketDefaultRole
 	err := c.Bind(&body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	id := body.ID
-	ser, err := service.DeleteTicketDefaultTiming(id)
+	ser, err := service.DeleteTicketDefaultRole(id)
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {
@@ -38,14 +37,14 @@ func DeleteTicketDefaultTiming(c *gin.Context) {
 	}
 }
 
-func UpdateTicketDefaultTiming(c *gin.Context) {
-	var body models.TicketDefaultTiming
+func UpdateTicketDefaultRole(c *gin.Context) {
+	var body models.TicketDefaultRole
 	err := c.Bind(&body)
 	if err != nil {
 		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
-	ser, err := service.UpdateTicketDefaultTiming(body)
+	ser, err := service.UpdateTicketDefaultRole(body)
 	if err != nil {
 		c.JSON(400, err.Error())
 	} else {

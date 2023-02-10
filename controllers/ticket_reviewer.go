@@ -10,7 +10,7 @@ func ReassignTicketReviewer(c *gin.Context) {
 	var body models.ReviewerActivity
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.ReassignTicketReviewer(body)

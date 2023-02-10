@@ -11,32 +11,55 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	TicketUserID            uint `gorm:"not null"`
-	PerformedByID           uuid.UUID
-	TicketUser              TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Source                  string     `gorm:"not null"`
-	Type                    string     `gorm:"not null"`
+	TicketUserID            uint
+	UserID                  uuid.UUID `gorm:"type:uuid"`
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
 	Category                string
 	Subcategory             string
 	Description             string
-	Priority                string          `gorm:"not null:default:'low'"`
+	Priority                string          `gorm:"not null;default:'low'"`
 	Tags                    pq.StringArray  `gorm:"type:text[]"`
 	Data                    gormjsonb.JSONB `gorm:"type:json"`
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
-	Tat                     time.Time          `gorm:"not null"`
+	Tat                     time.Time       `gorm:"not null"`
 	ExpiryDate              time.Time       `gorm:"not null"`
 	IsUrgent                bool
-	Status                  string `gorm:"not null:default:'active'"`
-	Random					string
+	Status                  string `gorm:"not null;default:'active'"`
+	TicketDefaultTypeID     uint
+}
+
+type TicketData struct {
+	ID                      uint
+	TicketUserID            uint
+	UserID                  uuid.UUID `gorm:"type:uuid"`
+	User                    User
+	UserType                string
+	Source                  string `gorm:"not null"`
+	Type                    string `gorm:"not null"`
+	Category                string
+	Subcategory             string
+	Description             string
+	Priority                string          `gorm:"not null;default:'low'"`
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Tat                     time.Time       `gorm:"not null"`
+	ExpiryDate              time.Time       `gorm:"not null"`
+	IsUrgent                bool
+	Status                  string `gorm:"not null;default:'active'"`
 }
 
 type TicketDetail struct {
-	TicketReviewerID  uint
-	TicketReviewer    TicketReviewer
-	TicketSpectatorID uint
-	TicketSpectator   TicketSpectator
-	TicketID          uint
-	Ticket            Ticket
+	TicketReviewerID   uint
+	TicketReviewer     TicketReviewerData
+	TicketSpectatorID  uint
+	TicketSpectator    TicketSpectator
+	TicketID           uint
+	Ticket             Ticket
+	TicketUser         TicketUser
+	ClosureAuthorizers []User
 }
 
 type TicketStat struct {
@@ -55,11 +78,14 @@ type TicketStat struct {
 	HighPriority    int64
 	StartDate       string
 	EndDate         string
-	TicketUserID    uint
+	UserID          string
 	QFilter         string
 	ExpiryDate      string
 	TicketCreatedAt string
 	Tags            pq.StringArray `gorm:"type:text[]"`
+	Category        string
+	Closure         int64
+	ClosureID       string
 }
 
 type TicketGraph struct {
@@ -75,7 +101,7 @@ type TicketGraph struct {
 	Sum         int64
 }
 
-type TicketEscalatedPayload struct {
+type TicketPayload struct {
 	TicketID uint
 }
 
@@ -105,7 +131,7 @@ type TicketExtraFilter struct {
 	MyTicket                string
 	AgentID                 string
 	AgentRmID               string
-	TicketUser              TicketUser
+	UserID                  string
 	Source                  string
 	Type                    string
 	Category                string
@@ -117,8 +143,11 @@ type TicketExtraFilter struct {
 	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Tat                     string
 	Status                  string
+	Statuses                string
 	TicketCreatedAt         string
 	ExpiringSoon            string
 	ExpiryDate              string
 	ID                      uint
+	Closure                 bool
+	ClosureID               string
 }

@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
@@ -18,45 +17,56 @@ func CreateTokenTicket(token_filter models.TokenFilter) (models.TicketToken, err
 	var err error
 	var ticket_token models.TicketToken
 
-	if err := tx.Where("ticket_token = ? AND status != ?", token_filter.TicketToken, "utilized").First(&ticket_token).Error; err != nil {
-		tx.Rollback()
-		return ticket_token, errors.New(err.Error())
+	if err := tx.Where("ticket_token = ? AND status = ?", token_filter.TicketToken, "active").First(&ticket_token).Error; err != nil {
+		db.Where("ticket_token = ?", token_filter.TicketToken).First(&ticket_token)
+		var err error
+		tx.Commit()
+		return ticket_token, err
 	}
 
 	today := time.Now()
 
-	if today.Before(ticket_token.ExpiryDate) && ticket_token.Status != "inactive" {
+	if ticket_token.TicketID != 0 {
+		return ticket_token, errors.New("ticket already created")
+	}
+
+	if today.Before(ticket_token.ExpiryDate) {
 
 		var ticket models.Ticket
 
 		ticket.Source = token_filter.Source
 		ticket.Type = token_filter.Type
+		ticket.Description = token_filter.Type
 		ticket.TicketUserID = ticket_token.TicketUserID
+		ticket.UserType = "ticket_user"
 
 		stmt := validations.ValidateTokenTicket(ticket)
 		if stmt != "validated" {
-			fmt.Println("changes")
 			return ticket_token, errors.New(stmt)
 		}
 
 		ticket_data, err := tickets.CreateTicket(ticket)
 
 		if err != nil {
-			return ticket_token, err
+			return ticket_token, errors.New(err.Error())
+		}
+
+		if ticket_data.ID == 0 {
+			return ticket_token, errors.New(err.Error())
 		}
 
 		ticket_token.TicketID = ticket_data.ID
-		ticket_token.Status = "utilized"
+		ticket_token.Status = "misc_ticket_created"
 
 		if err := tx.Save(&ticket_token).Error; err != nil {
 			tx.Rollback()
 			return ticket_token, errors.New(err.Error())
 		}
-
 		tx.Commit()
-
 	} else {
 		DeleteTicketToken(ticket_token.ID)
+		tx.Commit()
+		return ticket_token, errors.New("Token is Expired!")
 	}
 	return ticket_token, err
 }

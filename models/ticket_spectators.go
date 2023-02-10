@@ -8,15 +8,14 @@ import (
 type TicketSpectator struct {
 	gorm.Model
 	PerformedByID uuid.UUID `gorm:"type:uuid"`
-	TicketID      uint `gorm:"not null"`
-	TicketUserID  uint `gorm:"not null"`
-	TicketUser    TicketUser `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Status        string `gorm:"not null:default:'active'"`
+	TicketID      uint      `gorm:"not null"`
+	UserID        string    `gorm:"not null"`
+	Status        string    `gorm:"not null;default:'active'"`
 }
 
 type SpectatorActivity struct {
-	TicketID       uint
+	TicketID        uint
 	SpectatorUserID uint
-	PerformedByID  uuid.UUID `gorm:"type:uuid"`
-	Description    string
+	PerformedByID   uuid.UUID `gorm:"type:uuid"`
+	Description     string
 }

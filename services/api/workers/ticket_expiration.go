@@ -8,19 +8,17 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func TicketExpiration(p models.TicketEscalatedPayload) error {
+func TicketExpiration(p models.TicketPayload) error {
 
 	db := config.GetDB()
 
 	var ticket models.Ticket
 	var ticket_reviewer models.TicketReviewer
-	var ticket_reviewer_new models.TicketReviewer
 	var ticket_spectator models.TicketSpectator
-	var group_member models.GroupMember
 
 	tx := db.Begin()
 
-	if err := tx.Where("id = ?", p.TicketID).First(&ticket).Error; err != nil {
+	if err := tx.Where("id = ? ", p.TicketID).First(&ticket).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -45,18 +43,6 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 				return err
 			}
 
-			if err := tx.Where("ticket_user_id = ? and status = ?", ticket_reviewer.TicketUserID, "active").First(&group_member).Error; err != nil {
-				tx.Rollback()
-				return err
-			}
-
-			group_member.ActiveTicketCount -= 1
-
-			if err := tx.Save(&group_member).Error; err != nil {
-				tx.Rollback()
-				return err
-			}
-
 			if err := tx.Where("ticket_id = ? and status = ?", ticket.ID, "active").First(&ticket_spectator).Error; err != nil {
 				tx.Rollback()
 				return err
@@ -69,9 +55,9 @@ func TicketExpiration(p models.TicketEscalatedPayload) error {
 			}
 
 			var ticket_activity models.TicketActivity
-			ticket_activity.TicketID = ticket_reviewer_new.TicketID
-			ticket_activity.TicketUserID = ticket_reviewer_new.TicketUserID
-			ticket_activity.UserType = "worker"
+			ticket_activity.TicketID = ticket_reviewer.TicketID
+			ticket_activity.UserID = ticket_reviewer.UserID
+			ticket_activity.UserType = "system"
 			ticket_activity.Type = "Ticket Expired"
 			ticket_activity.Status = "expired"
 

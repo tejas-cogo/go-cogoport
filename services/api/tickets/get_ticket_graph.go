@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/tejas-cogo/go-cogoport/config"
+	"github.com/tejas-cogo/go-cogoport/constants"
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
@@ -14,53 +15,20 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 	var err error
 
 	var ticket_reviewer []models.TicketReviewer
-	var ticket_user models.TicketUser
 	var ticket_id []uint
-	var ticket_users []uint
-
-	const (
-		DateTime = "2006-01-02"
-	)
 
 	if graph.AgentRmID != "" {
 
-		db2 := config.GetCDB()
-		tx2 := db2.Begin()
-
-		var partner_user_rm_mapping []models.PartnerUserRmMapping
-		var partner_user_rm_ids []string
-
-		if err := tx2.Where("reporting_manager_id = ? and status = ?", graph.AgentRmID, "active").Distinct("user_id").Find(&partner_user_rm_mapping).Pluck("user_id", &partner_user_rm_ids).Error; err != nil {
-			tx.Rollback()
-			return graph, errors.New(err.Error())
-		}
-
-		if err := tx.Where("system_user_id IN ?", partner_user_rm_ids).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
-			tx.Rollback()
-			return graph, errors.New(err.Error())
-		}
-
-		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
-			tx.Rollback()
-			return graph, errors.New(err.Error())
-		}
+		db.Where("manager_rm_ids && '(?)' or user_id = ?", graph.AgentRmID, graph.AgentRmID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
 
 	} else if graph.AgentID != "" {
-		if err := tx.Where("system_user_id = ?", graph.AgentID).Distinct("id").Find(&ticket_user).Pluck("id", &ticket_users).Error; err != nil {
-			tx.Rollback()
-			return graph, errors.New(err.Error())
-		}
 
-		if err := tx.Where("ticket_user_id IN ?", ticket_users).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
-			tx.Rollback()
-			return graph, errors.New(err.Error())
-		}
+		db.Where("user_id = ?", graph.AgentID).Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
 	} else {
 
-		if err := tx.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id).Error; err != nil {
-			tx.Rollback()
-			return graph, errors.New(err.Error())
-		}
+		db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
+
 	}
 
 	db = config.GetDB()
@@ -68,8 +36,8 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 	var x time.Time
 	var y time.Time
-	t := time.Now().Format(DateTime)
-	y, _ = time.Parse(DateTime, t)
+	t := time.Now().Format(constants.DateTimeFormat())
+	y, _ = time.Parse(constants.DateTimeFormat(), t)
 
 	graph.TodayDate = time.Now()
 
@@ -114,11 +82,15 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 
 	weekday := time.Now().Weekday()
 
-	y, _ = time.Parse(DateTime, t)
+	y, _ = time.Parse(constants.DateTimeFormat(), t)
 
 	t1 := int(weekday)
 
-	t1 = -t1 + 1
+	if t1 == 0 {
+		t1 = -6
+	} else {
+		t1 = -t1 + 1
+	}
 
 	y = y.AddDate(0, 0, t1)
 	graph.StartDate = y

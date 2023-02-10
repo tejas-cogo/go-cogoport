@@ -12,7 +12,7 @@ func ListTicketSpectator(c *gin.Context) {
 
 	err := c.Bind(&filters)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 
@@ -29,7 +29,7 @@ func CreateTicketSpectator(c *gin.Context) {
 	var ticket_spectator models.TicketSpectator
 	err := c.Bind(&ticket_spectator)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	ser, err := service.CreateTicketSpectator(ticket_spectator)
@@ -44,7 +44,7 @@ func DeleteTicketSpectator(c *gin.Context) {
 	var body models.TicketSpectator
 	err := c.Bind(&body)
 	if err != nil {
-		c.JSON(c.Writer.Status(), "Bad Request")
+		c.JSON(c.Writer.Status(), err.Error())
 		return
 	}
 	id := body.ID
