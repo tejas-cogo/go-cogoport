@@ -47,8 +47,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	if body.NotificationPreferences != nil {
 		ticket.NotificationPreferences = body.NotificationPreferences
 	}
-	if body.Data.Url != nil {
-		ticket.Data.Url = body.Data.Url
+	if body.Data != nil {
+		ticket.Data = body.Data
 	}
 	if body.Description != "" {
 		ticket.Description = body.Description

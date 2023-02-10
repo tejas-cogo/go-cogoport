@@ -19,12 +19,12 @@ type Ticket struct {
 	Category                string
 	Subcategory             string
 	Description             string
-	Priority                string         `gorm:"not null;default:'low'"`
-	Tags                    pq.StringArray `gorm:"type:text[]"`
-	Data                    Data
-	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
-	Tat                     time.Time      `gorm:"not null"`
-	ExpiryDate              time.Time      `gorm:"not null"`
+	Priority                string          `gorm:"not null;default:'low'"`
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
+	Tat                     time.Time       `gorm:"not null"`
+	ExpiryDate              time.Time       `gorm:"not null"`
 	IsUrgent                bool
 	Status                  string `gorm:"not null;default:'active'"`
 	TicketDefaultTypeID     uint

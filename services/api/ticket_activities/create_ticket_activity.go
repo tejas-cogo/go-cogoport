@@ -397,8 +397,8 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
 	return ticket_reviewer, err
 }
 
-func GetReviewerUserID(body models.Filter) models.Data {
-	var data models.Data
+func GetReviewerUserID(body models.Filter) models.DataJson {
+	var data models.DataJson
 	var ticket_reviewer models.TicketReviewer
 	var reviewer_id []string
 

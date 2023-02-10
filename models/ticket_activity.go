@@ -15,7 +15,7 @@ type TicketActivity struct {
 	UserType    string    `gorm:"not null"`
 	Description string
 	Type        string `gorm:"not null"`
-	Data        Data
+	Data        DataJson
 	IsRead      bool
 	Status      string
 	Ticket      Ticket `gorm:"foreignKey:TicketID"`
@@ -26,7 +26,7 @@ type TicketActivityData struct {
 	UserType    string    `gorm:"not null"`
 	Description string
 	Type        string `gorm:"not null"`
-	Data        Data
+	Data        DataJson
 	IsRead      bool
 	Status      string
 	TicketUser  TicketUser
@@ -40,12 +40,12 @@ type Activity struct {
 	UserID        uuid.UUID `gorm:"type:uuid"`
 	UserType      string
 	Description   string
-	Data          Data
+	Data          DataJson
 	Type          string
 	Status        string
 }
 
-type Data struct {
+type DataJson struct {
 	Url    pq.StringArray `gorm:"type:text[]"`
 	User   []UserData
 	UserID uint `json:"user_id"`

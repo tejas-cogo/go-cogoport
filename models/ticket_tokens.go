@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
@@ -25,9 +26,9 @@ type TokenFilter struct {
 	Subcategory             string
 	Description             string
 	IsUrgent                bool
-	Tags                    pq.StringArray `gorm:"type:text[]"`
-	Data                    Data
-	NotificationPreferences pq.StringArray `gorm:"type:text[]"`
+	Tags                    pq.StringArray  `gorm:"type:text[]"`
+	Data                    gormjsonb.JSONB `gorm:"type:json"`
+	NotificationPreferences pq.StringArray  `gorm:"type:text[]"`
 	Status                  string
 	UserType                string
 }
@@ -36,7 +37,7 @@ type TokenActivity struct {
 	TicketToken string
 	Description string
 	UserType    string
-	Data        Data
+	Data        DataJson
 	Type        string
 	Status      string
 }
