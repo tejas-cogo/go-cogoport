@@ -1,7 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
+	"log"
 	_ "time"
 
 	"github.com/google/uuid"
@@ -281,7 +283,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			ticket.Status = "escalated"
 			audits.CreateAuditTicket(ticket, tx)
 
-			
+			ticket_activity.Data = GetReviewerUserID(body)
 
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
@@ -393,4 +395,25 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
 	}
 
 	return ticket_reviewer, err
+}
+
+func GetReviewerUserID(body models.Filter) models.Data {
+	var data models.Data
+	var ticket_reviewer models.TicketReviewer
+	var reviewer_id []string
+
+	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
+
+	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
+	if err1 != nil {
+		log.Println(err)
+	}
+
+	reviewer_id = append(reviewer_id, ticket_reviewer.UserID.String())
+
+	modified_data := helpers.GetUserData(reviewer_id)
+
+	data.User = modified_data
+
+	return data
 }

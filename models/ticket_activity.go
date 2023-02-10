@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -14,8 +14,8 @@ type TicketActivity struct {
 	UserID      uuid.UUID `gorm:"type:uuid"`
 	UserType    string    `gorm:"not null"`
 	Description string
-	Type        string          `gorm:"not null"`
-	Data        gormjsonb.JSONB `gorm:"type:json"`
+	Type        string `gorm:"not null"`
+	Data        Data
 	IsRead      bool
 	Status      string
 	Ticket      Ticket `gorm:"foreignKey:TicketID"`
@@ -25,8 +25,8 @@ type TicketActivityData struct {
 	UserID      uuid.UUID `gorm:"type:uuid"`
 	UserType    string    `gorm:"not null"`
 	Description string
-	Type        string          `gorm:"not null"`
-	Data        gormjsonb.JSONB `gorm:"type:json"`
+	Type        string `gorm:"not null"`
+	Data        Data
 	IsRead      bool
 	Status      string
 	TicketUser  TicketUser
@@ -40,7 +40,13 @@ type Activity struct {
 	UserID        uuid.UUID `gorm:"type:uuid"`
 	UserType      string
 	Description   string
-	Data          gormjsonb.JSONB `gorm:"type:json"`
+	Data          Data
 	Type          string
 	Status        string
+}
+
+type Data struct {
+	Url    pq.StringArray `gorm:"type:text[]"`
+	User   []UserData
+	UserID uint `json:"user_id"`
 }

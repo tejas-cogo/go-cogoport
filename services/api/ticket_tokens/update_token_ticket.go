@@ -28,7 +28,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	if ticket_token.Status == "utilized" {
 		tx.Rollback()
 		return ticket, errors.New("token is already used!")
-	}else if ticket_token.TicketID == 0 {
+	} else if ticket_token.TicketID == 0 {
 		tx.Rollback()
 		return ticket, errors.New("Ticket wasn't created!")
 	}
@@ -47,8 +47,8 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	if body.NotificationPreferences != nil {
 		ticket.NotificationPreferences = body.NotificationPreferences
 	}
-	if body.Data != nil {
-		ticket.Data = body.Data
+	if body.Data.Url != nil {
+		ticket.Data.Url = body.Data.Url
 	}
 	if body.Description != "" {
 		ticket.Description = body.Description
