@@ -1,9 +1,12 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
+	"log"
 	_ "time"
 
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -281,6 +284,9 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			ticket.Status = "escalated"
 			audits.CreateAuditTicket(ticket, tx)
 
+			body.TicketReviewer.UserID = ticket_reviewer.UserID
+			ticket_activity.Data = GetReviewerUserID(body)
+
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
 				return "", errors.New(stmt)
@@ -439,4 +445,31 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
 	}
 
 	return ticket_reviewer, err
+}
+
+func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
+	var data models.DataJson
+	var reviewer_ids []string
+
+	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
+
+	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
+	if err1 != nil {
+		log.Println(err)
+	}
+
+	reviewer_ids = append(reviewer_ids, body.TicketReviewer.UserID.String())
+	modified_data := helpers.GetUnifiedUserData(reviewer_ids)
+
+	for _, value := range modified_data {
+		data.User = value
+	}
+
+	var new_data gormjsonb.JSONB
+
+	new, _ := json.Marshal(data)
+
+	json.Unmarshal([]byte(new), &new_data)
+
+	return new_data
 }

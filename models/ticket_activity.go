@@ -5,6 +5,7 @@ import (
 
 	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -25,8 +26,8 @@ type TicketActivityData struct {
 	UserID      uuid.UUID `gorm:"type:uuid"`
 	UserType    string    `gorm:"not null"`
 	Description string
-	Type        string          `gorm:"not null"`
-	Data        gormjsonb.JSONB `gorm:"type:json"`
+	Type        string   `gorm:"not null"`
+	Data        DataJson `gorm:"foreignKey:ID;references:ID"`
 	IsRead      bool
 	Status      string
 	TicketUser  TicketUser
@@ -43,4 +44,11 @@ type Activity struct {
 	Data          gormjsonb.JSONB `gorm:"type:json"`
 	Type          string
 	Status        string
+}
+
+type DataJson struct {
+	ID     uint
+	Url    pq.StringArray `gorm:"type:text[]"`
+	UserID uint           `json:"user_id"`
+	User   UserData
 }
