@@ -107,7 +107,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 		db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Not("status = (?)", "closed"+","+"rejected").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
+		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status IN (?)", "pending"+","+"unresolved").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
 	}
 
 	db.Commit()
