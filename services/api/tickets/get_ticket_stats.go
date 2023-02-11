@@ -92,9 +92,9 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 		db.Where("id IN ? and status = ?", ticket_id, "unresolved").Model(&models.Ticket{}).Count(&stats.Unresolved)
 
-		db.Model(&models.Ticket{}).Where("id In ? and priority = ? and status = ?", ticket_id, "high", "unresolved").Count(&stats.HighPriority)
+		db.Model(&models.Ticket{}).Where("id In ? and priority = ?", ticket_id).Where("status = ? or status = ?", "pending", "unresolved").Count(&stats.HighPriority)
 
-		db.Model(&models.Ticket{}).Where("id In ? and created_at::date = ? and status = ?", ticket_id, time.Now().Format(constants.DateTimeFormat()), "unresolved").Count(&stats.DueToday)
+		db.Model(&models.Ticket{}).Where("id In ? and created_at::date = ?", ticket_id, time.Now().Format(constants.DateTimeFormat())).Where("status = ? or status = ?", "pending", "unresolved").Count(&stats.DueToday)
 
 		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Count(&stats.Closed)
 
@@ -108,7 +108,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 		db.Model(&models.TicketActivity{}).Where("id IN ?", ticket_id).Where("status = ?", "escalated").Count(&stats.Escalated)
 
-		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status IN (?)", "pending"+","+"unresolved").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
+		db.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? or status = ?", "pending", "unresolved").Where("expiry_date BETWEEN ? AND ?", t, t.AddDate(0, 0, 1)).Count(&stats.ExpiringSoon)
 	}
 
 	db.Commit()
