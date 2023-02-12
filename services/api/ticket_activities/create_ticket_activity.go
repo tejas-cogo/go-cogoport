@@ -1,12 +1,9 @@
 package api
 
 import (
-	"encoding/json"
 	"errors"
-	"log"
 	_ "time"
 
-	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -257,9 +254,20 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 
 			if err = tx.Where("ticket_default_type_id = ? and status = ? and level < ?", ticket_default_type.ID, "active", old_ticket_reviewer.Level).Order("level desc").First(&ticket_default_role).Error; err != nil {
 				if err = tx.Where("ticket_default_type_id = ? and status = ?", 1, "active").Order("level desc").First(&ticket_default_role).Error; err != nil {
-					tx.Rollback()
-					return "", errors.New("cannot escalate further")
+					if len(old_ticket_reviewer.ReviewerManagerIDs) != 0 {
+
+						ticket_default_role.UserID = GetEscalatedManager(old_ticket_reviewer.ReviewerManagerIDs)
+					} else {
+						tx.Rollback()
+						return "", errors.New("cannot escalate further")
+					}
+
+				} else {
+					///
+
 				}
+			} else {
+
 			}
 
 			if ticket_default_role.UserID == uuid.Nil {
@@ -285,7 +293,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			audits.CreateAuditTicket(ticket, tx)
 
 			body.TicketReviewer.UserID = ticket_reviewer.UserID
-			ticket_activity.Data = GetReviewerUserID(body)
+			// ticket_activity.Data = GetReviewerUserID(body)
 
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
@@ -447,29 +455,55 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
 	return ticket_reviewer, err
 }
 
-func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
-	var data models.DataJson
-	var reviewer_ids []string
+// func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
+// 	var data models.DataJson
+// 	var reviewer_ids []string
 
-	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
+// 	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
 
-	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
-	if err1 != nil {
-		log.Println(err)
+// 	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
+// 	if err1 != nil {
+// 		log.Println(err)
+// 	}
+
+// 	reviewer_ids = append(reviewer_ids, body.TicketReviewer.UserID.String())
+// 	modified_data := helpers.GetUnifiedUserData(reviewer_ids)
+
+// 	for _, value := range modified_data {
+// 		data.User = value
+// 	}
+
+// 	var new_data gormjsonb.JSONB
+
+// 	new, _ := json.Marshal(data)
+
+// 	json.Unmarshal([]byte(new), &new_data)
+
+// 	return new_data
+// }
+
+func GetEscalatedManager(user_id_array []string) uuid.UUID {
+
+	db := config.GetDB()
+	var ticket_reviewer models.TicketReviewer
+
+	type Result struct {
+		UserID string `json:"user_id"`
+		Count  int
+	}
+	var result []Result
+	var user_id uuid.UUID
+
+	max := 0
+
+	db.Model(&ticket_reviewer).Where("user_id IN (?) and status = ?", user_id_array, "active").Select("Count(Distinct(ticket_id)) as count,user_id as user_id").Group("user_id").Order("count desc").Scan(&result)
+
+	for _, value := range result {
+		if value.Count >= max {
+			max = value.Count
+			user_id, _ = uuid.Parse(value.UserID)
+		}
 	}
 
-	reviewer_ids = append(reviewer_ids, body.TicketReviewer.UserID.String())
-	modified_data := helpers.GetUnifiedUserData(reviewer_ids)
-
-	for _, value := range modified_data {
-		data.User = value
-	}
-
-	var new_data gormjsonb.JSONB
-
-	new, _ := json.Marshal(data)
-
-	json.Unmarshal([]byte(new), &new_data)
-
-	return new_data
+	return user_id
 }

@@ -11,9 +11,8 @@ import (
 	ticket_users "github.com/tejas-cogo/go-cogoport/services/api/ticket_users"
 	helpers "github.com/tejas-cogo/go-cogoport/services/helpers"
 	validations "github.com/tejas-cogo/go-cogoport/services/validations"
-	_"github.com/tejas-cogo/go-cogoport/tasks"
+	_ "github.com/tejas-cogo/go-cogoport/tasks"
 	// workers "github.com/tejas-cogo/go-cogoport/workers"
-	
 )
 
 type TicketService struct {
@@ -95,6 +94,7 @@ func CreateTicket(ticket models.Ticket) (models.Ticket, error) {
 
 	ticket, err = reviewers.CreateTicketReviewer(ticket)
 	if err != nil {
+		tx.Rollback()
 		return ticket, err
 	}
 

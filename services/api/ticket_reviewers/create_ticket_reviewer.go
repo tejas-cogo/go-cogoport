@@ -33,19 +33,25 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		}
 	}
 
-	if erro := txt.Where("ticket_default_type_id = ? and status = ?", ticket_default_type.ID, "active").Order("level desc").First(&ticket_default_role).Error; erro != nil {
-		if err := txt.Where("ticket_default_type_id = ? ", 1).First(&ticket_default_role).Error; err != nil {
+	var search_role_user []models.TicketDefaultRole
+
+	if erro := txt.Where("ticket_default_type_id = ? and status = ? ", ticket_default_type.ID, "active").Order("level desc").Find(&search_role_user).Error; erro != nil {
+		if err := txt.Where("ticket_default_type_id = ?", 1).Order("level desc").Find(&search_role_user).Error; err != nil {
 			txt.Rollback()
 			return body, errors.New(err.Error())
+		} else {
+			ticket_reviewer = GetNewReviewer(search_role_user, body)
 		}
+	} else {
+		ticket_reviewer = GetNewReviewer(search_role_user, body)
 	}
-	ticket_reviewer.TicketID = body.ID
-	ticket_reviewer.RoleID = ticket_default_role.RoleID
-	ticket_reviewer.UserID = ticket_default_role.UserID
 
 	if ticket_reviewer.UserID == uuid.Nil {
-		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
+		txt.Rollback()
+		return body, errors.New("Reviewer couldn't be found")
 	}
+
+	ticket_reviewer.TicketID = body.ID
 	ticket_reviewer.ReviewerManagerIDs = helpers.GetUnifiedManagerRmId(ticket_reviewer.UserID)
 	ticket_reviewer.Status = "active"
 	ticket_reviewer.Level = ticket_default_role.Level
@@ -61,8 +67,6 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 		txt.Rollback()
 		return body, errors.New(err.Error())
 	}
-
-	fmt.Println("after", ticket_reviewer)
 
 	var ticket_activity models.TicketActivity
 	ticket_activity.TicketID = ticket_reviewer.TicketID
@@ -82,4 +86,26 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 
 	txt.Commit()
 	return body, err
+}
+
+func GetNewReviewer(search_role_user []models.TicketDefaultRole, body models.Ticket) models.TicketReviewer {
+
+	var ticket_reviewer models.TicketReviewer
+	for _, u := range search_role_user {
+		if u.UserID != uuid.Nil {
+			if u.UserID != body.UserID {
+				ticket_reviewer.RoleID = u.RoleID
+				break
+			}
+		} else if u.RoleID != uuid.Nil {
+			ticket_reviewer.RoleID = u.RoleID
+			ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
+			if ticket_reviewer.UserID != uuid.Nil {
+				break
+			}
+
+		}
+	}
+
+	return ticket_reviewer
 }
