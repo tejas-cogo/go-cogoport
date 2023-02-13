@@ -121,8 +121,6 @@ func ListTicketDetail(c *gin.Context) {
 		c.JSON(c.Writer.Status(), err)
 	} else {
 
-		
-
 		c.JSON(c.Writer.Status(), ser)
 	}
 
@@ -137,12 +135,15 @@ func CreateTicket(c *gin.Context) {
 	}
 	ser, err := service.CreateTicket(body)
 	if err != nil {
+		if c.Writer.Status() == 200 {
+			c.JSON(400, err)
+			return
+		}
 		c.JSON(c.Writer.Status(), err)
 	} else {
 
 		c.JSON(c.Writer.Status(), ser)
 	}
-
 }
 
 func UpdateTicket(c *gin.Context) {
