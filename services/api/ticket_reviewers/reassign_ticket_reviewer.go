@@ -19,7 +19,7 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	var ticket_reviewer_old models.TicketReviewer
 	var ticket_reviewer_active models.TicketReviewer
 
-	if err := tx.Where("ticket_id = ? AND status = 'active'", body.TicketID).First(&ticket_reviewer_active).Error; err != nil {
+	if err := tx.Where("ticket_id = ? AND status = ?", body.TicketID, "active").First(&ticket_reviewer_active).Error; err != nil {
 		tx.Rollback()
 		return body, errors.New(err.Error())
 	}
@@ -32,34 +32,25 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	}
 
 	if body.ReviewerUserID == uuid.Nil {
-		body.ReviewerUserID = helpers.GetRoleIdUser(body.RoleID)
+		var ticket models.Ticket
+		tx.Where("id = ?", body.TicketID).First(&ticket)
+		body.ReviewerUserID = helpers.GetUnifiedRoleIdUser(body.RoleID, ticket.UserID.String())
 	}
 
-	if err := tx.Where("ticket_id = ? AND user_id = ? AND role_id = ?", body.TicketID, body.ReviewerUserID, body.RoleID).Find(&ticket_reviewer_old).Error; err != nil {
-		tx.Rollback()
-		return body, errors.New(err.Error())
-	}
+	if err := tx.Where("ticket_id = ? AND user_id = ? AND role_id = ?", body.TicketID, body.ReviewerUserID, body.RoleID).Find(&ticket_reviewer_old).Error; err == nil {
 
-	if ticket_reviewer_old.ID != 0 {
 		ticket_reviewer_old.Status = "active"
-		ticket_reviewer_old.Level = 3
+		ticket_reviewer_old.Level = ticket_reviewer_active.Level
 		if err := tx.Save(&ticket_reviewer_old).Error; err != nil {
 			tx.Rollback()
 			return body, errors.New(err.Error())
 		}
-
 	} else {
 		var ticket_reviewer models.TicketReviewer
 		ticket_reviewer.TicketID = body.TicketID
 		ticket_reviewer.UserID = body.ReviewerUserID
 		ticket_reviewer.RoleID = body.RoleID
-		ticket_reviewer.UserID = body.ReviewerUserID
-		ticket_reviewer.Level = 3
-
-		if body.ReviewerUserID == uuid.Nil {
-			ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
-		}
-
+		ticket_reviewer.Level = ticket_reviewer_active.Level
 		ticket_reviewer.ReviewerManagerIDs = helpers.GetUnifiedManagerRmId(ticket_reviewer.UserID)
 
 		stmt := validations.ValidateTicketReviewer(ticket_reviewer)
@@ -70,11 +61,11 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 			tx.Rollback()
 			return body, errors.New(err.Error())
 		}
-		
+
 	}
-	
+
 	var filters models.Filter
-	
+
 	filters.TicketReviewer.UserID = body.ReviewerUserID
 	filters.TicketActivity.TicketID = body.TicketID
 	filters.TicketActivity.UserID = body.PerformedByID
@@ -83,7 +74,8 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	filters.TicketActivity.Description = body.Description
 	filters.TicketActivity.Status = "reassigned"
 
-	// filters.TicketActivity.Data = activities.GetReviewerUserID(filters)
+	filters.TicketActivity.Data = body.Data
+	// activities.GetReviewerUserID(filters)
 	activities.CreateTicketActivity(filters)
 
 	tx.Commit()

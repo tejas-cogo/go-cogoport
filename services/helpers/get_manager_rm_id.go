@@ -40,7 +40,7 @@ func GetUnifiedManagerRmId(UserID uuid.UUID) []string {
 
 	var user_id_array []string
 
-	db2.Model(&models.PartnerUserRmMapping{}).Where("user_id in (?) and status = ?", UserID, "active").Distinct("reporting_manager_id").Pluck("reporting_manager_id",&user_id_array)
+	db2.Model(&models.PartnerUser{}).Where("user_id In (?) and status = ?", UserID, "active").Distinct("manager_id").Pluck("manager_id", &user_id_array)
 
 	return user_id_array
 }

@@ -103,7 +103,7 @@ func UpdateTokenTicket(body models.TokenFilter) (models.Ticket, error) {
 	ticket_reviewer.Status = "active"
 
 	if ticket_reviewer.UserID == uuid.Nil {
-		ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
+		ticket_reviewer.UserID = helpers.GetUnifiedRoleIdUser(ticket_default_role.RoleID, ticket.UserID.String())
 	}
 	ticket_reviewer.Status = "active"
 	ticket_reviewer.Level = ticket_default_role.Level

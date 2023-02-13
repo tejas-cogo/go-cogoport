@@ -29,16 +29,16 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 	if err := txt.Where("ticket_type = ? and status = ?", body.Type, "active").First(&ticket_default_type).Error; err != nil {
 		if err := txt.Where("id = ?", 1).First(&ticket_default_type).Error; err != nil {
 			txt.Rollback()
-			return body, errors.New(err.Error())
+			return body, errors.New("Ticket type is invalid!")
 		}
 	}
 
 	var search_role_user []models.TicketDefaultRole
 
-	if erro := txt.Where("ticket_default_type_id = ? and status = ? ", ticket_default_type.ID, "active").Order("level desc").Find(&search_role_user).Error; erro != nil {
+	if err := txt.Where("ticket_default_type_id = ? and status = ? ", ticket_default_type.ID, "active").Order("level desc").Find(&search_role_user).Error; err != nil {
 		if err := txt.Where("ticket_default_type_id = ?", 1).Order("level desc").Find(&search_role_user).Error; err != nil {
 			txt.Rollback()
-			return body, errors.New(err.Error())
+			return body, errors.New("Default Role couldn't be found")
 		} else {
 			ticket_reviewer = GetNewReviewer(search_role_user, body)
 		}
@@ -91,21 +91,23 @@ func CreateTicketReviewer(body models.Ticket) (models.Ticket, error) {
 func GetNewReviewer(search_role_user []models.TicketDefaultRole, body models.Ticket) models.TicketReviewer {
 
 	var ticket_reviewer models.TicketReviewer
+
 	for _, u := range search_role_user {
+
 		if u.UserID != uuid.Nil {
 			if u.UserID != body.UserID {
 				ticket_reviewer.RoleID = u.RoleID
+				ticket_reviewer.UserID = u.UserID
 				break
 			}
 		} else if u.RoleID != uuid.Nil {
-			ticket_reviewer.RoleID = u.RoleID
-			ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_reviewer.RoleID)
-			if ticket_reviewer.UserID != uuid.Nil {
+			user_id := helpers.GetUnifiedRoleIdUser(u.RoleID, body.UserID.String())
+			if user_id != uuid.Nil {
+				ticket_reviewer.RoleID = u.RoleID
+				ticket_reviewer.UserID = user_id
 				break
 			}
-
 		}
 	}
-
 	return ticket_reviewer
 }

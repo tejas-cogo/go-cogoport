@@ -9,7 +9,7 @@ import (
 	"github.com/tejas-cogo/go-cogoport/models"
 )
 
-func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
+func GetRoleIdUser(RoleID uuid.UUID, UserID uuid.UUID) uuid.UUID {
 	var rubyclient models.RubyClientInput
 	var body models.Body
 
@@ -46,15 +46,20 @@ func GetRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	var users []string
 
-
 	db.Model(&ticket_reviewer).Where("role_id = ? and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &users)
 
-	user_id := GetFilteredUser(users , user_id_array) 
+	if UserID != uuid.Nil {
+		if Inslice(UserID.String(), users) {
+			users = Remove(users, UserID.String())
+		}
+	}
+
+	user_id := GetFilteredUser(users, user_id_array)
 
 	return user_id
 }
 
-func GetUnifiedRoleIdUser(RoleID uuid.UUID) uuid.UUID {
+func GetUnifiedRoleIdUser(RoleID uuid.UUID, UserID string) uuid.UUID {
 
 	db2 := config.GetCDB()
 	db := config.GetDB()
@@ -68,12 +73,18 @@ func GetUnifiedRoleIdUser(RoleID uuid.UUID) uuid.UUID {
 
 	db.Model(&ticket_reviewer).Where("role_id = ? and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &users)
 
-	user_id := GetFilteredUser(users , user_id_array) 
+	if UserID != "" {
+		if Inslice(UserID, users) {
+			users = Remove(users, UserID)
+		}
+	}
+
+	user_id := GetFilteredUser(users, user_id_array)
 
 	return user_id
 }
 
-func GetFilteredUser(users []string, user_id_array []string) uuid.UUID{
+func GetFilteredUser(users []string, user_id_array []string) uuid.UUID {
 
 	var err error
 
@@ -110,4 +121,13 @@ func GetFilteredUser(users []string, user_id_array []string) uuid.UUID{
 	}
 
 	return user_id
+}
+
+func Remove(array []string, str string) []string {
+	for i, u := range array {
+		if u == str && i != len(array)-1 {
+			array[i] = array[len(array)-1]
+		}
+	}
+	return array[:len(array)-1]
 }

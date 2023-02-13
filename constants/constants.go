@@ -5,7 +5,7 @@ func ClientActivityView() []string {
 }
 
 func AdminActivityView() []string {
-	return []string{"respond", "rejected", "mark_as_resolved", "reviewer_reassigned", "escalated", "reviewer_assigned", "resolution_request"}
+	return []string{"respond", "rejected", "mark_as_resolved", "reviewer_reassigned", "escalated", "reviewer_assigned", "resolution_request", "esolution_rejected"}
 }
 
 func DateTimeFormat() string {

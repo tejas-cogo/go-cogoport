@@ -1,9 +1,12 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
+	"log"
 	_ "time"
 
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
 	"github.com/tejas-cogo/go-cogoport/config"
 	"github.com/tejas-cogo/go-cogoport/models"
@@ -90,7 +93,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			// 	return ticket_activity, errors.New("You are not authorized to create activity!")
 			// }
 
-			if err = tx.Where("id = ?", u).First(&ticket).Error; err != nil {
+			if err = tx.Where("id = ? and status = ?", u, "unresolved").First(&ticket).Error; err != nil {
 				tx.Rollback()
 				return "", errors.New(err.Error())
 			}
@@ -229,7 +232,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			var ticket models.Ticket
 
 			old_ticket_reviewer, err := DeactivateReviewer(u, tx)
-			if old_ticket_reviewer.Level < 1 {
+			if old_ticket_reviewer.Level <= 1 {
 				return "", errors.New("cannot escalate further")
 			}
 			ticket_reviewer.Level = old_ticket_reviewer.Level - 1
@@ -261,21 +264,44 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 						tx.Rollback()
 						return "", errors.New("cannot escalate further")
 					}
-
 				} else {
-					///
+					if len(old_ticket_reviewer.ReviewerManagerIDs) != 0 {
 
+						ticket_default_role.UserID = GetEscalatedManager(old_ticket_reviewer.ReviewerManagerIDs)
+					} else {
+						tx.Rollback()
+						return "", errors.New("cannot escalate further")
+					}
 				}
-			} else {
-
 			}
 
 			if ticket_default_role.UserID == uuid.Nil {
 				ticket_reviewer.RoleID = ticket_default_role.RoleID
-				ticket_reviewer.UserID = helpers.GetRoleIdUser(ticket_default_role.RoleID)
+				user_id := helpers.GetUnifiedRoleIdUser(ticket_default_role.RoleID, ticket.UserID.String())
+				if user_id != uuid.Nil {
+					ticket_reviewer.UserID = user_id
+				} else {
+					if len(old_ticket_reviewer.ReviewerManagerIDs) != 0 {
+
+						ticket_default_role.UserID = GetEscalatedManager(old_ticket_reviewer.ReviewerManagerIDs)
+					} else {
+						tx.Rollback()
+						return "", errors.New("cannot escalate further")
+					}
+				}
 			} else {
 				ticket_reviewer.RoleID = ticket_default_role.RoleID
-				ticket_reviewer.UserID = ticket_default_role.UserID
+				if ticket_default_role.UserID != ticket.UserID {
+					ticket_reviewer.UserID = ticket_default_role.UserID
+				} else {
+					if len(old_ticket_reviewer.ReviewerManagerIDs) != 0 {
+
+						ticket_default_role.UserID = GetEscalatedManager(old_ticket_reviewer.ReviewerManagerIDs)
+					} else {
+						tx.Rollback()
+						return "", errors.New("cannot escalate further")
+					}
+				}
 			}
 
 			ticket_reviewer.TicketID = u
@@ -293,7 +319,8 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			audits.CreateAuditTicket(ticket, tx)
 
 			body.TicketReviewer.UserID = ticket_reviewer.UserID
-			// ticket_activity.Data = GetReviewerUserID(body)
+			ticket_activity.Data = body.TicketActivity.Data
+			// GetReviewerUserID(body)
 
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
@@ -348,7 +375,7 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 
 		}
 		tx.Commit()
-		return "Ticket has been activity!", err
+		return "Ticket activity has been created!", err
 	} else if body.TicketActivity.Status == "unresolved" && body.TicketActivity.Type == "resolution_rejected" {
 		tx := db.Begin()
 		for _, u := range body.Activity.TicketID {
@@ -393,37 +420,12 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 				// Duration := helpers.GetDuration("00h:00m:10s")
 				// workers.StartClient((time.Duration(Duration) * time.Minute), task)
 			}
-
 		}
 		tx.Commit()
-		return "Pull Requested has been completed!", err
+		return "Request has been revoked!", err
 	} else {
-		tx := db.Begin()
-		var ticket models.Ticket
-
-		ticket_activity := body.TicketActivity
-		audits.CreateAuditTicket(ticket, tx)
-		stmt := validations.ValidateTicketActivity(ticket_activity)
-		if stmt != "validated" {
-			return "", errors.New(stmt)
-		}
-		if err = tx.Create(&ticket_activity).Error; err != nil {
-			tx.Rollback()
-			return "", errors.New(err.Error())
-		}
-
-		if ticket_activity.UserType == "user" {
-			// task, err := tasks.ScheduleTicketCommunicationTask(u)
-			// if err != nil {
-			// 	return ticket_activity, errors.New(err.Error())
-			// }
-			// Duration := helpers.GetDuration("00h:00m:10s")
-			// workers.StartClient((time.Duration(Duration) * time.Minute), task)
-		}
-		tx.Commit()
-		return "Activity is send !", err
+		return "Activity is invalid!", err
 	}
-
 }
 
 func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
@@ -455,32 +457,32 @@ func DeactivateReviewer(ID uint, tx *gorm.DB) (models.TicketReviewer, error) {
 	return ticket_reviewer, err
 }
 
-// func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
-// 	var data models.DataJson
-// 	var reviewer_ids []string
+func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
+	var data models.DataJson
+	var reviewer_ids []string
 
-// 	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
+	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
 
-// 	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
-// 	if err1 != nil {
-// 		log.Println(err)
-// 	}
+	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
+	if err1 != nil {
+		log.Println(err)
+	}
 
-// 	reviewer_ids = append(reviewer_ids, body.TicketReviewer.UserID.String())
-// 	modified_data := helpers.GetUnifiedUserData(reviewer_ids)
+	reviewer_ids = append(reviewer_ids, body.TicketReviewer.UserID.String())
+	modified_data := helpers.GetUnifiedUserData(reviewer_ids)
 
-// 	for _, value := range modified_data {
-// 		data.User = value
-// 	}
+	for _, value := range modified_data {
+		data.User = value
+	}
 
-// 	var new_data gormjsonb.JSONB
+	var new_data gormjsonb.JSONB
 
-// 	new, _ := json.Marshal(data)
+	new, _ := json.Marshal(data)
 
-// 	json.Unmarshal([]byte(new), &new_data)
+	json.Unmarshal([]byte(new), &new_data)
 
-// 	return new_data
-// }
+	return new_data
+}
 
 func GetEscalatedManager(user_id_array []string) uuid.UUID {
 

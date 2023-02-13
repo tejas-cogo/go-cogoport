@@ -89,7 +89,7 @@ func TicketEscalation(p models.TicketPayload) error {
 
 		ticket_reviewer_new.TicketID = ticket.ID
 		ticket_reviewer_new.RoleID = new_ticket_default_role.RoleID
-		ticket_reviewer_new.UserID = helpers.GetRoleIdUser(new_ticket_default_role.RoleID)
+		ticket_reviewer_new.UserID = helpers.GetUnifiedRoleIdUser(new_ticket_default_role.RoleID, ticket.UserID.String())
 
 		if err := tx.Create(&ticket_reviewer_new).Error; err != nil {
 			tx.Rollback()

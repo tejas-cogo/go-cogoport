@@ -1,6 +1,7 @@
 package models
 
 import (
+	gormjsonb "github.com/dariubs/gorm-jsonb"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -33,4 +34,5 @@ type ReviewerActivity struct {
 	RoleID         uuid.UUID
 	PerformedByID  uuid.UUID `gorm:"type:uuid"`
 	Description    string
+	Data           gormjsonb.JSONB `gorm:"type:json"`
 }

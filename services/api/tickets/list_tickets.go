@@ -109,7 +109,9 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 		data := strings.Split(filters.Statuses, ",")
 
-		db = db.Where("status IN (?)", data)
+		// data := strings.Join(filters.Statuses, ",")
+
+		db = db.Where("status IN (?,?)", data[0], data[1])
 	}
 
 	db = db.Order("created_at desc").Order("expiry_date desc").Find(&ticket)
