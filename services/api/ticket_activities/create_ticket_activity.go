@@ -319,8 +319,8 @@ func CreateTicketActivity(body models.Filter) (string, error) {
 			audits.CreateAuditTicket(ticket, tx)
 
 			body.TicketReviewer.UserID = ticket_reviewer.UserID
-			ticket_activity.Data = body.TicketActivity.Data
-			// GetReviewerUserID(body)
+			// ticket_activity.Data = body.TicketActivity.Data
+			ticket_activity.Data = GetReviewerUserID(body)
 
 			stmt2 := validations.ValidateTicketActivity(ticket_activity)
 			if stmt2 != "validated" {
@@ -461,11 +461,14 @@ func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
 	var data models.DataJson
 	var reviewer_ids []string
 
-	ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
+	if body.TicketActivity.Data != nil {
+		ticket_activity_body, err := json.Marshal(body.TicketActivity.Data)
 
-	err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
-	if err1 != nil {
-		log.Println(err)
+		err1 := json.Unmarshal([]byte(ticket_activity_body), &data)
+		if err1 != nil {
+			log.Println(err)
+		}
+
 	}
 
 	reviewer_ids = append(reviewer_ids, body.TicketReviewer.UserID.String())
@@ -482,6 +485,7 @@ func GetReviewerUserID(body models.Filter) gormjsonb.JSONB {
 	json.Unmarshal([]byte(new), &new_data)
 
 	return new_data
+
 }
 
 func GetEscalatedManager(user_id_array []string) uuid.UUID {

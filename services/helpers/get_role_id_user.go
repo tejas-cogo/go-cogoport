@@ -67,7 +67,7 @@ func GetUnifiedRoleIdUser(RoleID uuid.UUID, UserID string) uuid.UUID {
 	var user_id_array []string
 	var ticket_reviewer models.TicketReviewer
 
-	db2.Model(&models.PartnerUser{}).Where("? IN role_ids and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &user_id_array)
+	db2.Model(&models.PartnerUser{}).Where("role_ids && ? and status = ?", "{"+RoleID.String()+"}", "active").Distinct("user_id").Pluck("user_id", &user_id_array)
 
 	var users []string
 

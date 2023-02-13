@@ -33,9 +33,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 		} else {
 
 			db.Distinct("ticket_id").Order("ticket_id").Find(&ticket_reviewer).Pluck("ticket_id", &ticket_id)
-
 		}
-
 	}
 
 	if filters.Status == "pending" {
@@ -111,7 +109,7 @@ func ListTicket(filters models.TicketExtraFilter) ([]models.Ticket, *gorm.DB) {
 
 		// data := strings.Join(filters.Statuses, ",")
 
-		db = db.Where("status IN (?,?)", data[0], data[1])
+		db = db.Where("status IN ?", data)
 	}
 
 	db = db.Order("created_at desc").Order("expiry_date desc").Find(&ticket)

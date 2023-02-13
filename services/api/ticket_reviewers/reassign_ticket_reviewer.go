@@ -75,7 +75,9 @@ func ReassignTicketReviewer(body models.ReviewerActivity) (models.ReviewerActivi
 	filters.TicketActivity.Status = "reassigned"
 
 	filters.TicketActivity.Data = body.Data
-	// activities.GetReviewerUserID(filters)
+	filters.TicketReviewer.UserID = body.ReviewerUserID
+
+	activities.GetReviewerUserID(filters)
 	activities.CreateTicketActivity(filters)
 
 	tx.Commit()
