@@ -92,7 +92,7 @@ func GetTicketStats(stats models.TicketStat) (models.TicketStat, error) {
 
 		db.Where("id IN ? and status = ?", ticket_id, "unresolved").Model(&models.Ticket{}).Count(&stats.Unresolved)
 
-		db.Model(&models.Ticket{}).Where("id In ? and priority = ?", ticket_id, "high").Where("status = ? or status = ?", "pending", "unresolved").Count(&stats.HighPriority)
+		db.Model(&models.Ticket{}).Where("id In ? and priority = ?", ticket_id, "high").Count(&stats.HighPriority)
 
 		db.Model(&models.Ticket{}).Where("id In ? and created_at::date = ?", ticket_id, time.Now().Format(constants.DateTimeFormat())).Where("status = ? or status = ?", "pending", "unresolved").Count(&stats.DueToday)
 
