@@ -36,8 +36,8 @@ func SetupRouter() *gin.Engine {
 	ticket_system.POST("reassign_ticket_reviewer", controllers.ReassignTicketReviewer)
 
 	ticket_system.POST("create_ticket_default_role", controllers.CreateTicketDefaultRole)
-	ticket_system.DELETE("delete_ticket_default_role", controllers.DeleteTicketDefaultRole)
-	ticket_system.PUT("update_ticket_default_role", controllers.UpdateTicketDefaultRole)
+	// ticket_system.DELETE("delete_ticket_default_role", controllers.DeleteTicketDefaultRole)
+	// ticket_system.PUT("update_ticket_default_role", controllers.UpdateTicketDefaultRole)
 
 	ticket_system.POST("create_ticket_default_timing", controllers.CreateTicketDefaultTiming)
 
