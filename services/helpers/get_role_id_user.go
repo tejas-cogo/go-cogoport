@@ -73,15 +73,25 @@ func GetUnifiedRoleIdUser(RoleID uuid.UUID, UserID string) uuid.UUID {
 
 	db.Model(&ticket_reviewer).Where("role_id = ? and status = ?", RoleID, "active").Distinct("user_id").Pluck("user_id", &users)
 
-	if UserID != "" {
-		if Inslice(UserID, users) {
-			users = Remove(users, UserID)
+	if users != nil {
+
+		if UserID != "" {
+			if Inslice(UserID, users) {
+				users = Remove(users, UserID)
+			}
 		}
+
+		if len(user_id_array) > 0 {
+			user_id := GetFilteredUser(users, user_id_array)
+
+			if user_id != uuid.Nil {
+				return user_id
+			}
+		}
+
 	}
 
-	user_id := GetFilteredUser(users, user_id_array)
-
-	return user_id
+	return uuid.Nil
 }
 
 func GetFilteredUser(users []string, user_id_array []string) uuid.UUID {
@@ -120,7 +130,12 @@ func GetFilteredUser(users []string, user_id_array []string) uuid.UUID {
 		}
 	}
 
-	return user_id
+	if user_id != uuid.Nil {
+		return user_id
+	} else {
+		return uuid.Nil
+	}
+
 }
 
 func Remove(array []string, str string) []string {
