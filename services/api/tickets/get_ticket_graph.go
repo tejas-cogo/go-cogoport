@@ -52,7 +52,7 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 			return graph, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "unresolved").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open).Error; err != nil {
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ? or status = ?", "unresolved", "pending").Where("created_at BETWEEN ?  AND ?", x, y).Count(&stats.Open).Error; err != nil {
 			tx.Rollback()
 			return graph, errors.New(err.Error())
 		}
@@ -103,12 +103,12 @@ func GetTicketGraph(graph models.TicketGraph) (models.TicketGraph, error) {
 		x = y
 		y = x.AddDate(0, 0, 1)
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ?  AND ?", x, y).Count(&stats.Closed).Error; err != nil {
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("status = ?", "closed").Where("updated_at BETWEEN ? AND ?", x, y).Count(&stats.Closed).Error; err != nil {
 			tx.Rollback()
 			return graph, errors.New(err.Error())
 		}
 
-		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ?  AND ?", x, y).Where("status = ?", "unresolved").Count(&stats.Open).Error; err != nil {
+		if err = tx.Model(&models.Ticket{}).Where("id IN ?", ticket_id).Where("created_at BETWEEN ? AND ?", x, y).Where("status = ? or status = ?", "unresolved", "pending").Count(&stats.Open).Error; err != nil {
 			tx.Rollback()
 			return graph, errors.New(err.Error())
 		}
